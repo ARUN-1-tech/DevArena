@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { NAV_LINKS, APP_NAME } from '../../data/constants';
 import { Swords, Terminal } from 'lucide-react';
 import { Button } from '../ui/Button';
@@ -9,10 +9,16 @@ export interface NavbarProps {
 }
 
 export const Navbar: React.FC<NavbarProps> = ({ backendConnected = false }) => {
-  const location = useLocation();
+  const handleScrollTo = (e: React.MouseEvent<HTMLAnchorElement>, path: string) => {
+    if (path.startsWith('#')) {
+      e.preventDefault();
+      const el = document.getElementById(path.substring(1));
+      el?.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
   return (
-    <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-200/80 transition-all">
+    <header className="sticky top-0 z-50 bg-white/85 backdrop-blur-md border-b border-slate-200/80 transition-all">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         {/* Brand */}
         <Link to="/" className="flex items-center gap-3 group">
@@ -20,10 +26,10 @@ export const Navbar: React.FC<NavbarProps> = ({ backendConnected = false }) => {
             <Swords className="w-5 h-5" />
           </div>
           <div>
-            <span className="text-lg font-bold text-slate-900 tracking-tight flex items-center gap-1">
+            <span className="text-lg font-bold text-slate-900 tracking-tight flex items-center gap-1.5">
               {APP_NAME}
-              <span className="text-[10px] font-mono font-semibold px-1.5 py-0.5 bg-cyan-100 text-cyan-800 rounded">
-                M01
+              <span className="text-[10px] font-mono font-bold px-2 py-0.5 bg-cyan-100 text-cyan-800 rounded-full border border-cyan-200">
+                M02
               </span>
             </span>
             <p className="text-[10px] font-mono text-slate-500 tracking-wide uppercase">
@@ -33,28 +39,17 @@ export const Navbar: React.FC<NavbarProps> = ({ backendConnected = false }) => {
         </Link>
 
         {/* Navigation Links */}
-        <nav className="hidden md:flex items-center gap-1">
-          {NAV_LINKS.map((link) => {
-            const isActive = location.pathname === link.path;
-            return (
-              <Link
-                key={link.path}
-                to={link.path}
-                className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors flex items-center gap-1.5 ${
-                  isActive
-                    ? 'bg-slate-100 text-slate-900 font-semibold'
-                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
-                }`}
-              >
-                {link.label}
-                {link.badge && (
-                  <span className="text-[9px] font-mono bg-slate-200/70 text-slate-600 px-1.5 py-0.2 rounded font-semibold">
-                    {link.badge}
-                  </span>
-                )}
-              </Link>
-            );
-          })}
+        <nav className="hidden lg:flex items-center gap-1">
+          {NAV_LINKS.map((link) => (
+            <a
+              key={link.path}
+              href={link.path}
+              onClick={(e) => handleScrollTo(e, link.path)}
+              className="px-3 py-1.5 rounded-lg text-xs font-mono font-semibold uppercase tracking-wider text-slate-600 hover:text-slate-950 hover:bg-slate-100/80 transition-colors"
+            >
+              {link.label}
+            </a>
+          ))}
         </nav>
 
         {/* Right Actions & Health Pulse */}
@@ -74,7 +69,10 @@ export const Navbar: React.FC<NavbarProps> = ({ backendConnected = false }) => {
             size="sm"
             variant="glow"
             leftIcon={<Terminal className="w-4 h-4" />}
-            onClick={() => alert('Battle Arena matches will open in Module 06!')}
+            onClick={() => {
+              const el = document.getElementById('modes');
+              el?.scrollIntoView({ behavior: 'smooth' });
+            }}
           >
             Launch Arena
           </Button>
