@@ -18,6 +18,9 @@ import { SkillsPage } from '../pages/app/SkillsPage';
 import { AchievementsPage } from '../pages/app/AchievementsPage';
 import { FriendsPage } from '../pages/app/FriendsPage';
 import { ProfilePage } from '../pages/app/ProfilePage';
+import { MatchmakingPage } from '../pages/app/MatchmakingPage';
+import { BattlePage } from '../pages/app/BattlePage';
+import { BattleResultPage } from '../pages/app/BattleResultPage';
 
 // Route Guards
 import { ProtectedRoute } from './ProtectedRoute';
@@ -66,6 +69,30 @@ export const router = createBrowserRouter([
     element: (
       <ProtectedRoute>
         <WelcomePage />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/matchmaking',
+    element: (
+      <ProtectedRoute>
+        <MatchmakingPage />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/battle/:id',
+    element: (
+      <ProtectedRoute>
+        <BattlePage />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/battle/:id/result',
+    element: (
+      <ProtectedRoute>
+        <BattleResultPage />
       </ProtectedRoute>
     ),
   },

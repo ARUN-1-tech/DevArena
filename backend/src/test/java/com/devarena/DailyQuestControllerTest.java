@@ -70,7 +70,7 @@ class DailyQuestControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success").value(true))
                 .andExpect(jsonPath("$.data").isArray())
-                .andExpect(jsonPath("$.data.length()").value(3));
+                .andExpect(jsonPath("$.data.length()").value(5));
     }
 
     @Test

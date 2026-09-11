@@ -231,6 +231,58 @@ public class DataInitializer implements CommandLineRunner {
                         450,
                         60,
                         "dynamic-programming,divide-and-conquer"
+                ),
+
+                // Additional popular competitive programming katas
+                new ChallengeEntity(
+                        "Binary Search",
+                        "binary-search",
+                        "Given an array of integers `nums` which is sorted in ascending order, and an integer `target`, write a function to search `target` in `nums`. If `target` exists, then return its index. Otherwise, return `-1`.\n\nYou must write an algorithm with `O(log n)` runtime complexity.\n\n### Example 1:\n```\nInput: nums = [-1,0,3,5,9,12], target = 9\nOutput: 4\nExplanation: 9 exists in nums and its index is 4\n```",
+                        ChallengeDifficulty.EASY,
+                        ChallengeCategory.ALGORITHMS,
+                        50,
+                        10,
+                        "binary-search,array"
+                ),
+                new ChallengeEntity(
+                        "Climbing Stairs",
+                        "climbing-stairs",
+                        "You are climbing a staircase. It takes `n` steps to reach the top. Each time you can either climb `1` or `2` steps. In how many distinct ways can you climb to the top?\n\n### Example 1:\n```\nInput: n = 3\nOutput: 3\nExplanation: There are three ways to climb to the top:\n1. 1 step + 1 step + 1 step\n2. 1 step + 2 steps\n3. 2 steps + 1 step\n```",
+                        ChallengeDifficulty.EASY,
+                        ChallengeCategory.DYNAMIC_PROGRAMMING,
+                        50,
+                        10,
+                        "dynamic-programming,math"
+                ),
+                new ChallengeEntity(
+                        "Maximum Subarray",
+                        "maximum-subarray",
+                        "Given an integer array `nums`, find the subarray with the largest sum, and return its sum.\n\n### Example 1:\n```\nInput: nums = [-2,1,-3,4,-1,2,1,-5,4]\nOutput: 6\nExplanation: The subarray [4,-1,2,1] has the largest sum 6.\n```",
+                        ChallengeDifficulty.MEDIUM,
+                        ChallengeCategory.ARRAYS,
+                        120,
+                        20,
+                        "array,dynamic-programming,divide-and-conquer"
+                ),
+                new ChallengeEntity(
+                        "Rotate Image",
+                        "rotate-image",
+                        "You are given an `n x n` 2D matrix representing an image, rotate the image by 90 degrees (clockwise) in-place.\n\n### Example 1:\n```\nInput: matrix = [[1,2,3],[4,5,6],[7,8,9]]\nOutput: [[7,4,1],[8,5,2],[9,6,3]]\n```",
+                        ChallengeDifficulty.MEDIUM,
+                        ChallengeCategory.ARRAYS,
+                        140,
+                        25,
+                        "array,math,matrix"
+                ),
+                new ChallengeEntity(
+                        "House Robber",
+                        "house-robber",
+                        "You are a professional robber planning to rob houses along a street. Each house has a certain amount of money stashed, the only constraint stopping you from robbing each of them is that adjacent houses have security systems connected and it will automatically contact the police if two adjacent houses were broken into on the same night.\n\nGiven an integer array `nums` representing the amount of money of each house, return the maximum amount of money you can rob tonight without alerting the police.\n\n### Example 1:\n```\nInput: nums = [1,2,3,1]\nOutput: 4\nExplanation: Rob house 1 (money = 1) and then rob house 3 (money = 3). Total amount you can rob = 1 + 3 = 4.\n```",
+                        ChallengeDifficulty.MEDIUM,
+                        ChallengeCategory.DYNAMIC_PROGRAMMING,
+                        130,
+                        20,
+                        "dynamic-programming,array"
                 )
         );
 
@@ -248,7 +300,9 @@ public class DataInitializer implements CommandLineRunner {
         List<DailyQuestEntity> quests = List.of(
                 new DailyQuestEntity("Solve 1 Challenge", "Complete any algorithmic kata in the practice archive.", QuestType.COMPLETE_CHALLENGE, 1, 100, today),
                 new DailyQuestEntity("Practice 2 Easy Katas", "Complete 2 Easy difficulty algorithmic problems.", QuestType.COMPLETE_EASY, 2, 150, today),
-                new DailyQuestEntity("Earn 200 XP", "Gain 200 XP through problem-solving and activities.", QuestType.EARN_XP, 200, 100, today)
+                new DailyQuestEntity("Earn 200 XP", "Gain 200 XP through problem-solving and activities.", QuestType.EARN_XP, 200, 100, today),
+                new DailyQuestEntity("Arena Warrior", "Compete and achieve victory in a 1v1 Battle Arena match.", QuestType.WIN_BATTLE, 1, 250, today),
+                new DailyQuestEntity("Practice 3 Katas", "Solve 3 competitive programming challenges.", QuestType.PRACTICE_PROBLEMS, 3, 200, today)
         );
         dailyQuestRepository.saveAll(quests);
     }

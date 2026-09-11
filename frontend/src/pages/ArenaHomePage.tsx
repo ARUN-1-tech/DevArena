@@ -340,7 +340,7 @@ export const ArenaHomePage: React.FC = () => {
               variant="glow"
               size="md"
               className="w-full mt-6"
-              onClick={() => navigate('/arena')}
+              onClick={() => navigate('/matchmaking')}
               rightIcon={<ArrowRight className="w-4 h-4" />}
             >
               FIND OPPONENT

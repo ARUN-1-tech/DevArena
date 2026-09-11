@@ -5,5 +5,6 @@ public enum QuestType {
     COMPLETE_EASY,
     PRACTICE_PROBLEMS,
     MAINTAIN_STREAK,
-    EARN_XP
+    EARN_XP,
+    WIN_BATTLE
 }

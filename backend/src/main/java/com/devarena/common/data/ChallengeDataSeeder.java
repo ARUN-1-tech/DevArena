@@ -55,6 +55,8 @@ public class ChallengeDataSeeder {
             case "two-sum" -> seedTwoSum(c);
             case "valid-palindrome" -> seedValidPalindrome(c);
             case "valid-parentheses" -> seedValidParentheses(c);
+            case "binary-search" -> seedBinarySearch(c);
+            case "climbing-stairs" -> seedClimbingStairs(c);
             default -> seedGenericChallenge(c);
         }
     }
@@ -285,6 +287,159 @@ console.log(isValid(s));
         saveTestCase(c, "()[]{}", "true", false, 2, "Multiple sequential pairs");
         saveTestCase(c, "(]", "false", true, 3, "Mismatched closing bracket");
         saveTestCase(c, "{[]}", "true", true, 4, "Nested brackets");
+    }
+
+    private void seedBinarySearch(ChallengeEntity c) {
+        saveStarter(c, ExecutionLanguage.JAVA, """
+import java.util.*;
+
+public class Solution {
+    public static int search(int[] nums, int target) {
+        int left = 0, right = nums.length - 1;
+        while (left <= right) {
+            int mid = left + (right - left) / 2;
+            if (nums[mid] == target) return mid;
+            if (nums[mid] < target) left = mid + 1;
+            else right = mid - 1;
+        }
+        return -1;
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        if (!sc.hasNextLine()) return;
+        String line1 = sc.nextLine().trim();
+        if (!sc.hasNextLine()) return;
+        String line2 = sc.nextLine().trim();
+
+        String[] parts = line1.split(",");
+        int[] nums = new int[parts.length];
+        for (int i = 0; i < parts.length; i++) nums[i] = Integer.parseInt(parts[i].trim());
+        int target = Integer.parseInt(line2.trim());
+
+        System.out.println(search(nums, target));
+    }
+}
+""");
+
+        saveStarter(c, ExecutionLanguage.PYTHON, """
+import sys
+
+def search(nums: list[int], target: int) -> int:
+    left, right = 0, len(nums) - 1
+    while left <= right:
+        mid = (left + right) // 2
+        if nums[mid] == target:
+            return mid
+        elif nums[mid] < target:
+            left = mid + 1
+        else:
+            right = mid - 1
+    return -1
+
+if __name__ == "__main__":
+    lines = sys.stdin.read().strip().splitlines()
+    if len(lines) >= 2:
+        nums = [int(x.strip()) for x in lines[0].split(",") if x.strip()]
+        target = int(lines[1].strip())
+        print(search(nums, target))
+""");
+
+        saveStarter(c, ExecutionLanguage.JAVASCRIPT, """
+const fs = require('fs');
+
+function search(nums, target) {
+    let left = 0, right = nums.length - 1;
+    while (left <= right) {
+        const mid = Math.floor((left + right) / 2);
+        if (nums[mid] === target) return mid;
+        if (nums[mid] < target) left = mid + 1;
+        else right = mid - 1;
+    }
+    return -1;
+}
+
+const input = fs.readFileSync(0, 'utf-8').trim().split('\\n');
+if (input.length >= 2) {
+    const nums = input[0].split(',').map(s => parseInt(s.trim(), 10));
+    const target = parseInt(input[1].trim(), 10);
+    console.log(search(nums, target));
+}
+""");
+
+        saveTestCase(c, "-1,0,3,5,9,12\n9", "4", false, 1, "Element in array at index 4");
+        saveTestCase(c, "-1,0,3,5,9,12\n2", "-1", false, 2, "Element not present");
+        saveTestCase(c, "5\n5", "0", true, 3, "Single element match");
+        saveTestCase(c, "2,5\n5", "1", true, 4, "Two elements right side match");
+    }
+
+    private void seedClimbingStairs(ChallengeEntity c) {
+        saveStarter(c, ExecutionLanguage.JAVA, """
+import java.util.*;
+
+public class Solution {
+    public static int climbStairs(int n) {
+        if (n <= 2) return n;
+        int a = 1, b = 2;
+        for (int i = 3; i <= n; i++) {
+            int c = a + b;
+            a = b;
+            b = c;
+        }
+        return b;
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        if (!sc.hasNextInt()) return;
+        int n = sc.nextInt();
+        System.out.println(climbStairs(n));
+    }
+}
+""");
+
+        saveStarter(c, ExecutionLanguage.PYTHON, """
+import sys
+
+def climb_stairs(n: int) -> int:
+    if n <= 2:
+        return n
+    a, b = 1, 2
+    for _ in range(3, n + 1):
+        a, b = b, a + b
+    return b
+
+if __name__ == "__main__":
+    raw = sys.stdin.read().strip()
+    if raw:
+        n = int(raw)
+        print(climb_stairs(n))
+""");
+
+        saveStarter(c, ExecutionLanguage.JAVASCRIPT, """
+const fs = require('fs');
+
+function climbStairs(n) {
+    if (n <= 2) return n;
+    let a = 1, b = 2;
+    for (let i = 3; i <= n; i++) {
+        const c = a + b;
+        a = b;
+        b = c;
+    }
+    return b;
+}
+
+const raw = fs.readFileSync(0, 'utf-8').trim();
+if (raw) {
+    console.log(climbStairs(parseInt(raw, 10)));
+}
+""");
+
+        saveTestCase(c, "2", "2", false, 1, "2 steps: 1+1 or 2");
+        saveTestCase(c, "3", "3", false, 2, "3 steps: 1+1+1, 1+2, 2+1");
+        saveTestCase(c, "4", "5", true, 3, "4 steps has 5 distinct combinations");
+        saveTestCase(c, "5", "8", true, 4, "5 steps has 8 combinations");
     }
 
     private void seedGenericChallenge(ChallengeEntity c) {
