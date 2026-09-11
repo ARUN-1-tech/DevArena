@@ -9,9 +9,9 @@ import { WelcomePage } from '../pages/WelcomePage';
 import { ArenaHomePage } from '../pages/ArenaHomePage';
 import { NotFoundPage } from '../pages/NotFoundPage';
 
-// App sections
 import { ArenaPage } from '../pages/app/ArenaPage';
 import { ChallengesPage } from '../pages/app/ChallengesPage';
+import { ChallengeDetailPage } from '../pages/app/ChallengeDetailPage';
 import { LeaderboardPage } from '../pages/app/LeaderboardPage';
 import { SkillsPage } from '../pages/app/SkillsPage';
 import { AchievementsPage } from '../pages/app/AchievementsPage';
@@ -89,6 +89,10 @@ export const router = createBrowserRouter([
       {
         path: 'challenges',
         element: <ChallengesPage />,
+      },
+      {
+        path: 'challenges/:id',
+        element: <ChallengeDetailPage />,
       },
       {
         path: 'leaderboard',

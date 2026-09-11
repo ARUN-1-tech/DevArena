@@ -11,5 +11,7 @@ import java.util.UUID;
 public interface ProfileRepository extends JpaRepository<ProfileEntity, UUID> {
     Optional<ProfileEntity> findByUserId(UUID userId);
     Optional<ProfileEntity> findByUsername(String username);
+    Optional<ProfileEntity> findByUsernameIgnoreCase(String username);
     boolean existsByUsername(String username);
+    boolean existsByUsernameIgnoreCase(String username);
 }

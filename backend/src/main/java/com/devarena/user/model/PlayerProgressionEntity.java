@@ -23,6 +23,24 @@ public class PlayerProgressionEntity extends BaseAuditEntity {
     @Column(name = "xp_to_next_level", nullable = false)
     private int xpToNextLevel = 100;
 
+    @Column(name = "total_xp", nullable = false)
+    private int totalXp = 0;
+
+    @Column(name = "current_streak", nullable = false)
+    private int currentStreak = 0;
+
+    @Column(name = "longest_streak", nullable = false)
+    private int longestStreak = 0;
+
+    @Column(name = "last_activity_date")
+    private java.time.LocalDate lastActivityDate;
+
+    @Column(name = "challenges_solved", nullable = false)
+    private int challengesSolved = 0;
+
+    @Column(name = "quests_completed", nullable = false)
+    private int questsCompleted = 0;
+
     public PlayerProgressionEntity() {}
 
     public PlayerProgressionEntity(UserEntity user) {
@@ -30,6 +48,11 @@ public class PlayerProgressionEntity extends BaseAuditEntity {
         this.level = 1;
         this.currentXp = 0;
         this.xpToNextLevel = 100;
+        this.totalXp = 0;
+        this.currentStreak = 0;
+        this.longestStreak = 0;
+        this.challengesSolved = 0;
+        this.questsCompleted = 0;
     }
 
     public UserEntity getUser() {
@@ -62,5 +85,53 @@ public class PlayerProgressionEntity extends BaseAuditEntity {
 
     public void setXpToNextLevel(int xpToNextLevel) {
         this.xpToNextLevel = xpToNextLevel;
+    }
+
+    public int getTotalXp() {
+        return totalXp;
+    }
+
+    public void setTotalXp(int totalXp) {
+        this.totalXp = totalXp;
+    }
+
+    public int getCurrentStreak() {
+        return currentStreak;
+    }
+
+    public void setCurrentStreak(int currentStreak) {
+        this.currentStreak = currentStreak;
+    }
+
+    public int getLongestStreak() {
+        return longestStreak;
+    }
+
+    public void setLongestStreak(int longestStreak) {
+        this.longestStreak = longestStreak;
+    }
+
+    public java.time.LocalDate getLastActivityDate() {
+        return lastActivityDate;
+    }
+
+    public void setLastActivityDate(java.time.LocalDate lastActivityDate) {
+        this.lastActivityDate = lastActivityDate;
+    }
+
+    public int getChallengesSolved() {
+        return challengesSolved;
+    }
+
+    public void setChallengesSolved(int challengesSolved) {
+        this.challengesSolved = challengesSolved;
+    }
+
+    public int getQuestsCompleted() {
+        return questsCompleted;
+    }
+
+    public void setQuestsCompleted(int questsCompleted) {
+        this.questsCompleted = questsCompleted;
     }
 }

@@ -13,6 +13,7 @@ import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.util.HashMap;
@@ -106,6 +107,34 @@ public class GlobalExceptionHandler {
                 request.getRequestURI()
         );
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ApiErrorResponse> handleDataIntegrityViolationException(DataIntegrityViolationException ex, HttpServletRequest request) {
+        log.warn("Data integrity conflict on {}: {}", request.getRequestURI(), ex.getMessage());
+        String message = "A database integrity conflict occurred.";
+        String errorCode = "DATA_INTEGRITY_CONFLICT";
+        HttpStatus status = HttpStatus.CONFLICT;
+
+        String rootMsg = ex.getRootCause() != null ? ex.getRootCause().getMessage() : ex.getMessage();
+        if (rootMsg != null) {
+            String lower = rootMsg.toLowerCase();
+            if (lower.contains("email") || lower.contains("idx_users_email") || lower.contains("users_email_key")) {
+                message = "That email address is already registered.";
+                errorCode = "DUPLICATE_EMAIL";
+            } else if (lower.contains("username") || lower.contains("idx_users_username") || lower.contains("users_username_key") || lower.contains("profiles_username_key")) {
+                message = "That username is already taken.";
+                errorCode = "DUPLICATE_USERNAME";
+            }
+        }
+
+        ApiErrorResponse response = new ApiErrorResponse(
+                status.value(),
+                errorCode,
+                message,
+                request.getRequestURI()
+        );
+        return new ResponseEntity<>(response, status);
     }
 
     @ExceptionHandler(Exception.class)

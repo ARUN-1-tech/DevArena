@@ -57,11 +57,11 @@ public class AuthService {
         String normalizedEmail = request.email().trim().toLowerCase();
         String normalizedUsername = request.username().trim();
 
-        if (userRepository.existsByEmail(normalizedEmail)) {
+        if (userRepository.existsByEmailIgnoreCase(normalizedEmail)) {
             throw new DevArenaException("That email address is already registered.", HttpStatus.CONFLICT, "DUPLICATE_EMAIL");
         }
 
-        if (userRepository.existsByUsername(normalizedUsername) || profileRepository.existsByUsername(normalizedUsername)) {
+        if (userRepository.existsByUsernameIgnoreCase(normalizedUsername) || profileRepository.existsByUsernameIgnoreCase(normalizedUsername)) {
             throw new DevArenaException("That username is already taken.", HttpStatus.CONFLICT, "DUPLICATE_USERNAME");
         }
 
@@ -80,15 +80,18 @@ public class AuthService {
                 request.displayName().trim(),
                 "avatar-1"
         );
-        profileRepository.save(profile);
+        profile = profileRepository.save(profile);
+        user.setProfile(profile);
 
         // 3. Create Player Stats
         PlayerStatsEntity stats = new PlayerStatsEntity(user);
-        playerStatsRepository.save(stats);
+        stats = playerStatsRepository.save(stats);
+        user.setStats(stats);
 
         // 4. Create Player Progression
         PlayerProgressionEntity progression = new PlayerProgressionEntity(user);
-        playerProgressionRepository.save(progression);
+        progression = playerProgressionRepository.save(progression);
+        user.setProgression(progression);
 
         // 5. Generate JWT Tokens
         String accessToken = jwtTokenProvider.generateAccessToken(user.getUsername(), user.getRoles());
@@ -111,8 +114,8 @@ public class AuthService {
         String credential = request.email().trim();
 
         // Check if user exists by email or username
-        UserEntity user = userRepository.findByEmail(credential.toLowerCase())
-                .or(() -> userRepository.findByUsername(credential))
+        UserEntity user = userRepository.findByEmailIgnoreCase(credential)
+                .or(() -> userRepository.findByUsernameIgnoreCase(credential))
                 .orElseThrow(() -> new DevArenaException("Invalid email or password", HttpStatus.UNAUTHORIZED, "UNAUTHORIZED"));
 
         // Authenticate with Spring Security

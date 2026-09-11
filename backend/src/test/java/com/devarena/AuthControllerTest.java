@@ -124,6 +124,74 @@ class AuthControllerTest {
     }
 
     @Test
+    @DisplayName("3b. Duplicate email with different case returns 409 Conflict")
+    void testDuplicateEmailCaseInsensitive() throws Exception {
+        String payload = """
+                {
+                    "email": "casecheck@devarena.io",
+                    "password": "password123",
+                    "username": "CaseUser1",
+                    "displayName": "Case User 1"
+                }
+                """;
+
+        mockMvc.perform(post("/api/v1/auth/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(payload))
+                .andExpect(status().isCreated());
+
+        String dupPayload = """
+                {
+                    "email": "CaseCheck@DevArena.io",
+                    "password": "password123",
+                    "username": "CaseUser2",
+                    "displayName": "Case User 2"
+                }
+                """;
+
+        mockMvc.perform(post("/api/v1/auth/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(dupPayload))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.error").value("DUPLICATE_EMAIL"))
+                .andExpect(jsonPath("$.message").value("That email address is already registered."));
+    }
+
+    @Test
+    @DisplayName("3c. Duplicate username with different case returns 409 Conflict")
+    void testDuplicateUsernameCaseInsensitive() throws Exception {
+        String payload = """
+                {
+                    "email": "caseuser3@devarena.io",
+                    "password": "password123",
+                    "username": "ShadowNinja",
+                    "displayName": "Shadow Ninja"
+                }
+                """;
+
+        mockMvc.perform(post("/api/v1/auth/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(payload))
+                .andExpect(status().isCreated());
+
+        String dupPayload = """
+                {
+                    "email": "caseuser4@devarena.io",
+                    "password": "password123",
+                    "username": "shadowninja",
+                    "displayName": "Shadow Ninja 2"
+                }
+                """;
+
+        mockMvc.perform(post("/api/v1/auth/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(dupPayload))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.error").value("DUPLICATE_USERNAME"))
+                .andExpect(jsonPath("$.message").value("That username is already taken."));
+    }
+
+    @Test
     @DisplayName("4. Login success - validates credentials and returns tokens")
     void testLoginSuccess() throws Exception {
         String regPayload = """

@@ -26,15 +26,25 @@ apiClient.interceptors.request.use(
 // Response Interceptor: Standardize error unwrapping
 apiClient.interceptors.response.use(
   (response) => response,
-  (error: AxiosError<ApiErrorResponse>) => {
-    if (error.response?.data) {
-      return Promise.reject(error.response.data);
+  (error: AxiosError<unknown>) => {
+    const data = error.response?.data;
+    if (data && typeof data === 'object' && 'message' in data) {
+      return Promise.reject(data as ApiErrorResponse);
     }
+    const status = error.response?.status || 500;
+    const isConnRefused =
+      status === 502 ||
+      status === 503 ||
+      status === 504 ||
+      (status === 500 && (typeof data === 'string' || !data));
+
     return Promise.reject({
       timestamp: new Date().toISOString(),
-      status: error.response?.status || 500,
-      error: 'NETWORK_ERROR',
-      message: error.message || 'Network error occurred. Check backend connectivity.',
+      status,
+      error: isConnRefused ? 'SERVICE_UNAVAILABLE' : 'NETWORK_ERROR',
+      message: isConnRefused
+        ? 'Cannot connect to the DevArena backend. Please ensure the backend server is running on port 8080.'
+        : error.message || 'An unexpected network error occurred.',
       path: error.config?.url || '',
     } as ApiErrorResponse);
   }

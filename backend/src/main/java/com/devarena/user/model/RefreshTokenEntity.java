@@ -35,7 +35,14 @@ public class RefreshTokenEntity {
 
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
-    private Instant createdAt;
+    private Instant createdAt = Instant.now();
+
+    @PrePersist
+    protected void onCreate() {
+        if (createdAt == null) {
+            createdAt = Instant.now();
+        }
+    }
 
     public RefreshTokenEntity() {}
 
@@ -44,6 +51,7 @@ public class RefreshTokenEntity {
         this.token = token;
         this.expiryDate = expiryDate;
         this.revoked = false;
+        this.createdAt = Instant.now();
     }
 
     public UUID getId() {
