@@ -19,7 +19,15 @@ class WebSocketService {
       const token = localStorage.getItem('devarena_token') || '';
 
       this.client = new Client({
-        webSocketFactory: () => new SockJS('/ws'),
+        webSocketFactory: () => {
+          try {
+            return new SockJS('/ws');
+          } catch (e) {
+            console.warn('SockJS fallback, using native WebSocket:', e);
+            const proto = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+            return new WebSocket(`${proto}//${window.location.host}/ws-direct`);
+          }
+        },
         connectHeaders: {
           Authorization: `Bearer ${token}`,
           token,
