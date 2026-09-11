@@ -20,6 +20,8 @@ import {
   Check,
   AlertCircle,
   AlertTriangle,
+  Bot,
+  Flag,
 } from 'lucide-react';
 import { submissionService } from '../../services/submissionService';
 import {
@@ -34,6 +36,8 @@ import {
 import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
 import { LevelUpModal } from '../../components/player/LevelUpModal';
+import { AiCoachPanel } from '../../components/ai/AiCoachPanel';
+import { ReportModal } from '../../components/moderation/ReportModal';
 
 export const CodeLabPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -59,6 +63,8 @@ export const CodeLabPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'testcases' | 'console' | 'history'>('testcases');
   const [selectedTestCaseIndex, setSelectedTestCaseIndex] = useState(0);
   const [showHints, setShowHints] = useState(false);
+  const [isAiCoachOpen, setIsAiCoachOpen] = useState(false);
+  const [isReportModalOpen, setIsReportModalOpen] = useState(false);
 
   const [levelUpData, setLevelUpData] = useState<{
     show: boolean;
@@ -413,6 +419,24 @@ export const CodeLabPage: React.FC = () => {
           >
             {isSubmitting ? 'EVALUATING...' : 'SUBMIT'}
           </Button>
+
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setIsAiCoachOpen(!isAiCoachOpen)}
+            leftIcon={<Bot className="w-3.5 h-3.5 text-cyan-400" />}
+            className="border-indigo-700/80 bg-indigo-950/40 text-indigo-300 hover:bg-indigo-900/60 hover:text-white"
+          >
+            AI COACH
+          </Button>
+
+          <button
+            onClick={() => setIsReportModalOpen(true)}
+            title="Report challenge issue"
+            className="p-1.5 rounded-lg border border-slate-800 text-slate-400 hover:text-rose-400 hover:border-rose-900/40 transition-colors"
+          >
+            <Flag className="w-4 h-4" />
+          </button>
         </div>
       </div>
 
@@ -867,6 +891,23 @@ export const CodeLabPage: React.FC = () => {
         prevLevel={levelUpData.prevLevel}
         xpEarned={levelUpData.xp}
         onClose={() => setLevelUpData({ ...levelUpData, show: false })}
+      />
+
+      {/* Module 09 AI Coach Panel */}
+      <AiCoachPanel
+        challengeId={challenge.id}
+        currentCode={sourceCode}
+        isOpen={isAiCoachOpen}
+        onClose={() => setIsAiCoachOpen(false)}
+      />
+
+      {/* Module 09 Moderation Report Modal */}
+      <ReportModal
+        isOpen={isReportModalOpen}
+        onClose={() => setIsReportModalOpen(false)}
+        targetType="CHALLENGE"
+        targetId={challenge.id}
+        targetName={challenge.title}
       />
     </div>
   );

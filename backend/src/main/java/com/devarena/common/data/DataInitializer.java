@@ -52,9 +52,33 @@ public class DataInitializer implements CommandLineRunner {
         seedChallengesIfEmpty();
         seedDailyQuestsIfEmpty();
         seedDefaultUserIfEmpty();
+        seedAdminUserIfEmpty();
         challengeDataSeeder.seedStarterCodesAndTestCasesIfEmpty();
         seedAchievementsIfEmpty();
         seedSkillsIfEmpty();
+    }
+
+    private void seedAdminUserIfEmpty() {
+        if (userRepository.findByUsernameIgnoreCase("Admin").isPresent() || userRepository.findByEmailIgnoreCase("admin@devarena.io").isPresent()) {
+            return;
+        }
+
+        try {
+            log.info("Seeding default administrator account (admin@devarena.io)...");
+            com.devarena.user.dto.AuthResponse authResp = authService.register(new com.devarena.user.dto.RegisterRequest(
+                    "admin@devarena.io",
+                    "Password123",
+                    "Admin",
+                    "Admin"
+            ));
+            userRepository.findById(authResp.user().id()).ifPresent(adminUser -> {
+                adminUser.getRoles().add(com.devarena.security.UserRole.ROLE_ADMIN);
+                userRepository.save(adminUser);
+            });
+            log.info("Default administrator account seeded with ROLE_ADMIN successfully.");
+        } catch (Exception ex) {
+            log.warn("Could not seed default administrator account: {}", ex.getMessage());
+        }
     }
 
     private void seedDefaultUserIfEmpty() {

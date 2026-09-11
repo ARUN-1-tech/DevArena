@@ -19,18 +19,25 @@ public class DevArenaUserDetails implements UserDetails {
     private final String email;
     private final String password;
     private final boolean enabled;
+    private final boolean accountNonLocked;
     private final Collection<? extends GrantedAuthority> authorities;
 
     public DevArenaUserDetails(UUID id, String username, String email, String password,
-                               boolean enabled, Set<UserRole> roles) {
+                               boolean enabled, boolean accountNonLocked, Set<UserRole> roles) {
         this.id = id;
         this.username = username;
         this.email = email;
         this.password = password;
         this.enabled = enabled;
+        this.accountNonLocked = accountNonLocked;
         this.authorities = roles.stream()
                 .map(role -> new SimpleGrantedAuthority(role.name()))
                 .collect(Collectors.toSet());
+    }
+
+    public DevArenaUserDetails(UUID id, String username, String email, String password,
+                               boolean enabled, Set<UserRole> roles) {
+        this(id, username, email, password, enabled, true, roles);
     }
 
     public UUID getId() {
@@ -63,7 +70,7 @@ public class DevArenaUserDetails implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return accountNonLocked;
     }
 
     @Override

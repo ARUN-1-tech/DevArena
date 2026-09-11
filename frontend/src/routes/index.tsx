@@ -27,6 +27,14 @@ import { BattleResultPage } from '../pages/app/BattleResultPage';
 // Route Guards
 import { ProtectedRoute } from './ProtectedRoute';
 import { PublicAuthRoute } from './PublicAuthRoute';
+import { AdminRoute } from './AdminRoute';
+import { AdminLayout } from '../layouts/AdminLayout';
+import { AdminDashboardPage } from '../pages/admin/AdminDashboardPage';
+import { AdminPlayersPage } from '../pages/admin/AdminPlayersPage';
+import { AdminChallengesPage } from '../pages/admin/AdminChallengesPage';
+import { AdminReportsPage } from '../pages/admin/AdminReportsPage';
+import { AdminIntegrityPage } from '../pages/admin/AdminIntegrityPage';
+import { AdminAuditPage } from '../pages/admin/AdminAuditPage';
 
 export const router = createBrowserRouter([
   // Public Marketing Landing Layout
@@ -155,6 +163,42 @@ export const router = createBrowserRouter([
       {
         path: 'profile',
         element: <ProfilePage />,
+      },
+    ],
+  },
+
+  // Protected Admin Portal (AdminRoute + AdminLayout)
+  {
+    path: '/admin',
+    element: (
+      <AdminRoute>
+        <AdminLayout />
+      </AdminRoute>
+    ),
+    children: [
+      {
+        index: true,
+        element: <AdminDashboardPage />,
+      },
+      {
+        path: 'players',
+        element: <AdminPlayersPage />,
+      },
+      {
+        path: 'challenges',
+        element: <AdminChallengesPage />,
+      },
+      {
+        path: 'reports',
+        element: <AdminReportsPage />,
+      },
+      {
+        path: 'integrity',
+        element: <AdminIntegrityPage />,
+      },
+      {
+        path: 'audit',
+        element: <AdminAuditPage />,
       },
     ],
   },
