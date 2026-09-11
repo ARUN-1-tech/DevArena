@@ -10,7 +10,7 @@ import { FinalCtaSection } from '../components/landing/FinalCtaSection';
 
 export const HomePage: React.FC = () => {
   return (
-    <div className="space-y-24 sm:space-y-32 pb-16">
+    <div className="space-y-32 sm:space-y-44 pb-24">
       {/* 01. HERO */}
       <HeroSection />
 

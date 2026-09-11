@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion, useReducedMotion, AnimatePresence } from 'framer-motion';
 import { Button } from '../ui/Button';
 import { Card } from '../ui/Card';
 import { Swords, Clock, CheckCircle2 } from 'lucide-react';
+import { useAuth } from '../../contexts/AuthContext';
 
 export const HeroSection: React.FC = () => {
   const shouldReduceMotion = useReducedMotion();
+  const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
   const [countdown, setCountdown] = useState(222); // 03:42
   const [testsPassed, setTestsPassed] = useState(3);
   const [showXpReward, setShowXpReward] = useState(false);
@@ -77,8 +81,11 @@ export const HeroSection: React.FC = () => {
                 size="lg"
                 leftIcon={<Swords className="w-5 h-5" />}
                 onClick={() => {
-                  const el = document.getElementById('modes');
-                  el?.scrollIntoView({ behavior: 'smooth' });
+                  if (isAuthenticated) {
+                    navigate('/home');
+                  } else {
+                    navigate('/login');
+                  }
                 }}
               >
                 ENTER THE ARENA

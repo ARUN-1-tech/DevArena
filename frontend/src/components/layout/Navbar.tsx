@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { APP_NAME } from '../../data/constants';
 import { Swords, Menu, X } from 'lucide-react';
 import { Button } from '../ui/Button';
+import { useAuth } from '../../contexts/AuthContext';
 
 export interface NavbarProps {
   backendConnected?: boolean;
@@ -10,6 +11,8 @@ export interface NavbarProps {
 
 export const Navbar: React.FC<NavbarProps> = ({ backendConnected = false }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { isAuthenticated, user } = useAuth();
+  const navigate = useNavigate();
 
   const navLinks = [
     { label: 'Arena', href: '#arena' },
@@ -23,6 +26,15 @@ export const Navbar: React.FC<NavbarProps> = ({ backendConnected = false }) => {
     setMobileMenuOpen(false);
     const el = document.getElementById(href.substring(1));
     el?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const handleArenaAction = () => {
+    setMobileMenuOpen(false);
+    if (isAuthenticated) {
+      navigate('/home');
+    } else {
+      navigate('/login');
+    }
   };
 
   return (
@@ -61,15 +73,21 @@ export const Navbar: React.FC<NavbarProps> = ({ backendConnected = false }) => {
             title={backendConnected ? 'API Connected' : 'API Standby'}
           />
 
+          {!isAuthenticated && (
+            <Link
+              to="/login"
+              className="hidden sm:inline-block text-xs font-semibold text-slate-600 hover:text-slate-900 transition-colors px-2 py-1"
+            >
+              Sign In
+            </Link>
+          )}
+
           <Button
             size="sm"
             variant="glow"
-            onClick={() => {
-              const el = document.getElementById('modes');
-              el?.scrollIntoView({ behavior: 'smooth' });
-            }}
+            onClick={handleArenaAction}
           >
-            ENTER ARENA
+            {isAuthenticated ? 'GO TO ARENA' : 'ENTER ARENA'}
           </Button>
 
           {/* Mobile hamburger button */}
@@ -96,6 +114,40 @@ export const Navbar: React.FC<NavbarProps> = ({ backendConnected = false }) => {
               {link.label}
             </a>
           ))}
+          <div className="pt-2 border-t border-slate-100 flex flex-col gap-2">
+            {!isAuthenticated ? (
+              <>
+                <Link
+                  to="/login"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="block py-2 text-sm font-semibold text-slate-800"
+                >
+                  Sign In
+                </Link>
+                <Button
+                  size="sm"
+                  variant="glow"
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    navigate('/register');
+                  }}
+                >
+                  CREATE ACCOUNT
+                </Button>
+              </>
+            ) : (
+              <Button
+                size="sm"
+                variant="glow"
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  navigate('/home');
+                }}
+              >
+                OPEN HQ (Lvl {user?.progression?.level || 1})
+              </Button>
+            )}
+          </div>
         </div>
       )}
     </header>

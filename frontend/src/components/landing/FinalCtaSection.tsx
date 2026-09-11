@@ -1,11 +1,15 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion, useReducedMotion } from 'framer-motion';
 import { Button } from '../ui/Button';
 import { Card } from '../ui/Card';
 import { Swords } from 'lucide-react';
+import { useAuth } from '../../contexts/AuthContext';
 
 export const FinalCtaSection: React.FC = () => {
   const shouldReduceMotion = useReducedMotion();
+  const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
 
   return (
     <section className="py-24 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -42,8 +46,11 @@ export const FinalCtaSection: React.FC = () => {
               size="lg"
               leftIcon={<Swords className="w-5 h-5" />}
               onClick={() => {
-                const el = document.getElementById('modes');
-                el?.scrollIntoView({ behavior: 'smooth' });
+                if (isAuthenticated) {
+                  navigate('/home');
+                } else {
+                  navigate('/register');
+                }
               }}
             >
               ⚔️ START BATTLE
