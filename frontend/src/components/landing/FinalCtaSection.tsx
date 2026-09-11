@@ -1,76 +1,53 @@
 import React from 'react';
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import { Button } from '../ui/Button';
 import { Card } from '../ui/Card';
-import { Swords, Code, ShieldCheck, Zap, Terminal } from 'lucide-react';
+import { Swords } from 'lucide-react';
 
 export const FinalCtaSection: React.FC = () => {
+  const shouldReduceMotion = useReducedMotion();
+
   return (
-    <section className="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <Card className="relative overflow-hidden p-8 sm:p-14 bg-gradient-to-br from-slate-900 via-slate-900 to-slate-950 text-white border-slate-800 shadow-2xl text-center">
-        {/* Ambient neon radial gradients */}
-        <div className="absolute -top-24 -left-24 w-80 h-80 bg-cyan-500/20 blur-3xl rounded-full pointer-events-none" />
-        <div className="absolute -bottom-24 -right-24 w-80 h-80 bg-violet-500/20 blur-3xl rounded-full pointer-events-none" />
+    <section className="py-24 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <Card className="relative overflow-hidden p-10 sm:p-16 bg-slate-900 text-white border-slate-800 shadow-xl text-center rounded-3xl">
+        {/* Subtle decorative particles */}
+        <motion.div
+          animate={shouldReduceMotion ? {} : { y: [0, -10, 0] }}
+          transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+          className="absolute top-8 left-12 w-2 h-2 rounded-full bg-cyan-400 opacity-60"
+        />
+        <motion.div
+          animate={shouldReduceMotion ? {} : { y: [0, 8, 0] }}
+          transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
+          className="absolute bottom-10 right-14 w-3 h-3 rounded-full bg-violet-400 opacity-60"
+        />
+        <motion.div
+          animate={shouldReduceMotion ? {} : { y: [0, -6, 0] }}
+          transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
+          className="absolute top-12 right-20 w-1.5 h-1.5 rounded-full bg-emerald-400 opacity-60"
+        />
 
-        <div className="relative z-10 max-w-3xl mx-auto space-y-6">
-          <motion.div
-            initial={{ opacity: 0, y: 15 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.4 }}
-            className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-800/80 border border-slate-700 text-cyan-400 text-xs font-mono font-bold uppercase tracking-wider"
-          >
-            <Terminal className="w-3.5 h-3.5 text-cyan-400" />
-            <span>SEASON 1 REGISTRATION OPEN</span>
-          </motion.div>
-
-          <h2 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-white leading-tight">
+        <div className="relative z-10 max-w-md mx-auto space-y-6">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white leading-tight">
             READY TO ENTER THE ARENA?
           </h2>
 
-          <p className="text-base sm:text-lg text-slate-300 leading-relaxed max-w-xl mx-auto">
-            Join thousands of developers competing in real-time right now. Prove your algorithmic
-            might, level up your developer DNA, and climb to Grandmaster.
+          <p className="text-base text-slate-300">
+            Your next challenge is waiting.
           </p>
 
-          <div className="flex flex-wrap items-center justify-center gap-4 pt-4">
+          <div className="pt-2">
             <Button
               variant="glow"
               size="lg"
               leftIcon={<Swords className="w-5 h-5" />}
-              onClick={() => alert('Battle matchmaking will open in Module 06!')}
-            >
-              START BATTLING NOW
-            </Button>
-
-            <Button
-              variant="outline"
-              size="lg"
-              className="border-slate-700 text-white bg-slate-800/70 hover:bg-slate-700"
-              leftIcon={<Code className="w-4 h-4 text-cyan-400" />}
               onClick={() => {
                 const el = document.getElementById('modes');
                 el?.scrollIntoView({ behavior: 'smooth' });
               }}
             >
-              EXPLORE CHALLENGES
+              ⚔️ START BATTLE
             </Button>
-          </div>
-
-          {/* Feature trust pills */}
-          <div className="pt-8 border-t border-slate-800/80 flex flex-wrap items-center justify-center gap-6 text-xs font-mono text-slate-400">
-            <span className="flex items-center gap-1.5">
-              <Zap className="w-3.5 h-3.5 text-amber-400" />
-              15+ Languages Supported
-            </span>
-            <span className="flex items-center gap-1.5">
-              <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-              Anti-Cheat Sandboxed Runner
-            </span>
-            <span className="flex items-center gap-1.5">
-              <Swords className="w-3.5 h-3.5 text-cyan-400" />
-              Instant Matchmaking (&lt;4s)
-            </span>
           </div>
         </div>
       </Card>
