@@ -18,6 +18,8 @@ import { SkillsPage } from '../pages/app/SkillsPage';
 import { AchievementsPage } from '../pages/app/AchievementsPage';
 import { FriendsPage } from '../pages/app/FriendsPage';
 import { ProfilePage } from '../pages/app/ProfilePage';
+import { TeamsPage } from '../pages/app/TeamsPage';
+import { PublicProfilePage } from '../pages/app/PublicProfilePage';
 import { MatchmakingPage } from '../pages/app/MatchmakingPage';
 import { BattlePage } from '../pages/app/BattlePage';
 import { BattleResultPage } from '../pages/app/BattleResultPage';
@@ -141,6 +143,14 @@ export const router = createBrowserRouter([
       {
         path: 'friends',
         element: <FriendsPage />,
+      },
+      {
+        path: 'teams',
+        element: <TeamsPage />,
+      },
+      {
+        path: 'players/:username',
+        element: <PublicProfilePage />,
       },
       {
         path: 'profile',

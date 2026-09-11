@@ -15,8 +15,10 @@ import {
   X,
   Sparkles,
   Flame,
+  Shield,
 } from 'lucide-react';
 import { APP_NAME } from '../data/constants';
+import { NotificationDropdown } from '../components/notification/NotificationDropdown';
 
 interface NavItem {
   name: string;
@@ -33,6 +35,7 @@ const NAV_ITEMS: NavItem[] = [
   { name: 'Skills', href: '/skills', icon: Zap },
   { name: 'Achievements', href: '/achievements', icon: Award },
   { name: 'Friends', href: '/friends', icon: Users },
+  { name: 'Teams', href: '/teams', icon: Shield },
   { name: 'Profile', href: '/profile', icon: User },
 ];
 
@@ -69,6 +72,7 @@ export const AppLayout: React.FC = () => {
         </div>
 
         <div className="flex items-center gap-2">
+          <NotificationDropdown />
           <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-cyan-50 border border-cyan-200 text-cyan-800 text-xs font-mono font-bold">
             <Flame className="w-3 h-3 text-cyan-600" />
             {rating} MMR
@@ -169,18 +173,21 @@ export const AppLayout: React.FC = () => {
       {/* ========================================================= */}
       <aside className="hidden md:flex flex-col w-64 bg-white border-r border-slate-200/90 h-screen sticky top-0 shrink-0">
         {/* Brand */}
-        <div className="p-5 border-b border-slate-100 flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-cyan-600 to-violet-600 text-white flex items-center justify-center shadow-md">
-            <Swords className="w-5 h-5" />
+        <div className="p-4 border-b border-slate-100 flex items-center justify-between">
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-cyan-600 to-violet-600 text-white flex items-center justify-center shadow-md shrink-0">
+              <Swords className="w-5 h-5" />
+            </div>
+            <div className="min-w-0">
+              <span className="text-lg font-black tracking-tight text-slate-900 block leading-tight truncate">
+                {APP_NAME}
+              </span>
+              <span className="text-[10px] font-mono text-cyan-600 uppercase font-semibold tracking-wider block">
+                Battle Engine v1.0
+              </span>
+            </div>
           </div>
-          <div>
-            <span className="text-lg font-black tracking-tight text-slate-900 block leading-tight">
-              {APP_NAME}
-            </span>
-            <span className="text-[10px] font-mono text-cyan-600 uppercase font-semibold tracking-wider">
-              Battle Engine v1.0
-            </span>
-          </div>
+          <NotificationDropdown />
         </div>
 
         {/* Navigation list */}

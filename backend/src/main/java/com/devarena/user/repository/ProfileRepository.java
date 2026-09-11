@@ -14,4 +14,7 @@ public interface ProfileRepository extends JpaRepository<ProfileEntity, UUID> {
     Optional<ProfileEntity> findByUsernameIgnoreCase(String username);
     boolean existsByUsername(String username);
     boolean existsByUsernameIgnoreCase(String username);
+
+    @org.springframework.data.jpa.repository.Query("SELECT p FROM ProfileEntity p WHERE LOWER(p.username) LIKE LOWER(CONCAT('%', :query, '%')) OR LOWER(p.displayName) LIKE LOWER(CONCAT('%', :query, '%'))")
+    java.util.List<ProfileEntity> searchProfiles(@org.springframework.data.repository.query.Param("query") String query, org.springframework.data.domain.Pageable pageable);
 }
