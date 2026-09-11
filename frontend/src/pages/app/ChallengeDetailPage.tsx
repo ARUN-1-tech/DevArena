@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { challengeService } from '../../services/challengeService';
-import { Challenge, XpRewardResult } from '../../types/arena';
+import { Challenge } from '../../types/arena';
 import { Card } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
-import { LevelUpModal } from '../../components/player/LevelUpModal';
 import {
   ArrowLeft,
   Code2,
@@ -30,19 +29,6 @@ export const ChallengeDetailPage: React.FC = () => {
   const [actionLoading, setActionLoading] = useState(false);
   const [actionMessage, setActionMessage] = useState<string | null>(null);
 
-  // Level-up celebration state
-  const [levelUpData, setLevelUpData] = useState<{
-    show: boolean;
-    level: number;
-    prevLevel: number;
-    xp: number;
-  }>({
-    show: false,
-    level: 1,
-    prevLevel: 1,
-    xp: 0,
-  });
-
   useEffect(() => {
     if (!id) return;
     loadChallenge(id);
@@ -66,40 +52,9 @@ export const ChallengeDetailPage: React.FC = () => {
     try {
       setActionLoading(true);
       await challengeService.startChallenge(challenge.id);
-      setChallenge((prev) =>
-        prev ? { ...prev, progressStatus: prev.progressStatus === 'SOLVED' ? 'SOLVED' : 'ATTEMPTED' } : null
-      );
-      setActionMessage('Challenge initialized in your active roster! (Interactive Code Lab unlocks in Module 05)');
-    } catch (err: any) {
-      setActionMessage('Failed to start challenge.');
-    } finally {
-      setActionLoading(false);
-    }
-  };
-
-  const handleCompleteChallenge = async () => {
-    if (!challenge) return;
-    try {
-      setActionLoading(true);
-      const res: XpRewardResult = await challengeService.completeChallenge(challenge.id);
-      setChallenge((prev) => (prev ? { ...prev, progressStatus: 'SOLVED' } : null));
-
-      if (res.leveledUp) {
-        setLevelUpData({
-          show: true,
-          level: res.newLevel,
-          prevLevel: res.previousLevel,
-          xp: res.xpEarned,
-        });
-      } else {
-        setActionMessage(
-          res.xpEarned > 0
-            ? `Victory! Challenge solved. +${res.xpEarned} XP awarded!`
-            : 'Challenge already verified as solved.'
-        );
-      }
-    } catch (err: any) {
-      setActionMessage(err?.response?.data?.message || 'Failed to submit solution.');
+      navigate(`/challenges/${challenge.id}/solve`);
+    } catch {
+      navigate(`/challenges/${challenge.id}/solve`);
     } finally {
       setActionLoading(false);
     }
@@ -272,40 +227,19 @@ export const ChallengeDetailPage: React.FC = () => {
             </div>
 
             <div className="flex items-center gap-3 w-full sm:w-auto">
-              {!isAttempted && !isSolved && (
-                <Button
-                  variant="outline"
-                  size="md"
-                  onClick={handleStartChallenge}
-                  disabled={actionLoading}
-                  leftIcon={<Play className="w-4 h-4" />}
-                >
-                  START CHALLENGE
-                </Button>
-              )}
-
               <Button
                 variant="glow"
                 size="md"
-                onClick={handleCompleteChallenge}
-                disabled={actionLoading || isSolved}
+                onClick={handleStartChallenge}
+                disabled={actionLoading}
                 leftIcon={<Code2 className="w-4 h-4" />}
               >
-                {isSolved ? 'CHALLENGE SOLVED' : 'SUBMIT & SOLVE'}
+                {isSolved ? 'OPEN CODE LAB' : isAttempted ? 'CONTINUE IN CODE LAB' : 'ENTER CODE LAB'}
               </Button>
             </div>
           </div>
         </div>
       </Card>
-
-      {/* Level Up Celebration Modal */}
-      <LevelUpModal
-        isOpen={levelUpData.show}
-        level={levelUpData.level}
-        prevLevel={levelUpData.prevLevel}
-        xpEarned={levelUpData.xp}
-        onClose={() => setLevelUpData((prev) => ({ ...prev, show: false }))}
-      />
     </div>
   );
 };

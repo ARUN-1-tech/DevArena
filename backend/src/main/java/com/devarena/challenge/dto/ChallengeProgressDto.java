@@ -9,5 +9,12 @@ public record ChallengeProgressDto(
         UUID challengeId,
         UUID userId,
         ChallengeProgressStatus status,
-        Instant completedAt
-) {}
+        int attempts,
+        String bestResult,
+        Instant lastSubmission,
+        Instant solvedDate
+) {
+    public ChallengeProgressDto(UUID challengeId, UUID userId, ChallengeProgressStatus status, Instant completedAt) {
+        this(challengeId, userId, status, 0, null, null, completedAt);
+    }
+}

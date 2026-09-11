@@ -27,6 +27,15 @@ public class PlayerChallengeEntity extends BaseAuditEntity {
     @Column(name = "completed_at")
     private Instant completedAt;
 
+    @Column(name = "attempts", nullable = false)
+    private int attempts = 0;
+
+    @Column(name = "best_result", length = 32)
+    private String bestResult;
+
+    @Column(name = "last_submission_at")
+    private Instant lastSubmissionAt;
+
     public PlayerChallengeEntity() {}
 
     public PlayerChallengeEntity(UserEntity user, ChallengeEntity challenge, ChallengeProgressStatus status) {
@@ -65,5 +74,29 @@ public class PlayerChallengeEntity extends BaseAuditEntity {
 
     public void setCompletedAt(Instant completedAt) {
         this.completedAt = completedAt;
+    }
+
+    public int getAttempts() {
+        return attempts;
+    }
+
+    public void setAttempts(int attempts) {
+        this.attempts = attempts;
+    }
+
+    public String getBestResult() {
+        return bestResult;
+    }
+
+    public void setBestResult(String bestResult) {
+        this.bestResult = bestResult;
+    }
+
+    public Instant getLastSubmissionAt() {
+        return lastSubmissionAt;
+    }
+
+    public void setLastSubmissionAt(Instant lastSubmissionAt) {
+        this.lastSubmissionAt = lastSubmissionAt;
     }
 }

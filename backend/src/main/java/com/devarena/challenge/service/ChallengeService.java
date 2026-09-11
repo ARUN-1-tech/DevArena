@@ -33,6 +33,8 @@ public class ChallengeService {
     private final PlayerProgressionRepository progressionRepository;
     private final XPService xpService;
     private final com.devarena.quest.service.DailyQuestService dailyQuestService;
+    private final com.devarena.challenge.repository.ChallengeTestCaseRepository testCaseRepository;
+    private final com.devarena.challenge.repository.ChallengeStarterCodeRepository starterCodeRepository;
 
     public ChallengeService(
             ChallengeRepository challengeRepository,
@@ -40,13 +42,17 @@ public class ChallengeService {
             UserRepository userRepository,
             PlayerProgressionRepository progressionRepository,
             XPService xpService,
-            com.devarena.quest.service.DailyQuestService dailyQuestService) {
+            com.devarena.quest.service.DailyQuestService dailyQuestService,
+            com.devarena.challenge.repository.ChallengeTestCaseRepository testCaseRepository,
+            com.devarena.challenge.repository.ChallengeStarterCodeRepository starterCodeRepository) {
         this.challengeRepository = challengeRepository;
         this.playerChallengeRepository = playerChallengeRepository;
         this.userRepository = userRepository;
         this.progressionRepository = progressionRepository;
         this.xpService = xpService;
         this.dailyQuestService = dailyQuestService;
+        this.testCaseRepository = testCaseRepository;
+        this.starterCodeRepository = starterCodeRepository;
     }
 
     public Page<ChallengeCardDto> getChallenges(String search, ChallengeDifficulty difficulty, ChallengeCategory category, Pageable pageable, UUID userId) {
@@ -96,6 +102,23 @@ public class ChallengeService {
             }
         }
 
+        List<com.devarena.challenge.dto.TestCaseSummaryDto> sampleCases = testCaseRepository
+                .findByChallengeIdAndHiddenFalseOrderByOrderIndexAsc(challenge.getId())
+                .stream()
+                .map(tc -> new com.devarena.challenge.dto.TestCaseSummaryDto(
+                        tc.getId(),
+                        tc.getOrderIndex(),
+                        tc.getInput(),
+                        tc.getExpectedOutput(),
+                        tc.getExplanation()
+                ))
+                .toList();
+
+        Map<String, String> starterMap = new HashMap<>();
+        starterCodeRepository.findByChallengeId(challenge.getId()).forEach(sc ->
+                starterMap.put(sc.getLanguage().name(), sc.getStarterCode())
+        );
+
         return new ChallengeDetailDto(
                 challenge.getId(),
                 challenge.getTitle(),
@@ -107,7 +130,9 @@ public class ChallengeService {
                 challenge.getEstimatedMinutes(),
                 challenge.getTags(),
                 progressStatus,
-                completedAt
+                completedAt,
+                sampleCases,
+                starterMap
         );
     }
 
@@ -122,6 +147,9 @@ public class ChallengeService {
                 challenge.getId(),
                 userId,
                 progress != null ? progress.getStatus() : ChallengeProgressStatus.NOT_STARTED,
+                progress != null ? progress.getAttempts() : 0,
+                progress != null ? progress.getBestResult() : null,
+                progress != null ? progress.getLastSubmissionAt() : null,
                 progress != null ? progress.getCompletedAt() : null
         );
     }
@@ -141,7 +169,15 @@ public class ChallengeService {
             playerChallengeRepository.save(progress);
         }
 
-        return new ChallengeProgressDto(challenge.getId(), userId, progress.getStatus(), progress.getCompletedAt());
+        return new ChallengeProgressDto(
+                challenge.getId(),
+                userId,
+                progress.getStatus(),
+                progress.getAttempts(),
+                progress.getBestResult(),
+                progress.getLastSubmissionAt(),
+                progress.getCompletedAt()
+        );
     }
 
     @Transactional

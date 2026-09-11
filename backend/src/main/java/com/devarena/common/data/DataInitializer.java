@@ -25,16 +25,19 @@ public class DataInitializer implements CommandLineRunner {
     private final DailyQuestRepository dailyQuestRepository;
     private final com.devarena.user.repository.UserRepository userRepository;
     private final com.devarena.user.service.AuthService authService;
+    private final ChallengeDataSeeder challengeDataSeeder;
 
     public DataInitializer(
             ChallengeRepository challengeRepository,
             DailyQuestRepository dailyQuestRepository,
             com.devarena.user.repository.UserRepository userRepository,
-            com.devarena.user.service.AuthService authService) {
+            com.devarena.user.service.AuthService authService,
+            ChallengeDataSeeder challengeDataSeeder) {
         this.challengeRepository = challengeRepository;
         this.dailyQuestRepository = dailyQuestRepository;
         this.userRepository = userRepository;
         this.authService = authService;
+        this.challengeDataSeeder = challengeDataSeeder;
     }
 
     @Override
@@ -42,6 +45,7 @@ public class DataInitializer implements CommandLineRunner {
         seedChallengesIfEmpty();
         seedDailyQuestsIfEmpty();
         seedDefaultUserIfEmpty();
+        challengeDataSeeder.seedStarterCodesAndTestCasesIfEmpty();
     }
 
     private void seedDefaultUserIfEmpty() {

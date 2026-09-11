@@ -12,6 +12,7 @@ import { NotFoundPage } from '../pages/NotFoundPage';
 import { ArenaPage } from '../pages/app/ArenaPage';
 import { ChallengesPage } from '../pages/app/ChallengesPage';
 import { ChallengeDetailPage } from '../pages/app/ChallengeDetailPage';
+import { CodeLabPage } from '../pages/app/CodeLabPage';
 import { LeaderboardPage } from '../pages/app/LeaderboardPage';
 import { SkillsPage } from '../pages/app/SkillsPage';
 import { AchievementsPage } from '../pages/app/AchievementsPage';
@@ -93,6 +94,10 @@ export const router = createBrowserRouter([
       {
         path: 'challenges/:id',
         element: <ChallengeDetailPage />,
+      },
+      {
+        path: 'challenges/:id/solve',
+        element: <CodeLabPage />,
       },
       {
         path: 'leaderboard',
