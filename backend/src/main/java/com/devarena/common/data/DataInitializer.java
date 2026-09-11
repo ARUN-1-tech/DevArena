@@ -27,17 +27,24 @@ public class DataInitializer implements CommandLineRunner {
     private final com.devarena.user.service.AuthService authService;
     private final ChallengeDataSeeder challengeDataSeeder;
 
+    private final com.devarena.achievement.repository.AchievementRepository achievementRepository;
+    private final com.devarena.skill.repository.SkillRepository skillRepository;
+
     public DataInitializer(
             ChallengeRepository challengeRepository,
             DailyQuestRepository dailyQuestRepository,
             com.devarena.user.repository.UserRepository userRepository,
             com.devarena.user.service.AuthService authService,
-            ChallengeDataSeeder challengeDataSeeder) {
+            ChallengeDataSeeder challengeDataSeeder,
+            com.devarena.achievement.repository.AchievementRepository achievementRepository,
+            com.devarena.skill.repository.SkillRepository skillRepository) {
         this.challengeRepository = challengeRepository;
         this.dailyQuestRepository = dailyQuestRepository;
         this.userRepository = userRepository;
         this.authService = authService;
         this.challengeDataSeeder = challengeDataSeeder;
+        this.achievementRepository = achievementRepository;
+        this.skillRepository = skillRepository;
     }
 
     @Override
@@ -46,6 +53,8 @@ public class DataInitializer implements CommandLineRunner {
         seedDailyQuestsIfEmpty();
         seedDefaultUserIfEmpty();
         challengeDataSeeder.seedStarterCodesAndTestCasesIfEmpty();
+        seedAchievementsIfEmpty();
+        seedSkillsIfEmpty();
     }
 
     private void seedDefaultUserIfEmpty() {
@@ -305,5 +314,135 @@ public class DataInitializer implements CommandLineRunner {
                 new DailyQuestEntity("Practice 3 Katas", "Solve 3 competitive programming challenges.", QuestType.PRACTICE_PROBLEMS, 3, 200, today)
         );
         dailyQuestRepository.saveAll(quests);
+    }
+
+    private void seedAchievementsIfEmpty() {
+        if (achievementRepository.count() > 0) {
+            return;
+        }
+
+        log.info("Seeding initial DevArena achievements catalog...");
+        List<com.devarena.achievement.model.AchievementEntity> list = List.of(
+                new com.devarena.achievement.model.AchievementEntity(
+                        "FIRST_BLOOD", "First Blood", "Solve your very first algorithmic coding challenge.",
+                        "Swords", com.devarena.achievement.model.AchievementCategory.CHALLENGE,
+                        com.devarena.achievement.model.RequirementType.CHALLENGES_SOLVED, 1, 100,
+                        com.devarena.achievement.model.AchievementRarity.COMMON, false
+                ),
+                new com.devarena.achievement.model.AchievementEntity(
+                        "CODE_WARRIOR", "Code Warrior", "Successfully solve 5 coding challenges.",
+                        "Zap", com.devarena.achievement.model.AchievementCategory.CHALLENGE,
+                        com.devarena.achievement.model.RequirementType.CHALLENGES_SOLVED, 5, 250,
+                        com.devarena.achievement.model.AchievementRarity.RARE, false
+                ),
+                new com.devarena.achievement.model.AchievementEntity(
+                        "CENTURY", "Century Master", "Master the craft by solving 20 challenges.",
+                        "Trophy", com.devarena.achievement.model.AchievementCategory.CHALLENGE,
+                        com.devarena.achievement.model.RequirementType.CHALLENGES_SOLVED, 20, 1000,
+                        com.devarena.achievement.model.AchievementRarity.LEGENDARY, false
+                ),
+                new com.devarena.achievement.model.AchievementEntity(
+                        "ARENA_STARTER", "Arena Starter", "Win your first competitive 1v1 Battle Arena match.",
+                        "Flame", com.devarena.achievement.model.AchievementCategory.BATTLE,
+                        com.devarena.achievement.model.RequirementType.BATTLES_WON, 1, 150,
+                        com.devarena.achievement.model.AchievementRarity.COMMON, false
+                ),
+                new com.devarena.achievement.model.AchievementEntity(
+                        "DUELIST", "Seasoned Duelist", "Triumph in 5 ranked 1v1 coding duels.",
+                        "Swords", com.devarena.achievement.model.AchievementCategory.BATTLE,
+                        com.devarena.achievement.model.RequirementType.BATTLES_WON, 5, 300,
+                        com.devarena.achievement.model.AchievementRarity.RARE, false
+                ),
+                new com.devarena.achievement.model.AchievementEntity(
+                        "WIN_STREAK", "Unbroken Streak", "Achieve a win streak of 3 consecutive arena battles.",
+                        "Zap", com.devarena.achievement.model.AchievementCategory.BATTLE,
+                        com.devarena.achievement.model.RequirementType.BATTLE_STREAK, 3, 500,
+                        com.devarena.achievement.model.AchievementRarity.EPIC, false
+                ),
+                new com.devarena.achievement.model.AchievementEntity(
+                        "XP_HUNTER", "XP Hunter", "Amass a career total of 2,000 XP.",
+                        "Sparkles", com.devarena.achievement.model.AchievementCategory.MASTERY,
+                        com.devarena.achievement.model.RequirementType.TOTAL_XP, 2000, 250,
+                        com.devarena.achievement.model.AchievementRarity.RARE, false
+                ),
+                new com.devarena.achievement.model.AchievementEntity(
+                        "UNSTOPPABLE", "Unstoppable", "Maintain an active coding streak of 7 days.",
+                        "Flame", com.devarena.achievement.model.AchievementCategory.STREAK,
+                        com.devarena.achievement.model.RequirementType.DAILY_STREAK, 7, 500,
+                        com.devarena.achievement.model.AchievementRarity.EPIC, false
+                ),
+                new com.devarena.achievement.model.AchievementEntity(
+                        "MASTER_DUELIST", "Grandmaster Duelist", "Attain a competitive MMR of 1200 or higher.",
+                        "Shield", com.devarena.achievement.model.AchievementCategory.BATTLE,
+                        com.devarena.achievement.model.RequirementType.RATING_THRESHOLD, 1200, 750,
+                        com.devarena.achievement.model.AchievementRarity.LEGENDARY, false
+                )
+        );
+        achievementRepository.saveAll(list);
+        log.info("Successfully seeded {} achievements.", list.size());
+    }
+
+    private void seedSkillsIfEmpty() {
+        if (skillRepository.count() > 0) {
+            return;
+        }
+
+        log.info("Seeding initial DevArena skills hierarchy...");
+
+        // 1. Root skills (no prerequisites)
+        com.devarena.skill.model.SkillEntity arrays = skillRepository.save(new com.devarena.skill.model.SkillEntity(
+                "arrays", "Arrays & Strings", com.devarena.skill.model.SkillCategory.DATA_STRUCTURES,
+                "Core contiguous memory sequences, sliding window, and string manipulation.", "Layers", 5, null, 1
+        ));
+
+        com.devarena.skill.model.SkillEntity searching = skillRepository.save(new com.devarena.skill.model.SkillEntity(
+                "searching", "Binary Search & Pointers", com.devarena.skill.model.SkillCategory.ALGORITHMS,
+                "Logarithmic divide-and-conquer search and two-pointer windowing strategies.", "Search", 5, null, 1
+        ));
+
+        com.devarena.skill.model.SkillEntity sql = skillRepository.save(new com.devarena.skill.model.SkillEntity(
+                "sql-fundamentals", "SQL & Relational DB", com.devarena.skill.model.SkillCategory.DATABASE,
+                "Structured queries, joins, aggregations, filtering, and normalization.", "Database", 5, null, 1
+        ));
+
+        com.devarena.skill.model.SkillEntity rest = skillRepository.save(new com.devarena.skill.model.SkillEntity(
+                "rest-apis", "REST APIs & Protocols", com.devarena.skill.model.SkillCategory.WEB_DEVELOPMENT,
+                "HTTP methods, status codes, payload structures, and client contracts.", "Globe", 5, null, 1
+        ));
+
+        // 2. Second-tier skills
+        com.devarena.skill.model.SkillEntity hashMaps = skillRepository.save(new com.devarena.skill.model.SkillEntity(
+                "hash-maps", "Hash Maps & Sets", com.devarena.skill.model.SkillCategory.DATA_STRUCTURES,
+                "Constant-time lookup structures, collisions, and key-value mapping.", "Database", 5, arrays, 2
+        ));
+
+        com.devarena.skill.model.SkillEntity sorting = skillRepository.save(new com.devarena.skill.model.SkillEntity(
+                "sorting", "Sorting & Merging", com.devarena.skill.model.SkillCategory.ALGORITHMS,
+                "Comparison-based sorts, partition strategies, and fast divide routines.", "ArrowUpDown", 5, searching, 2
+        ));
+
+        // 3. Third-tier skills
+        com.devarena.skill.model.SkillEntity linkedLists = skillRepository.save(new com.devarena.skill.model.SkillEntity(
+                "linked-lists", "Linked Lists & Stacks", com.devarena.skill.model.SkillCategory.DATA_STRUCTURES,
+                "Linear pointer-based nodes, LIFO stacks, and FIFO queues.", "GitBranch", 5, hashMaps, 3
+        ));
+
+        com.devarena.skill.model.SkillEntity trees = skillRepository.save(new com.devarena.skill.model.SkillEntity(
+                "trees", "Binary Trees & BSTs", com.devarena.skill.model.SkillCategory.DATA_STRUCTURES,
+                "Hierarchical nodes, recursive traversals, and balanced trees.", "Workflow", 5, hashMaps, 4
+        ));
+
+        com.devarena.skill.model.SkillEntity dp = skillRepository.save(new com.devarena.skill.model.SkillEntity(
+                "dynamic-programming", "Dynamic Programming", com.devarena.skill.model.SkillCategory.ALGORITHMS,
+                "Optimal substructure, overlapping subproblems, memoization and tabulation.", "Cpu", 5, sorting, 3
+        ));
+
+        // 4. Fourth-tier skills
+        com.devarena.skill.model.SkillEntity graphs = skillRepository.save(new com.devarena.skill.model.SkillEntity(
+                "graphs", "Graphs & Topologies", com.devarena.skill.model.SkillCategory.DATA_STRUCTURES,
+                "Adjacency structures, BFS/DFS traversals, and shortest path algorithms.", "Share2", 5, trees, 5
+        ));
+
+        log.info("Successfully seeded 10 skills in the mastery matrix.");
     }
 }

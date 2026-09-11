@@ -11,4 +11,5 @@ import java.util.UUID;
 public interface PlayerActivityRepository extends JpaRepository<PlayerActivityEntity, UUID> {
 
     List<PlayerActivityEntity> findTop10ByUserIdOrderByCreatedAtDesc(UUID userId);
+    List<PlayerActivityEntity> findByUserIdOrderByCreatedAtDesc(UUID userId);
 }

@@ -16,5 +16,7 @@ public interface PlayerChallengeRepository extends JpaRepository<PlayerChallenge
 
     List<PlayerChallengeEntity> findByUserId(UUID userId);
 
+    long countByUserId(UUID userId);
+
     long countByUserIdAndStatus(UUID userId, ChallengeProgressStatus status);
 }

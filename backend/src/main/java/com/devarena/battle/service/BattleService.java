@@ -60,6 +60,8 @@ public class BattleService {
     private final RatingService ratingService;
     private final XPService xpService;
     private final SimpMessagingTemplate messagingTemplate;
+    private final com.devarena.skill.service.SkillProgressionService skillProgressionService;
+    private final com.devarena.achievement.service.AchievementService achievementService;
 
     // Track ready players per battle in memory
     private final Map<UUID, Set<UUID>> readyPlayers = new ConcurrentHashMap<>();
@@ -74,7 +76,9 @@ public class BattleService {
             CodeExecutionService codeExecutionService,
             RatingService ratingService,
             XPService xpService,
-            SimpMessagingTemplate messagingTemplate
+            SimpMessagingTemplate messagingTemplate,
+            com.devarena.skill.service.SkillProgressionService skillProgressionService,
+            com.devarena.achievement.service.AchievementService achievementService
     ) {
         this.battleRepository = battleRepository;
         this.userRepository = userRepository;
@@ -86,6 +90,8 @@ public class BattleService {
         this.ratingService = ratingService;
         this.xpService = xpService;
         this.messagingTemplate = messagingTemplate;
+        this.skillProgressionService = skillProgressionService;
+        this.achievementService = achievementService;
     }
 
     @Transactional(readOnly = true)
@@ -472,18 +478,22 @@ public class BattleService {
         battle.setPlayer1RatingDelta(elo.player1Delta());
         battle.setPlayer2RatingDelta(elo.player2Delta());
 
-        // Update player progressions
-        updatePlayerRating(p1, elo.player1NewRating());
-        updatePlayerRating(p2, elo.player2NewRating());
+        // Update player record and stats (wins, losses, win streak, rating)
+        boolean p1Win = (player1Score == 1.0);
+        boolean p2Win = (player1Score == 0.0);
+        boolean isDraw = (player1Score == 0.5);
+
+        updatePlayerRecord(p1, elo.player1NewRating(), p1Win, p2Win, isDraw);
+        updatePlayerRecord(p2, elo.player2NewRating(), p2Win, p1Win, isDraw);
 
         // Award XP
         int xp1, xp2;
-        if (player1Score == 1.0) {
+        if (p1Win) {
             xp1 = XP_WIN;
             xp2 = battle.getPlayer2Status() == PlayerBattleStatus.FORFEITED ? XP_FORFEIT : XP_LOSS;
             xpService.awardXP(p1.getId(), xp1, ActivityType.BATTLE_VICTORY, "1v1 Battle Victory", "Won 1v1 battle against " + p2.getUsername());
             if (xp2 > 0) xpService.awardXP(p2.getId(), xp2, ActivityType.BATTLE_PARTICIPATION, "Battle Participation", "Completed 1v1 battle");
-        } else if (player1Score == 0.0) {
+        } else if (p2Win) {
             xp1 = battle.getPlayer1Status() == PlayerBattleStatus.FORFEITED ? XP_FORFEIT : XP_LOSS;
             xp2 = XP_WIN;
             if (xp1 > 0) xpService.awardXP(p1.getId(), xp1, ActivityType.BATTLE_PARTICIPATION, "Battle Participation", "Completed 1v1 battle");
@@ -497,9 +507,27 @@ public class BattleService {
 
         battle.setPlayer1XpDelta(xp1);
         battle.setPlayer2XpDelta(xp2);
+
+        // Award skill XP based on battle challenge category
+        if (battle.getChallenge() != null) {
+            try {
+                skillProgressionService.awardSkillXp(p1.getId(), battle.getChallenge().getCategory(), xp1);
+                skillProgressionService.awardSkillXp(p2.getId(), battle.getChallenge().getCategory(), xp2);
+            } catch (Exception ex) {
+                log.warn("Failed to award skill XP for battle: {}", ex.getMessage());
+            }
+        }
+
+        // Evaluate achievements for both participants
+        try {
+            achievementService.evaluateAndUnlock(p1.getId());
+            achievementService.evaluateAndUnlock(p2.getId());
+        } catch (Exception ex) {
+            log.warn("Failed to evaluate achievements for battle: {}", ex.getMessage());
+        }
     }
 
-    private void updatePlayerRating(UserEntity user, int newRating) {
+    private void updatePlayerRecord(UserEntity user, int newRating, boolean isWin, boolean isLoss, boolean isDraw) {
         PlayerStatsEntity stats = user.getStats();
         if (stats == null) {
             stats = playerStatsRepository.findByUserId(user.getId())
@@ -507,6 +535,18 @@ public class BattleService {
             user.setStats(stats);
         }
         stats.setRating(newRating);
+        if (newRating > stats.getHighestRating()) {
+            stats.setHighestRating(newRating);
+        }
+        if (isWin) {
+            stats.setWins(stats.getWins() + 1);
+            stats.setWinStreak(stats.getWinStreak() + 1);
+        } else if (isLoss) {
+            stats.setLosses(stats.getLosses() + 1);
+            stats.setWinStreak(0);
+        } else if (isDraw) {
+            stats.setDraws(stats.getDraws() + 1);
+        }
         playerStatsRepository.save(stats);
     }
 

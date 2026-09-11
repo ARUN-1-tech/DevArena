@@ -21,5 +21,25 @@ public record SubmitCodeResponse(
         XpRewardResult xpResult,
         Instant createdAt,
         Instant completedAt,
-        List<TestCaseResultDto> testResults
-) {}
+        List<TestCaseResultDto> testResults,
+        List<com.devarena.achievement.dto.AchievementDto> unlockedAchievements
+) {
+    public SubmitCodeResponse(
+            UUID submissionId,
+            SubmissionStatus status,
+            int passedTests,
+            int totalTests,
+            long executionTimeMs,
+            long memoryUsedBytes,
+            String errorMessage,
+            int xpEarned,
+            boolean firstSolve,
+            XpRewardResult xpResult,
+            Instant createdAt,
+            Instant completedAt,
+            List<TestCaseResultDto> testResults
+    ) {
+        this(submissionId, status, passedTests, totalTests, executionTimeMs, memoryUsedBytes, errorMessage,
+             xpEarned, firstSolve, xpResult, createdAt, completedAt, testResults, java.util.Collections.emptyList());
+    }
+}

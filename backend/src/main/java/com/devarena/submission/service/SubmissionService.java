@@ -28,6 +28,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -44,6 +45,8 @@ public class SubmissionService {
     private final CodeExecutionService codeExecutionService;
     private final ChallengeService challengeService;
     private final ExecutionRateLimiter rateLimiter;
+    private final com.devarena.skill.service.SkillProgressionService skillProgressionService;
+    private final com.devarena.achievement.service.AchievementService achievementService;
 
     public SubmissionService(
             ChallengeRepository challengeRepository,
@@ -53,7 +56,9 @@ public class SubmissionService {
             UserRepository userRepository,
             CodeExecutionService codeExecutionService,
             ChallengeService challengeService,
-            ExecutionRateLimiter rateLimiter) {
+            ExecutionRateLimiter rateLimiter,
+            com.devarena.skill.service.SkillProgressionService skillProgressionService,
+            com.devarena.achievement.service.AchievementService achievementService) {
         this.challengeRepository = challengeRepository;
         this.testCaseRepository = testCaseRepository;
         this.playerChallengeRepository = playerChallengeRepository;
@@ -62,6 +67,8 @@ public class SubmissionService {
         this.codeExecutionService = codeExecutionService;
         this.challengeService = challengeService;
         this.rateLimiter = rateLimiter;
+        this.skillProgressionService = skillProgressionService;
+        this.achievementService = achievementService;
     }
 
     public RunCodeResponse runCode(UUID userId, RunCodeRequest request) {
@@ -151,6 +158,7 @@ public class SubmissionService {
         boolean firstSolve = false;
         XpRewardResult xpResult = null;
 
+        List<com.devarena.achievement.dto.AchievementDto> unlockedAchievements = Collections.emptyList();
         if (batchResult.status() == SubmissionStatus.PASSED) {
             xpResult = challengeService.solveChallenge(challenge.getId(), userId);
             xpEarned = xpResult.xpEarned();
@@ -162,6 +170,12 @@ public class SubmissionService {
             playerChallenge.setBestResult("PASSED");
             playerChallenge.setLastSubmissionAt(completedAt);
             playerChallengeRepository.save(playerChallenge);
+
+            // Award skill XP based on challenge category
+            skillProgressionService.awardSkillXp(userId, challenge.getCategory(), challenge.getXpReward());
+
+            // Evaluate automatic achievement unlocks
+            unlockedAchievements = achievementService.evaluateAndUnlock(userId);
         } else {
             PlayerChallengeEntity playerChallenge = playerChallengeRepository.findByUserIdAndChallengeId(userId, challenge.getId())
                     .orElseGet(() -> new PlayerChallengeEntity(user, challenge, ChallengeProgressStatus.NOT_STARTED));
@@ -189,7 +203,8 @@ public class SubmissionService {
                 xpResult,
                 submission.getCreatedAt(),
                 submission.getCompletedAt(),
-                batchResult.testResults()
+                batchResult.testResults(),
+                unlockedAchievements
         );
     }
 

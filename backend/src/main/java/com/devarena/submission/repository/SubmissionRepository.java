@@ -15,6 +15,8 @@ public interface SubmissionRepository extends JpaRepository<SubmissionEntity, UU
     Page<SubmissionEntity> findByUserIdAndChallengeIdOrderByCreatedAtDesc(UUID userId, UUID challengeId, Pageable pageable);
     Page<SubmissionEntity> findByUserIdOrderByCreatedAtDesc(UUID userId, Pageable pageable);
     Optional<SubmissionEntity> findByIdAndUserId(UUID id, UUID userId);
+    long countByUserId(UUID userId);
+    long countByUserIdAndStatus(UUID userId, SubmissionStatus status);
     long countByUserIdAndChallengeId(UUID userId, UUID challengeId);
     long countByUserIdAndChallengeIdAndStatus(UUID userId, UUID challengeId, SubmissionStatus status);
 }
