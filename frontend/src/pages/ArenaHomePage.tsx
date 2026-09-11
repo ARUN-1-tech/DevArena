@@ -22,6 +22,7 @@ import {
   Check,
   Loader2,
   RefreshCw,
+  LogIn,
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
@@ -31,6 +32,7 @@ export const ArenaHomePage: React.FC = () => {
   const [homeData, setHomeData] = useState<ArenaHomeData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [errorStatus, setErrorStatus] = useState<number | null>(null);
   const [claimingQuestId, setClaimingQuestId] = useState<string | null>(null);
 
   // Level-up modal state
@@ -58,11 +60,20 @@ export const ArenaHomePage: React.FC = () => {
     try {
       setLoading(true);
       setError(null);
+      setErrorStatus(null);
       const data = await arenaService.getHomeData();
       setHomeData(data);
     } catch (err: any) {
       console.error('Failed to load arena home data', err);
-      setError(err?.response?.data?.message || 'Could not connect to the DevArena game hub.');
+      const status = err?.status || err?.response?.status || null;
+      setErrorStatus(status);
+      const message =
+        err?.message ||
+        err?.response?.data?.message ||
+        (status === 401
+          ? 'Your session has expired or is invalid. Please log in again.'
+          : 'Could not connect to the DevArena game hub.');
+      setError(message);
     } finally {
       setLoading(false);
     }
@@ -130,13 +141,22 @@ export const ArenaHomePage: React.FC = () => {
   }
 
   if (error || !homeData) {
+    const isAuthError = errorStatus === 401 || errorStatus === 403;
     return (
       <Card className="p-8 text-center max-w-md mx-auto space-y-4">
         <p className="text-rose-500 font-bold">Arena Connection Notice</p>
         <p className="text-sm text-slate-600">{error || 'Unable to load player progression data.'}</p>
-        <Button variant="glow" onClick={loadData} leftIcon={<RefreshCw className="w-4 h-4" />}>
-          RETRY CONNECTION
-        </Button>
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
+          {isAuthError ? (
+            <Button variant="primary" onClick={() => navigate('/login')} leftIcon={<LogIn className="w-4 h-4" />}>
+              LOG IN TO ARENA
+            </Button>
+          ) : (
+            <Button variant="glow" onClick={loadData} leftIcon={<RefreshCw className="w-4 h-4" />}>
+              RETRY CONNECTION
+            </Button>
+          )}
+        </div>
       </Card>
     );
   }

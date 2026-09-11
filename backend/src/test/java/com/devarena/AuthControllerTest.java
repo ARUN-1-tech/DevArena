@@ -28,6 +28,9 @@ class AuthControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @Autowired
+    private com.devarena.security.JwtTokenProvider jwtTokenProvider;
+
     @Test
     @DisplayName("1. Registration success - creates player, profile, stats, and returns JWT tokens")
     void testRegistrationSuccess() throws Exception {
@@ -284,5 +287,20 @@ class AuthControllerTest {
                 .andExpect(jsonPath("$.data.progression.level").value(1))
                 .andExpect(jsonPath("$.data.progression.currentXp").value(0))
                 .andExpect(jsonPath("$.data.progression.xpToNextLevel").value(100));
+    }
+
+    @Test
+    @DisplayName("8. Stale or unknown user JWT token returns 401 Unauthorized instead of 500")
+    void testStaleUserTokenReturnsUnauthorized() throws Exception {
+        String staleToken = jwtTokenProvider.generateAccessToken(
+                "NonExistentUserXYZ",
+                java.util.Set.of(com.devarena.security.UserRole.ROLE_USER)
+        );
+
+        mockMvc.perform(get("/api/v1/auth/me")
+                        .header("Authorization", "Bearer " + staleToken)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.status").value(401));
     }
 }

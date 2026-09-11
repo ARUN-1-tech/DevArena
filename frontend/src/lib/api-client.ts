@@ -27,11 +27,20 @@ apiClient.interceptors.request.use(
 apiClient.interceptors.response.use(
   (response) => response,
   (error: AxiosError<unknown>) => {
+    const status = error.response?.status || 500;
     const data = error.response?.data;
+
+    // Clear stale auth credentials on 401 Unauthorized
+    if (status === 401) {
+      localStorage.removeItem('devarena_token');
+      localStorage.removeItem('devarena_refresh_token');
+      localStorage.removeItem('devarena_user');
+    }
+
     if (data && typeof data === 'object' && 'message' in data) {
       return Promise.reject(data as ApiErrorResponse);
     }
-    const status = error.response?.status || 500;
+
     const isConnRefused =
       status === 502 ||
       status === 503 ||
@@ -41,8 +50,10 @@ apiClient.interceptors.response.use(
     return Promise.reject({
       timestamp: new Date().toISOString(),
       status,
-      error: isConnRefused ? 'SERVICE_UNAVAILABLE' : 'NETWORK_ERROR',
-      message: isConnRefused
+      error: status === 401 ? 'UNAUTHORIZED' : isConnRefused ? 'SERVICE_UNAVAILABLE' : 'NETWORK_ERROR',
+      message: status === 401
+        ? 'Your session has expired or is invalid. Please log in again.'
+        : isConnRefused
         ? 'Cannot connect to the DevArena backend. Please ensure the backend server is running on port 8080.'
         : error.message || 'An unexpected network error occurred.',
       path: error.config?.url || '',

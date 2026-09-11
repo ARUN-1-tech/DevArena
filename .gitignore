@@ -43,7 +43,7 @@ pnpm-debug.log*
 
 # Database & Cache local data
 docker/data/
-data/
+/data/
 *.rdb
 
 # Antigravity / Scratch
