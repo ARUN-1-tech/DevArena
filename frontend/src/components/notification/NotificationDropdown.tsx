@@ -13,28 +13,85 @@ import {
   Shield,
   ShieldAlert,
   Loader2,
+  Clock,
+  Sparkles,
+  ExternalLink,
 } from 'lucide-react';
 import { notificationService } from '../../services/notificationService';
 import { webSocketService } from '../../services/webSocketService';
 import { useAuth } from '../../contexts/AuthContext';
 import { NotificationItem, NotificationType } from '../../types/social';
 
-const TYPE_ICONS: Record<NotificationType, React.ComponentType<{ className?: string }>> = {
-  FRIEND_REQUEST: UserPlus,
-  FRIEND_ACCEPTED: Users,
-  BATTLE_INVITE: Swords,
-  BATTLE_RESULT: Trophy,
-  ACHIEVEMENT_UNLOCKED: Award,
-  LEVEL_UP: Zap,
-  TEAM_INVITE: Shield,
-  TEAM_JOINED: ShieldAlert,
-  SYSTEM: Bell,
+const TYPE_CONFIG: Record<
+  NotificationType,
+  {
+    icon: React.ComponentType<{ className?: string }>;
+    gradient: string;
+    badgeBg: string;
+    badgeText: string;
+  }
+> = {
+  FRIEND_REQUEST: {
+    icon: UserPlus,
+    gradient: 'from-cyan-500 to-blue-600',
+    badgeBg: 'bg-cyan-50 border-cyan-200 text-cyan-700',
+    badgeText: 'Social',
+  },
+  FRIEND_ACCEPTED: {
+    icon: Users,
+    gradient: 'from-cyan-500 to-emerald-600',
+    badgeBg: 'bg-emerald-50 border-emerald-200 text-emerald-700',
+    badgeText: 'Social',
+  },
+  BATTLE_INVITE: {
+    icon: Swords,
+    gradient: 'from-amber-500 to-orange-600',
+    badgeBg: 'bg-amber-50 border-amber-200 text-amber-700',
+    badgeText: 'Duel',
+  },
+  BATTLE_RESULT: {
+    icon: Trophy,
+    gradient: 'from-yellow-400 to-amber-600',
+    badgeBg: 'bg-amber-50 border-amber-200 text-amber-800',
+    badgeText: 'Result',
+  },
+  ACHIEVEMENT_UNLOCKED: {
+    icon: Award,
+    gradient: 'from-emerald-500 to-teal-600',
+    badgeBg: 'bg-emerald-50 border-emerald-200 text-emerald-700',
+    badgeText: 'Unlock',
+  },
+  LEVEL_UP: {
+    icon: Zap,
+    gradient: 'from-indigo-500 to-purple-600',
+    badgeBg: 'bg-indigo-50 border-indigo-200 text-indigo-700',
+    badgeText: 'Rank Up',
+  },
+  TEAM_INVITE: {
+    icon: Shield,
+    gradient: 'from-violet-500 to-indigo-600',
+    badgeBg: 'bg-violet-50 border-violet-200 text-violet-700',
+    badgeText: 'Clan',
+  },
+  TEAM_JOINED: {
+    icon: ShieldAlert,
+    gradient: 'from-purple-500 to-fuchsia-600',
+    badgeBg: 'bg-purple-50 border-purple-200 text-purple-700',
+    badgeText: 'Clan',
+  },
+  SYSTEM: {
+    icon: Bell,
+    gradient: 'from-indigo-600 to-cyan-600',
+    badgeBg: 'bg-slate-100 border-slate-200 text-slate-700',
+    badgeText: 'System',
+  },
 };
 
 export const NotificationDropdown: React.FC = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState<'all' | 'unread'>('all');
   const [unreadCount, setUnreadCount] = useState<number>(0);
   const [notifications, setNotifications] = useState<NotificationItem[]>([]);
   const [loading, setLoading] = useState(false);
@@ -52,7 +109,7 @@ export const NotificationDropdown: React.FC = () => {
   const fetchNotifications = async () => {
     try {
       setLoading(true);
-      const res = await notificationService.getNotifications(0, 15);
+      const res = await notificationService.getNotifications(0, 20);
       setNotifications(res.content);
     } catch (e) {
       console.debug('Failed to fetch notifications', e);
@@ -171,117 +228,231 @@ export const NotificationDropdown: React.FC = () => {
     }
   };
 
+  const displayedNotifications =
+    activeTab === 'unread' ? notifications.filter((n) => !n.read) : notifications;
+
   return (
     <div className="relative" ref={dropdownRef}>
-      {/* Bell Button */}
+      {/* Bell Button with Floating & Glow Animations */}
       <button
         onClick={handleToggle}
-        className="relative p-2 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors focus:outline-hidden"
+        className={`relative p-2.5 rounded-2xl transition-all duration-200 focus:outline-hidden group ${
+          isOpen
+            ? 'bg-indigo-50 text-indigo-700 shadow-xs border border-indigo-200/90'
+            : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100/80'
+        }`}
         title="Notifications"
         aria-label="Notifications"
       >
-        <Bell className="w-5 h-5" />
+        <Bell className={`w-5 h-5 transition-transform duration-200 ${unreadCount > 0 ? 'group-hover:rotate-12' : ''}`} />
+
         {unreadCount > 0 && (
-          <span className="absolute top-1 right-1 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-cyan-600 px-1 text-[10px] font-bold text-white shadow-xs">
-            {unreadCount > 9 ? '9+' : unreadCount}
-          </span>
+          <>
+            {/* Pulsing Aura Ping */}
+            <span className="absolute top-1.5 right-1.5 flex h-4 w-4">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75" />
+              <span className="relative inline-flex rounded-full h-4 w-4 bg-gradient-to-r from-cyan-600 to-indigo-600" />
+            </span>
+
+            {/* Badge Count */}
+            <span className="absolute -top-0.5 -right-0.5 flex h-4.5 min-w-[18px] items-center justify-center rounded-full bg-gradient-to-r from-indigo-600 via-cyan-600 to-violet-600 px-1 text-[10px] font-black text-white shadow-md shadow-indigo-500/30 border border-white">
+              {unreadCount > 9 ? '9+' : unreadCount}
+            </span>
+          </>
         )}
       </button>
 
-      {/* Popover Dropdown */}
+      {/* Floating Glassmorphic Popover with Physics Animations */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, y: 10, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 8, scale: 0.95 }}
-            transition={{ duration: 0.15 }}
-            className="absolute right-0 mt-2 w-80 sm:w-96 rounded-2xl bg-white border border-slate-200 shadow-xl z-50 overflow-hidden"
+            initial={{ opacity: 0, y: -14, scale: 0.95, filter: 'blur(4px)' }}
+            animate={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
+            exit={{ opacity: 0, y: -10, scale: 0.95, filter: 'blur(4px)' }}
+            transition={{ type: 'spring', damping: 25, stiffness: 350 }}
+            className="absolute right-0 mt-3 w-[calc(100vw-2rem)] sm:w-[440px] max-w-[450px] rounded-3xl bg-white/95 backdrop-blur-2xl border border-slate-200/90 shadow-2xl shadow-indigo-950/15 ring-1 ring-slate-900/5 z-50 overflow-hidden flex flex-col"
+            style={{ maxHeight: 'calc(100vh - 100px)' }}
           >
+            {/* Ambient subtle glowing gradients inside modal */}
+            <div className="absolute -top-12 -right-12 w-44 h-44 bg-cyan-400/10 rounded-full blur-3xl pointer-events-none" />
+            <div className="absolute -bottom-12 -left-12 w-44 h-44 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
+
             {/* Header */}
-            <div className="flex items-center justify-between px-4 py-3 border-b border-slate-100 bg-slate-50/70">
-              <div className="flex items-center gap-2">
-                <span className="font-bold text-sm text-slate-900">Notifications</span>
+            <div className="relative z-10 px-5 pt-4 pb-3 border-b border-slate-100 bg-white/60 backdrop-blur-sm">
+              <div className="flex items-center justify-between gap-3 mb-2.5">
+                <div className="flex items-center gap-2">
+                  <div className="w-7 h-7 rounded-lg bg-gradient-to-tr from-indigo-600 to-cyan-600 text-white flex items-center justify-center shadow-xs">
+                    <Sparkles className="w-3.5 h-3.5" />
+                  </div>
+                  <div>
+                    <h4 className="font-extrabold text-sm text-slate-900 tracking-tight leading-none">
+                      Combat Dispatch
+                    </h4>
+                    <p className="text-[10px] font-mono text-slate-400 mt-0.5">
+                      REAL-TIME PLATFORM EVENTS
+                    </p>
+                  </div>
+                </div>
+
                 {unreadCount > 0 && (
-                  <span className="px-1.5 py-0.5 text-[10px] font-bold font-mono bg-cyan-100 text-cyan-800 rounded-full">
-                    {unreadCount} new
-                  </span>
+                  <button
+                    onClick={handleMarkAllRead}
+                    className="text-xs text-indigo-600 hover:text-indigo-800 font-semibold flex items-center gap-1.5 px-2.5 py-1 rounded-lg hover:bg-indigo-50/80 transition-colors cursor-pointer"
+                  >
+                    <CheckCheck className="w-3.5 h-3.5" />
+                    <span>Mark all read</span>
+                  </button>
                 )}
               </div>
-              {unreadCount > 0 && (
-                <button
-                  onClick={handleMarkAllRead}
-                  className="text-xs text-cyan-700 hover:text-cyan-900 font-semibold flex items-center gap-1 transition-colors"
-                >
-                  <CheckCheck className="w-3.5 h-3.5" />
-                  Mark all read
-                </button>
-              )}
-            </div>
 
-            {/* List */}
-            <div className="max-h-[380px] overflow-y-auto divide-y divide-slate-100">
-              {loading ? (
-                <div className="py-12 text-center text-slate-400">
-                  <Loader2 className="w-6 h-6 animate-spin mx-auto mb-2 text-cyan-600" />
-                  <span className="text-xs">Loading alerts...</span>
-                </div>
-              ) : notifications.length === 0 ? (
-                <div className="py-12 text-center text-slate-400">
-                  <Bell className="w-8 h-8 mx-auto mb-2 text-slate-300" />
-                  <p className="text-xs font-medium">All caught up!</p>
-                  <p className="text-[10px] text-slate-400">No new alerts or challenges</p>
-                </div>
-              ) : (
-                notifications.map((notif) => {
-                  const Icon = TYPE_ICONS[notif.type] || Bell;
-                  return (
-                    <div
-                      key={notif.id}
-                      onClick={() => handleNotificationClick(notif)}
-                      className={`p-3.5 flex items-start gap-3 hover:bg-slate-50 cursor-pointer transition-colors text-left ${
-                        !notif.read ? 'bg-cyan-50/40' : ''
+              {/* Filter Tabs */}
+              <div className="flex items-center gap-2 pt-1">
+                <button
+                  onClick={() => setActiveTab('all')}
+                  className={`text-xs font-semibold px-3 py-1.5 rounded-xl transition-all cursor-pointer ${
+                    activeTab === 'all'
+                      ? 'bg-slate-900 text-white shadow-xs'
+                      : 'text-slate-500 hover:text-slate-800 hover:bg-slate-100'
+                  }`}
+                >
+                  All ({notifications.length})
+                </button>
+                <button
+                  onClick={() => setActiveTab('unread')}
+                  className={`text-xs font-semibold px-3 py-1.5 rounded-xl flex items-center gap-1.5 transition-all cursor-pointer ${
+                    activeTab === 'unread'
+                      ? 'bg-indigo-600 text-white shadow-xs shadow-indigo-500/25'
+                      : 'text-slate-500 hover:text-slate-800 hover:bg-slate-100'
+                  }`}
+                >
+                  <span>Unread</span>
+                  {unreadCount > 0 && (
+                    <span
+                      className={`text-[10px] font-mono px-1.5 py-0.2 rounded-full font-bold ${
+                        activeTab === 'unread' ? 'bg-white/25 text-white' : 'bg-indigo-100 text-indigo-700'
                       }`}
                     >
+                      {unreadCount}
+                    </span>
+                  )}
+                </button>
+              </div>
+            </div>
+
+            {/* List with generous spacing */}
+            <div className="relative z-10 flex-1 overflow-y-auto p-2.5 space-y-1.5 max-h-[400px]">
+              {loading ? (
+                <div className="py-16 text-center text-slate-400">
+                  <Loader2 className="w-7 h-7 animate-spin mx-auto mb-2.5 text-indigo-600" />
+                  <span className="text-xs font-mono">Synchronizing alerts...</span>
+                </div>
+              ) : displayedNotifications.length === 0 ? (
+                <div className="py-14 text-center px-4">
+                  {/* Floating Bobbing Bell Animation */}
+                  <div className="relative w-20 h-20 mx-auto mb-4 flex items-center justify-center">
+                    <div className="absolute inset-0 rounded-full bg-indigo-500/5 animate-pulse" />
+                    <div className="absolute inset-2 rounded-full bg-indigo-500/10" />
+                    <motion.div
+                      animate={{ y: [0, -7, 0], rotate: [0, 4, -4, 0] }}
+                      transition={{ repeat: Infinity, duration: 3.5, ease: 'easeInOut' }}
+                      className="relative z-10 w-12 h-12 rounded-2xl bg-gradient-to-tr from-indigo-50 to-cyan-50 border border-indigo-100 text-indigo-500 flex items-center justify-center shadow-xs"
+                    >
+                      <Bell className="w-6 h-6 text-indigo-500" />
+                    </motion.div>
+                  </div>
+
+                  <p className="text-sm font-bold text-slate-800">
+                    {activeTab === 'unread' ? 'No unread notifications' : 'All caught up, Champion!'}
+                  </p>
+                  <p className="text-xs text-slate-500 mt-1 max-w-xs mx-auto leading-relaxed">
+                    {activeTab === 'unread'
+                      ? 'You have inspected all combat and system notices.'
+                      : 'No new battle challenges, friend pings, or rank alerts right now.'}
+                  </p>
+                </div>
+              ) : (
+                displayedNotifications.map((notif) => {
+                  const cfg = TYPE_CONFIG[notif.type] || TYPE_CONFIG.SYSTEM;
+                  const Icon = cfg.icon;
+
+                  return (
+                    <motion.div
+                      key={notif.id}
+                      whileHover={{ scale: 1.012, x: 2 }}
+                      whileTap={{ scale: 0.99 }}
+                      onClick={() => handleNotificationClick(notif)}
+                      className={`p-3.5 rounded-2xl flex items-start gap-3 cursor-pointer transition-all duration-200 text-left border relative overflow-hidden group ${
+                        !notif.read
+                          ? 'bg-gradient-to-r from-indigo-50/70 via-cyan-50/40 to-white border-indigo-200/90 shadow-2xs'
+                          : 'bg-white/70 hover:bg-slate-50/90 border-slate-100'
+                      }`}
+                    >
+                      {/* Left Jewel Icon */}
                       <div
-                        className={`w-8 h-8 rounded-xl shrink-0 flex items-center justify-center ${
-                          notif.type === 'BATTLE_INVITE'
-                            ? 'bg-amber-100 text-amber-700'
-                            : notif.type === 'FRIEND_REQUEST' || notif.type === 'FRIEND_ACCEPTED'
-                            ? 'bg-cyan-100 text-cyan-700'
-                            : notif.type === 'ACHIEVEMENT_UNLOCKED'
-                            ? 'bg-emerald-100 text-emerald-700'
-                            : 'bg-slate-100 text-slate-700'
-                        }`}
+                        className={`w-9 h-9 rounded-xl shrink-0 flex items-center justify-center text-white bg-gradient-to-tr ${cfg.gradient} shadow-sm group-hover:scale-105 transition-transform duration-200`}
                       >
-                        <Icon className="w-4 h-4" />
+                        <Icon className="w-4.5 h-4.5" />
                       </div>
 
+                      {/* Content */}
                       <div className="flex-1 min-w-0">
-                        <div className="flex items-center justify-between gap-1 mb-0.5">
-                          <p
-                            className={`text-xs truncate ${
-                              !notif.read ? 'font-bold text-slate-900' : 'font-medium text-slate-700'
-                            }`}
-                          >
-                            {notif.title}
-                          </p>
-                          <span className="text-[10px] font-mono text-slate-400 shrink-0">
+                        <div className="flex items-center justify-between gap-1.5 mb-1">
+                          <div className="flex items-center gap-1.5 min-w-0">
+                            <span
+                              className={`text-[9px] font-mono px-1.5 py-0.2 rounded-md font-bold border uppercase tracking-wider shrink-0 ${cfg.badgeBg}`}
+                            >
+                              {cfg.badgeText}
+                            </span>
+                            <p
+                              className={`text-xs truncate ${
+                                !notif.read ? 'font-extrabold text-slate-900' : 'font-semibold text-slate-700'
+                              }`}
+                            >
+                              {notif.title}
+                            </p>
+                          </div>
+
+                          <span className="text-[10px] font-mono text-slate-400 shrink-0 flex items-center gap-1">
+                            <Clock className="w-2.5 h-2.5" />
                             {formatTime(notif.createdAt)}
                           </span>
                         </div>
-                        <p className="text-[11px] text-slate-600 line-clamp-2 leading-relaxed">
+
+                        <p className="text-xs text-slate-600 line-clamp-2 leading-relaxed">
                           {notif.message}
                         </p>
                       </div>
 
+                      {/* Unread Glow Indicator */}
                       {!notif.read && (
-                        <div className="w-2 h-2 rounded-full bg-cyan-600 shrink-0 mt-1.5" />
+                        <div className="w-2 h-2 rounded-full bg-indigo-600 shrink-0 mt-2 ring-2 ring-indigo-200 animate-pulse" />
                       )}
-                    </div>
+                    </motion.div>
                   );
                 })
               )}
+            </div>
+
+            {/* Footer Status Bar */}
+            <div className="relative z-10 px-4 py-2.5 border-t border-slate-100 bg-slate-50/80 backdrop-blur-sm flex items-center justify-between text-[11px] font-mono text-slate-500">
+              <div className="flex items-center gap-2">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+                </span>
+                <span className="text-[10px] font-semibold text-slate-600">WebSocket Live</span>
+              </div>
+
+              <button
+                onClick={() => {
+                  setIsOpen(false);
+                  navigate('/profile');
+                }}
+                className="text-[10px] font-bold text-indigo-600 hover:text-indigo-800 flex items-center gap-1 cursor-pointer"
+              >
+                <span>Activity Profile</span>
+                <ExternalLink className="w-3 h-3" />
+              </button>
             </div>
           </motion.div>
         )}
@@ -289,3 +460,4 @@ export const NotificationDropdown: React.FC = () => {
     </div>
   );
 };
+

@@ -248,17 +248,17 @@ export const ArenaHomePage: React.FC = () => {
           </div>
 
           {/* Real Animated XP Progression Bar */}
-          <div className="md:col-span-6 space-y-2.5 bg-white/80 backdrop-blur-md p-4.5 rounded-2xl border border-indigo-100/80 shadow-2xs">
-            <div className="flex justify-between text-xs font-mono">
-              <span className="text-slate-700 font-bold flex items-center gap-1.5">
-                <Flame className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
+          <div className="md:col-span-6 space-y-3 bg-white/95 backdrop-blur-md p-5 sm:p-6 rounded-2xl border border-indigo-100/90 shadow-2xs">
+            <div className="flex flex-wrap items-center justify-between gap-2 text-xs font-mono">
+              <span className="text-slate-800 font-bold flex items-center gap-1.5">
+                <Flame className="w-4 h-4 text-amber-500 fill-amber-500" />
                 Level {progression.level} Progression
               </span>
-              <span className="text-indigo-600 font-bold">
+              <span className="px-2.5 py-0.5 rounded-full bg-indigo-50 border border-indigo-200/80 text-indigo-700 font-bold text-xs">
                 {progression.currentXp} / {progression.xpToNextLevel} XP ({progression.xpPercentage}%)
               </span>
             </div>
-            <div className="w-full h-3 bg-slate-100 rounded-full overflow-hidden p-0.5 border border-slate-200/60">
+            <div className="w-full h-3.5 bg-slate-100/90 rounded-full overflow-hidden p-0.5 border border-slate-200/80 shadow-inner">
               <motion.div
                 initial={{ width: 0 }}
                 animate={{ width: `${Math.max(5, progression.xpPercentage)}%` }}
@@ -266,9 +266,9 @@ export const ArenaHomePage: React.FC = () => {
                 className="h-full bg-gradient-to-r from-indigo-500 via-cyan-500 to-violet-500 rounded-full shadow-xs"
               />
             </div>
-            <div className="flex justify-between text-[10px] font-mono text-slate-500">
-              <span>Current: Level {progression.level}</span>
-              <span className="font-semibold text-indigo-600">Next: Level {progression.level + 1} Champion</span>
+            <div className="flex items-center justify-between text-xs font-mono text-slate-500 pt-0.5">
+              <span className="font-medium text-slate-600">Current: Level {progression.level}</span>
+              <span className="font-bold text-indigo-600">Next: Level {progression.level + 1} Champion</span>
             </div>
           </div>
         </div>
@@ -562,16 +562,16 @@ export const ArenaHomePage: React.FC = () => {
             {recommendedChallenges.map((ch) => (
               <Card
                 key={ch.id}
-                className="p-4 bg-white border-slate-200/90 shadow-sm hover:shadow-md hover:border-cyan-400 transition-all rounded-2xl cursor-pointer flex items-center justify-between gap-4 group"
+                className="p-4 sm:p-5 bg-white/95 backdrop-blur-xl border border-slate-200/80 shadow-premium hover:shadow-premium-hover hover:border-cyan-400/80 hover:-translate-y-0.5 transition-all duration-200 rounded-3xl cursor-pointer flex items-center justify-between gap-4 group"
                 onClick={() => navigate(`/challenges/${ch.id}`)}
               >
                 <div className="space-y-1 flex-1">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <span className="text-sm font-extrabold text-slate-900 group-hover:text-cyan-600 transition-colors">
+                    <span className="text-sm font-black text-slate-900 group-hover:text-cyan-600 transition-colors">
                       {ch.title}
                     </span>
                     <span
-                      className={`text-[9px] font-mono px-1.5 py-0.5 rounded font-bold uppercase ${
+                      className={`text-[9px] font-mono px-2 py-0.5 rounded-md font-bold uppercase tracking-wider ${
                         ch.difficulty === 'EASY'
                           ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
                           : ch.difficulty === 'MEDIUM'
@@ -588,9 +588,11 @@ export const ArenaHomePage: React.FC = () => {
                 </div>
 
                 <div className="flex items-center gap-3 shrink-0 font-mono">
-                  <span className="text-xs font-bold text-cyan-600">+{ch.xpReward} XP</span>
-                  <div className="w-8 h-8 rounded-lg bg-slate-100 group-hover:bg-cyan-50 group-hover:text-cyan-600 text-slate-400 flex items-center justify-center transition-colors">
-                    <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+                  <span className="text-xs font-bold text-cyan-600 bg-cyan-50 border border-cyan-200/70 px-2.5 py-1 rounded-full shadow-2xs">
+                    +{ch.xpReward} XP
+                  </span>
+                  <div className="w-8 h-8 rounded-xl bg-slate-100 group-hover:bg-cyan-600 group-hover:text-white text-slate-400 flex items-center justify-center transition-all duration-200 shadow-2xs">
+                    <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
                   </div>
                 </div>
               </Card>
@@ -599,47 +601,63 @@ export const ArenaHomePage: React.FC = () => {
         </div>
 
         {/* Recent Activity Feed & Milestone (5 cols) */}
-        <div className="lg:col-span-5 space-y-6">
-          {/* Milestone Card */}
-          <Card className="p-6 bg-gradient-to-br from-violet-900 to-slate-900 text-white border-violet-800/80 shadow-md rounded-2xl">
-            <div className="flex items-center gap-2 text-violet-300 font-mono text-xs uppercase font-bold mb-2">
-              <Shield className="w-4 h-4 text-violet-400" />
-              UPCOMING RANK MILESTONE
-            </div>
-            <h4 className="text-lg font-black text-white">{nextMilestone.title}</h4>
-            <p className="text-xs text-slate-300 mt-1 leading-relaxed">
-              {nextMilestone.description}
-            </p>
-            <div className="mt-4 pt-4 border-t border-white/10 flex items-center justify-between text-xs font-mono">
-              <span className="text-slate-400">Required: Level {nextMilestone.requiredLevel}</span>
-              <span className="text-violet-300 font-semibold">
-                {nextMilestone.unlocked ? 'Unlocked' : `In Progress`}
-              </span>
+        <div className="lg:col-span-5 space-y-4">
+          {/* Milestone Card (Luxury Light Theme) */}
+          <Card className="p-6 bg-gradient-to-br from-indigo-50/90 via-violet-50/70 to-purple-50/50 text-slate-900 border border-indigo-200/90 shadow-premium hover:shadow-premium-hover rounded-3xl relative overflow-hidden transition-all duration-300 group">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/10 rounded-full blur-2xl pointer-events-none" />
+            
+            <div className="relative z-10">
+              <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-mono uppercase font-bold text-indigo-700 bg-indigo-100/80 border border-indigo-200/90 mb-3 shadow-2xs">
+                <Shield className="w-3.5 h-3.5 text-indigo-600" />
+                UPCOMING RANK MILESTONE
+              </div>
+              <h4 className="text-lg font-black text-slate-900 tracking-tight group-hover:text-indigo-700 transition-colors">
+                {nextMilestone.title}
+              </h4>
+              <p className="text-xs text-slate-600 mt-1.5 leading-relaxed">
+                {nextMilestone.description}
+              </p>
+              <div className="mt-5 pt-4 border-t border-indigo-100/90 flex items-center justify-between text-xs font-mono">
+                <span className="text-slate-500 font-medium">Required: Level {nextMilestone.requiredLevel}</span>
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold font-mono bg-indigo-100/90 text-indigo-700 border border-indigo-200/90 shadow-2xs">
+                  <span className="relative flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75" />
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-indigo-600" />
+                  </span>
+                  {nextMilestone.unlocked ? 'Unlocked' : 'In Progress'}
+                </span>
+              </div>
             </div>
           </Card>
 
           {/* Activity Feed */}
-          <Card className="p-5 bg-white border-slate-200/90 shadow-sm rounded-2xl space-y-3">
-            <h4 className="text-xs font-mono uppercase font-bold text-slate-400 tracking-wider">
-              RECENT PROGRESSION EVENTS
-            </h4>
+          <Card className="p-5 sm:p-6 bg-white/95 backdrop-blur-xl border border-slate-200/90 shadow-premium hover:shadow-premium-hover rounded-3xl space-y-3.5">
+            <div className="flex items-center justify-between pb-1 border-b border-slate-100">
+              <h4 className="text-xs font-mono uppercase font-bold text-slate-500 tracking-wider flex items-center gap-2">
+                <Clock className="w-3.5 h-3.5 text-slate-400" />
+                RECENT PROGRESSION EVENTS
+              </h4>
+              <span className="text-[10px] font-mono text-slate-400">Live Log</span>
+            </div>
 
             {recentActivity.length === 0 ? (
-              <p className="text-xs font-mono text-slate-400 py-3 text-center">
+              <p className="text-xs font-mono text-slate-400 py-6 text-center">
                 No recent activity recorded yet. Start your first challenge!
               </p>
             ) : (
-              <div className="divide-y divide-slate-100">
+              <div className="divide-y divide-slate-100/90">
                 {recentActivity.slice(0, 4).map((act) => (
-                  <div key={act.id} className="py-2.5 flex items-center justify-between text-xs font-mono">
-                    <div className="space-y-0.5">
-                      <p className="font-bold text-slate-800">{act.title}</p>
-                      <p className="text-[10px] text-slate-400">
+                  <div key={act.id} className="py-3 flex items-center justify-between text-xs font-mono group hover:bg-slate-50/70 px-2 rounded-xl transition-colors">
+                    <div className="space-y-0.5 min-w-0 pr-3">
+                      <p className="font-bold text-slate-800 truncate group-hover:text-indigo-600 transition-colors">
+                        {act.title}
+                      </p>
+                      <p className="text-[10px] text-slate-400 truncate">
                         {new Date(act.createdAt).toLocaleDateString()} • {act.description}
                       </p>
                     </div>
                     {act.xpEarned > 0 && (
-                      <span className="text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200 shrink-0 ml-2">
+                      <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200/80 shrink-0 shadow-2xs">
                         +{act.xpEarned} XP
                       </span>
                     )}

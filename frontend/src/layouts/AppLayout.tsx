@@ -180,21 +180,18 @@ export const AppLayout: React.FC = () => {
       {/* ========================================================= */}
       <aside className="hidden md:flex flex-col w-64 bg-white/85 backdrop-blur-2xl border-r border-slate-200/80 h-screen sticky top-0 shrink-0 shadow-2xs">
         {/* Brand */}
-        <div className="p-4 border-b border-slate-100/90 flex items-center justify-between">
-          <div className="flex items-center gap-3 min-w-0">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 via-cyan-600 to-violet-600 text-white flex items-center justify-center shadow-md shadow-indigo-500/20 shrink-0 hover:scale-105 transition-transform duration-300">
-              <Swords className="w-5 h-5" />
-            </div>
-            <div className="min-w-0">
-              <span className="text-lg font-black tracking-tight text-slate-900 block leading-tight truncate">
-                {APP_NAME}
-              </span>
-              <span className="text-[10px] font-mono text-indigo-600 uppercase font-bold tracking-wider block">
-                Battle Engine v1.0
-              </span>
-            </div>
+        <div className="p-4 border-b border-slate-100/90 flex items-center gap-3">
+          <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 via-cyan-600 to-violet-600 text-white flex items-center justify-center shadow-md shadow-indigo-500/20 shrink-0 hover:scale-105 transition-transform duration-300">
+            <Swords className="w-5 h-5" />
           </div>
-          <NotificationDropdown />
+          <div className="min-w-0 flex-1">
+            <span className="text-lg font-black tracking-tight text-slate-900 block leading-tight truncate">
+              {APP_NAME}
+            </span>
+            <span className="text-[10px] font-mono text-indigo-600 uppercase font-bold tracking-wider block">
+              Battle Engine v1.0
+            </span>
+          </div>
         </div>
 
         {/* Navigation list */}
@@ -286,13 +283,40 @@ export const AppLayout: React.FC = () => {
       </aside>
 
       {/* ========================================================= */}
-      {/* MAIN CONTENT WORKSPACE (Smooth Scrolling)                 */}
+      {/* DESKTOP TOP HEADER + MAIN CONTENT WORKSPACE               */}
       {/* ========================================================= */}
-      <main className="flex-1 overflow-y-auto scroll-smooth">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <Outlet />
-        </div>
-      </main>
+      <div className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
+        {/* Desktop Sticky Header */}
+        <header className="hidden md:flex h-16 bg-white/80 backdrop-blur-xl border-b border-slate-200/80 px-6 lg:px-8 items-center justify-between shrink-0 z-30 shadow-2xs">
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-gradient-to-r from-indigo-50 via-cyan-50 to-white border border-indigo-100/90 text-indigo-800 text-xs font-mono font-bold shadow-2xs">
+              <Sparkles className="w-3.5 h-3.5 text-indigo-500" />
+              <span>ARENA HQ</span>
+              <span className="text-slate-300">•</span>
+              <span className="text-slate-600 font-medium">BATTLE SYSTEM V1.0</span>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-3">
+            {/* Competitive MMR Pill */}
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200/80 text-amber-900 text-xs font-mono font-bold shadow-2xs">
+              <Flame className="w-3.5 h-3.5 text-amber-500 animate-pulse" />
+              <span>{rating} MMR</span>
+            </div>
+
+            {/* Notification Dropdown with Floating Glassmorphic Popover */}
+            <NotificationDropdown />
+          </div>
+        </header>
+
+        {/* Smooth Scrolling Main Workspace */}
+        <main className="flex-1 overflow-y-auto scroll-smooth">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <Outlet />
+          </div>
+        </main>
+      </div>
     </div>
   );
 };
+
