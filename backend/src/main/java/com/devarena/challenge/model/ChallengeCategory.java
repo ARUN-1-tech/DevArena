@@ -1,7 +1,6 @@
 package com.devarena.challenge.model;
 
 public enum ChallengeCategory {
-    // Core DSA
     ARRAYS,
     STRINGS,
     LINKED_LIST,
@@ -10,23 +9,20 @@ public enum ChallengeCategory {
     GRAPHS,
     DYNAMIC_PROGRAMMING,
     BINARY_SEARCH,
-    HEAPS,
-    BIT_MANIPULATION,
-    TWO_POINTERS,
-    SLIDING_WINDOW,
     BACKTRACKING,
+    HEAPS_PRIORITY_QUEUES,
+    BIT_MANIPULATION,
     GREEDY,
-    SORTING,
-    // Database & Systems
     DATABASE,
-    SQL_DB,
+    SQL,
+    DBMS,
     OPERATING_SYSTEMS,
     NETWORKING,
-    // Other
+    MATH_APTITUDE,
+    PUZZLES,
+    SYSTEM_DESIGN,
     ALGORITHMS,
     DEBUGGING,
-    APTITUDE,
-    PUZZLES,
-    INTERVIEW,
-    GENERAL
+    INTERVIEW_PREP,
+    GENERAL_CS
 }

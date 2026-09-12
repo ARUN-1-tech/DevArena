@@ -155,14 +155,14 @@ public class SkillProgressionService {
     public static String mapCategoryToSkillCode(ChallengeCategory category) {
         if (category == null) return "arrays";
         return switch (category) {
-            case ARRAYS, STRINGS, TWO_POINTERS, SLIDING_WINDOW, BIT_MANIPULATION -> "arrays";
+            case ARRAYS, STRINGS, BIT_MANIPULATION -> "arrays";
             case LINKED_LIST, STACK_QUEUE -> "linked-lists";
-            case TREES, BACKTRACKING -> "trees";
+            case TREES -> "trees";
             case GRAPHS -> "graphs";
             case DYNAMIC_PROGRAMMING, GREEDY -> "dynamic-programming";
-            case DATABASE, SQL_DB -> "sql-fundamentals";
-            case ALGORITHMS, DEBUGGING, SORTING, BINARY_SEARCH, HEAPS -> "searching";
-            case OPERATING_SYSTEMS, NETWORKING, APTITUDE, PUZZLES, INTERVIEW, GENERAL -> "searching";
+            case DATABASE, SQL, DBMS -> "sql-fundamentals";
+            case BINARY_SEARCH, BACKTRACKING, HEAPS_PRIORITY_QUEUES, ALGORITHMS, DEBUGGING -> "searching";
+            default -> "arrays";
         };
     }
 }

@@ -54,6 +54,13 @@ export const adminService = {
     return res.data.data;
   },
 
+  async bulkImportChallenges(challenges: any[]): Promise<{ total: number; inserted: number; skipped: number; errors: string[] }> {
+    const res = await apiClient.post<ApiResponse<{ total: number; inserted: number; skipped: number; errors: string[] }>>('/admin/challenges/import', {
+      challenges,
+    });
+    return res.data.data;
+  },
+
   async getReports(status?: string, page = 0, size = 20): Promise<PageResponse<ReportDto>> {
     const params = new URLSearchParams({ page: page.toString(), size: size.toString() });
     if (status) params.append('status', status);

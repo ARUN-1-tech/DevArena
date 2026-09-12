@@ -1,484 +1,500 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { challengeService, ChallengeFilterParams } from '../../services/challengeService';
-import { Challenge, ChallengeDifficulty, ChallengeCategory, ProblemType } from '../../types/arena';
+import { challengeService } from '../../services/challengeService';
+import {
+  Challenge,
+  ChallengeDifficulty,
+  ChallengeCategory,
+  ProblemType,
+  ChallengeStats,
+} from '../../types/arena';
 import { Card } from '../../components/ui/Card';
+import { Badge } from '../../components/ui/Badge';
 import { Input } from '../../components/ui/Input';
 import { Button } from '../../components/ui/Button';
 import {
-  Code2, Search, CheckCircle2, Clock, Sparkles, Play, Filter,
-  ArrowRight, Loader2, Database, Brain, Globe, Cpu, Puzzle,
-  ChevronLeft, ChevronRight, X, SlidersHorizontal, BookOpen,
-  Hash, Trophy,
+  Code2,
+  Search,
+  CheckCircle2,
+  Clock,
+  Sparkles,
+  Play,
+  Filter,
+  ArrowRight,
+  Loader2,
+  Database,
+  Cpu,
+  HelpCircle,
+  Layers,
+  ChevronLeft,
+  ChevronRight,
+  BookOpen,
+  ArrowUpDown,
+  RotateCcw,
+  Zap,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Config
-// ─────────────────────────────────────────────────────────────────────────────
-const DIFFICULTIES: { label: string; value?: ChallengeDifficulty }[] = [
-  { label: 'All', value: undefined },
-  { label: 'Easy', value: 'EASY' },
-  { label: 'Medium', value: 'MEDIUM' },
-  { label: 'Hard', value: 'HARD' },
-  { label: 'Expert', value: 'EXPERT' },
+const DIFFICULTIES: { label: string; value?: ChallengeDifficulty; color: string }[] = [
+  { label: 'All Difficulties', value: undefined, color: 'text-slate-600' },
+  { label: 'Easy', value: 'EASY', color: 'text-emerald-700' },
+  { label: 'Medium', value: 'MEDIUM', color: 'text-amber-700' },
+  { label: 'Hard', value: 'HARD', color: 'text-rose-700' },
+  { label: 'Expert', value: 'EXPERT', color: 'text-purple-700' },
 ];
 
-const PROBLEM_TYPES: { label: string; value?: ProblemType; icon: React.ElementType }[] = [
-  { label: 'All Types', value: undefined, icon: Hash },
+const PROBLEM_TYPES: { label: string; value?: ProblemType; icon?: any }[] = [
+  { label: 'All Types', value: undefined },
   { label: 'Coding', value: 'CODING', icon: Code2 },
-  { label: 'MCQ', value: 'MCQ', icon: BookOpen },
-  { label: 'SQL', value: 'SQL', icon: Database },
-  { label: 'Aptitude', value: 'APTITUDE', icon: Brain },
-  { label: 'OS', value: 'OS', icon: Cpu },
-  { label: 'Networking', value: 'NETWORKING', icon: Globe },
-  { label: 'Puzzle', value: 'PUZZLE', icon: Puzzle },
-  { label: 'Interview', value: 'INTERVIEW', icon: Trophy },
+  { label: 'MCQ', value: 'MCQ', icon: HelpCircle },
+  { label: 'Aptitude', value: 'APTITUDE', icon: Zap },
+  { label: 'SQL / DB', value: 'SQL', icon: Database },
+  { label: 'OS & Core', value: 'OS', icon: Cpu },
+  { label: 'Networking', value: 'NETWORKING', icon: Layers },
+  { label: 'Puzzles', value: 'PUZZLE', icon: Sparkles },
+  { label: 'Interview', value: 'INTERVIEW', icon: BookOpen },
 ];
 
 const CATEGORIES: { label: string; value?: ChallengeCategory }[] = [
-  { label: 'All Categories', value: undefined },
-  { label: 'Arrays', value: 'ARRAYS' },
-  { label: 'Strings', value: 'STRINGS' },
-  { label: 'Two Pointers', value: 'TWO_POINTERS' },
-  { label: 'Sliding Window', value: 'SLIDING_WINDOW' },
-  { label: 'Linked List', value: 'LINKED_LIST' },
+  { label: 'All Topic Categories', value: undefined },
+  { label: 'Arrays & Two Pointers', value: 'ARRAYS' },
+  { label: 'Strings & Parsing', value: 'STRINGS' },
+  { label: 'Linked Lists', value: 'LINKED_LIST' },
   { label: 'Stack & Queue', value: 'STACK_QUEUE' },
-  { label: 'Trees', value: 'TREES' },
-  { label: 'Graphs', value: 'GRAPHS' },
+  { label: 'Trees & BST', value: 'TREES' },
+  { label: 'Graphs & BFS/DFS', value: 'GRAPHS' },
   { label: 'Dynamic Programming', value: 'DYNAMIC_PROGRAMMING' },
   { label: 'Binary Search', value: 'BINARY_SEARCH' },
-  { label: 'Heaps', value: 'HEAPS' },
-  { label: 'Backtracking', value: 'BACKTRACKING' },
-  { label: 'Greedy', value: 'GREEDY' },
+  { label: 'Backtracking & Recursion', value: 'BACKTRACKING' },
+  { label: 'Heaps & Priority Queues', value: 'HEAPS_PRIORITY_QUEUES' },
   { label: 'Bit Manipulation', value: 'BIT_MANIPULATION' },
-  { label: 'Sorting', value: 'SORTING' },
-  { label: 'SQL / DB', value: 'SQL_DB' },
-  { label: 'Operating Systems', value: 'OPERATING_SYSTEMS' },
-  { label: 'Networking', value: 'NETWORKING' },
-  { label: 'Algorithms', value: 'ALGORITHMS' },
-  { label: 'Aptitude', value: 'APTITUDE' },
-  { label: 'Puzzles', value: 'PUZZLES' },
-  { label: 'Interview', value: 'INTERVIEW' },
+  { label: 'Greedy Algorithms', value: 'GREEDY' },
+  { label: 'SQL & Database Design', value: 'SQL' },
+  { label: 'DBMS Architecture', value: 'DBMS' },
+  { label: 'Operating Systems & Concurrency', value: 'OPERATING_SYSTEMS' },
+  { label: 'Computer Networks & Protocols', value: 'NETWORKING' },
+  { label: 'Mathematical Aptitude & Logic', value: 'MATH_APTITUDE' },
+  { label: 'Brain Teasers & Puzzles', value: 'PUZZLES' },
+  { label: 'Algorithms & Problem Solving', value: 'ALGORITHMS' },
+  { label: 'System Design & Scalability', value: 'SYSTEM_DESIGN' },
+  { label: 'General CS Foundations', value: 'GENERAL_CS' },
 ];
 
 const SORT_OPTIONS = [
+  { label: 'Recommended', value: 'recommended' },
   { label: 'Newest First', value: 'newest' },
-  { label: 'XP: High → Low', value: 'xp_desc' },
-  { label: 'XP: Low → High', value: 'xp_asc' },
-  { label: 'Easiest First', value: 'difficulty_asc' },
-  { label: 'Hardest First', value: 'difficulty_desc' },
-  { label: 'Title A–Z', value: 'title_asc' },
-] as const;
+  { label: 'XP (Highest First)', value: 'xp' },
+  { label: 'Difficulty (Easy → Hard)', value: 'difficulty' },
+];
 
-const PAGE_SIZE = 20;
+const PAGE_SIZE = 25;
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Helpers
-// ─────────────────────────────────────────────────────────────────────────────
-function difficultyColor(d: ChallengeDifficulty) {
-  return {
-    EASY: 'bg-emerald-50 text-emerald-700 border-emerald-200',
-    MEDIUM: 'bg-amber-50 text-amber-700 border-amber-200',
-    HARD: 'bg-rose-50 text-rose-700 border-rose-200',
-    EXPERT: 'bg-purple-50 text-purple-700 border-purple-200',
-  }[d];
-}
-
-function problemTypeBadge(t: ProblemType) {
-  const map: Record<string, string> = {
-    CODING: 'bg-indigo-50 text-indigo-700 border-indigo-200',
-    MCQ: 'bg-cyan-50 text-cyan-700 border-cyan-200',
-    SQL: 'bg-teal-50 text-teal-700 border-teal-200',
-    APTITUDE: 'bg-orange-50 text-orange-700 border-orange-200',
-    OS: 'bg-slate-100 text-slate-700 border-slate-300',
-    NETWORKING: 'bg-blue-50 text-blue-700 border-blue-200',
-    PUZZLE: 'bg-pink-50 text-pink-700 border-pink-200',
-    INTERVIEW: 'bg-violet-50 text-violet-700 border-violet-200',
-    DBMS: 'bg-teal-50 text-teal-700 border-teal-200',
-    GENERAL: 'bg-slate-50 text-slate-600 border-slate-200',
-  };
-  return map[t] || 'bg-slate-50 text-slate-600 border-slate-200';
-}
-
-function formatCategory(cat: string) {
-  return cat.replace(/_/g, ' ');
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Component
-// ─────────────────────────────────────────────────────────────────────────────
 export const ChallengesPage: React.FC = () => {
   const navigate = useNavigate();
 
   const [challenges, setChallenges] = useState<Challenge[]>([]);
+  const [stats, setStats] = useState<ChallengeStats | null>(null);
   const [loading, setLoading] = useState(true);
-  const [totalCount, setTotalCount] = useState(0);
-  const [totalPages, setTotalPages] = useState(0);
-  const [currentPage, setCurrentPage] = useState(0);
-
   const [search, setSearch] = useState('');
-  const [debouncedSearch, setDebouncedSearch] = useState('');
   const [selectedDifficulty, setSelectedDifficulty] = useState<ChallengeDifficulty | undefined>(undefined);
   const [selectedCategory, setSelectedCategory] = useState<ChallengeCategory | undefined>(undefined);
   const [selectedType, setSelectedType] = useState<ProblemType | undefined>(undefined);
-  const [sort, setSort] = useState<ChallengeFilterParams['sort']>('newest');
+  const [sortBy, setSortBy] = useState('recommended');
+  const [page, setPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
 
-  // Debounce search
   useEffect(() => {
-    const t = setTimeout(() => setDebouncedSearch(search), 350);
-    return () => clearTimeout(t);
-  }, [search]);
-
-  // Reset page on filter change
-  useEffect(() => {
-    setCurrentPage(0);
-  }, [debouncedSearch, selectedDifficulty, selectedCategory, selectedType, sort]);
-
-  const loadChallenges = useCallback(async () => {
-    try {
-      setLoading(true);
-      const res = await challengeService.getChallenges({
-        search: debouncedSearch.trim() || undefined,
-        difficulty: selectedDifficulty,
-        category: selectedCategory,
-        type: selectedType,
-        sort,
-        page: currentPage,
-        size: PAGE_SIZE,
-      });
-      setChallenges(res.content);
-      setTotalCount(res.totalElements);
-      setTotalPages(res.totalPages);
-    } catch (err) {
-      console.error('Failed to load challenges', err);
-    } finally {
-      setLoading(false);
-    }
-  }, [debouncedSearch, selectedDifficulty, selectedCategory, selectedType, sort, currentPage]);
+    loadStats();
+  }, []);
 
   useEffect(() => {
     loadChallenges();
-  }, [loadChallenges]);
+  }, [search, selectedDifficulty, selectedCategory, selectedType, sortBy, page]);
 
-  const clearFilters = () => {
+  const loadStats = async () => {
+    try {
+      const s = await challengeService.getChallengeStats();
+      setStats(s);
+    } catch (err) {
+      console.warn('Could not load challenge stats:', err);
+    }
+  };
+
+  const loadChallenges = async () => {
+    try {
+      setLoading(true);
+      const res = await challengeService.getChallenges({
+        search: search.trim() || undefined,
+        difficulty: selectedDifficulty,
+        category: selectedCategory,
+        problemType: selectedType,
+        sortBy,
+        page,
+        size: PAGE_SIZE,
+      });
+      setChallenges(res.content || []);
+      setTotalCount(res.totalElements || 0);
+      setTotalPages(res.totalPages || 1);
+    } catch (err) {
+      console.error('Failed to load challenges:', err);
+      setChallenges([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const resetFilters = () => {
     setSearch('');
     setSelectedDifficulty(undefined);
     setSelectedCategory(undefined);
     setSelectedType(undefined);
-    setSort('newest');
-    setCurrentPage(0);
+    setSortBy('recommended');
+    setPage(0);
   };
 
-  const hasFilters = !!(search || selectedDifficulty || selectedCategory || selectedType || sort !== 'newest');
+  const hasActiveFilters = Boolean(
+    search || selectedDifficulty || selectedCategory || selectedType || sortBy !== 'recommended'
+  );
 
-  // ── Rendered ──────────────────────────────────────────────────────────────
   return (
-    <div className="space-y-6 max-w-6xl mx-auto">
-      {/* ── Header ── */}
-      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+    <div className="space-y-8 max-w-7xl mx-auto pb-12">
+      {/* Header */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <div className="inline-flex items-center gap-1.5 text-[10px] font-mono font-bold text-indigo-600 bg-indigo-50 border border-indigo-200/80 px-2.5 py-1 rounded-full mb-2 uppercase tracking-wider">
-            <BookOpen className="w-3 h-3" />
-            Problem Archive
-          </div>
-          <h1 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">
+          <Badge variant="cyan" size="sm" className="mb-2">
+            <Code2 className="w-3.5 h-3.5 mr-1" />
             PROBLEM ARCHIVE
+          </Badge>
+          <h1 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">
+            COMPLETE PROBLEM ARCHIVE
           </h1>
-          <p className="text-sm text-slate-500 mt-1">
-            Practice, compete, solve and level up. Coding · SQL · MCQ · Aptitude · Interview · Puzzles
+          <p className="text-sm text-slate-600 mt-1">
+            Practice, compete, solve and level up across all algorithmic katas, core CS topics, and interview questions.
           </p>
         </div>
 
-        <div className="bg-white px-4 py-3 rounded-2xl border border-slate-200/90 shadow-sm shrink-0 text-right font-mono">
-          <p className="text-[10px] text-slate-400 uppercase font-semibold tracking-wider">Available Problems</p>
-          <p className="text-2xl font-black text-slate-900 leading-tight">
-            {totalCount.toLocaleString()}
-            <span className="text-sm font-bold text-slate-400 ml-1">Challenges</span>
-          </p>
+        {/* Available Problems Stats Banner */}
+        <div className="flex items-center gap-3 shrink-0">
+          <div className="bg-white/95 backdrop-blur-md px-5 py-3 rounded-2xl border border-slate-200/90 shadow-premium font-mono flex items-center gap-4">
+            <div>
+              <p className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">AVAILABLE PROBLEMS</p>
+              <p className="text-xl font-black text-slate-900">
+                {stats?.totalChallenges ?? totalCount} <span className="text-xs font-semibold text-slate-500">Challenges</span>
+              </p>
+            </div>
+            {stats && (
+              <div className="pl-4 border-l border-slate-100 flex flex-col justify-center">
+                <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                  {stats.totalSolved} Solved
+                </span>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
-      {/* ── Filters Panel ── */}
-      <div className="bg-white rounded-2xl border border-slate-200/90 shadow-sm p-4 space-y-4">
+      {/* Filter and Search Bar */}
+      <div className="bg-white/95 backdrop-blur-xl p-5 rounded-3xl border border-slate-200/90 shadow-premium space-y-4">
         {/* Row 1: Search + Category + Sort */}
-        <div className="flex flex-col sm:flex-row gap-3">
+        <div className="flex flex-col md:flex-row gap-3">
           <div className="flex-1">
             <Input
               value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search by title, concept, or tag..."
+              onChange={(e) => {
+                setSearch(e.target.value);
+                setPage(0);
+              }}
+              placeholder="Search 100+ problems by title, description, or concept tags..."
               leftIcon={<Search className="w-4 h-4 text-slate-400" />}
+              className="bg-slate-50/70 border-slate-200 focus:bg-white"
             />
           </div>
 
-          <select
-            value={selectedCategory || ''}
-            onChange={(e) => setSelectedCategory(e.target.value ? (e.target.value as ChallengeCategory) : undefined)}
-            aria-label="Filter by Category"
-            className="sm:w-52 h-11 px-3 rounded-xl border border-slate-200 bg-white text-sm text-slate-700 font-mono focus:outline-none focus:ring-2 focus:ring-indigo-400 cursor-pointer"
-          >
-            {CATEGORIES.map((c) => (
-              <option key={c.label} value={c.value || ''}>{c.label}</option>
-            ))}
-          </select>
+          <div className="md:w-64">
+            <select
+              value={selectedCategory || ''}
+              onChange={(e) => {
+                setSelectedCategory(e.target.value ? (e.target.value as ChallengeCategory) : undefined);
+                setPage(0);
+              }}
+              aria-label="Filter by Topic Category"
+              className="w-full h-11 px-3 rounded-xl border border-slate-200 bg-slate-50/70 text-sm text-slate-700 font-mono focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:bg-white transition-all cursor-pointer"
+            >
+              {CATEGORIES.map((cat) => (
+                <option key={cat.label} value={cat.value || ''}>
+                  {cat.label}
+                </option>
+              ))}
+            </select>
+          </div>
 
-          <select
-            value={sort}
-            onChange={(e) => setSort(e.target.value as ChallengeFilterParams['sort'])}
-            aria-label="Sort challenges"
-            className="sm:w-44 h-11 px-3 rounded-xl border border-slate-200 bg-white text-sm text-slate-700 font-mono focus:outline-none focus:ring-2 focus:ring-indigo-400 cursor-pointer"
-          >
-            {SORT_OPTIONS.map((o) => (
-              <option key={o.value} value={o.value}>{o.label}</option>
-            ))}
-          </select>
+          <div className="md:w-56 flex items-center gap-1.5 bg-slate-50/70 border border-slate-200 rounded-xl px-2.5">
+            <ArrowUpDown className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+            <select
+              value={sortBy}
+              onChange={(e) => {
+                setSortBy(e.target.value);
+                setPage(0);
+              }}
+              aria-label="Sort Problems"
+              className="w-full h-11 bg-transparent text-sm text-slate-700 font-mono focus:outline-none cursor-pointer"
+            >
+              {SORT_OPTIONS.map((sort) => (
+                <option key={sort.value} value={sort.value}>
+                  {sort.label}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {hasActiveFilters && (
+            <Button
+              variant="outline"
+              size="md"
+              onClick={resetFilters}
+              leftIcon={<RotateCcw className="w-3.5 h-3.5" />}
+              className="shrink-0 text-slate-600 hover:text-slate-900 border-dashed"
+            >
+              Reset
+            </Button>
+          )}
         </div>
 
-        {/* Row 2: Problem Type pills */}
-        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar">
-          <SlidersHorizontal className="w-3.5 h-3.5 text-slate-400 shrink-0 mr-1" />
-          {PROBLEM_TYPES.map(({ label, value, icon: Icon }) => {
-            const active = selectedType === value;
+        {/* Row 2: Problem Type Filter Pills */}
+        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 font-mono text-xs scrollbar-none">
+          <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mr-1 shrink-0 flex items-center gap-1">
+            <Layers className="w-3 h-3" /> TYPE:
+          </span>
+          {PROBLEM_TYPES.map((pt) => {
+            const isSelected = selectedType === pt.value;
+            const Icon = pt.icon;
             return (
               <button
-                key={label}
-                onClick={() => setSelectedType(value)}
-                className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-bold font-mono shrink-0 transition-all cursor-pointer ${
-                  active
-                    ? 'bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-sm shadow-indigo-400/30'
-                    : 'bg-slate-50 border border-slate-200 text-slate-600 hover:border-indigo-300 hover:text-indigo-600 hover:bg-indigo-50'
+                key={pt.label}
+                onClick={() => {
+                  setSelectedType(pt.value);
+                  setPage(0);
+                }}
+                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all shrink-0 cursor-pointer flex items-center gap-1.5 ${
+                  isSelected
+                    ? 'bg-slate-900 text-white shadow-sm border border-slate-800'
+                    : 'bg-slate-100/80 hover:bg-slate-200/80 text-slate-600 border border-transparent'
                 }`}
               >
-                <Icon className="w-3 h-3" />
-                {label}
+                {Icon && <Icon className="w-3 h-3" />}
+                {pt.label}
               </button>
             );
           })}
         </div>
 
-        {/* Row 3: Difficulty pills + Clear */}
-        <div className="flex items-center justify-between gap-2">
-          <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar">
-            <Filter className="w-3.5 h-3.5 text-slate-400 shrink-0 mr-1" />
-            {DIFFICULTIES.map(({ label, value }) => {
-              const active = selectedDifficulty === value;
-              const colorMap: Record<string, string> = {
-                EASY: 'from-emerald-500 to-teal-500',
-                MEDIUM: 'from-amber-500 to-orange-500',
-                HARD: 'from-rose-500 to-red-600',
-                EXPERT: 'from-purple-600 to-violet-600',
-              };
-              return (
-                <button
-                  key={label}
-                  onClick={() => setSelectedDifficulty(value)}
-                  className={`px-3 py-1.5 rounded-xl text-xs font-bold font-mono shrink-0 transition-all cursor-pointer ${
-                    active
-                      ? `bg-gradient-to-r ${colorMap[value || ''] || 'from-slate-600 to-slate-700'} text-white shadow-sm`
-                      : 'bg-slate-50 border border-slate-200 text-slate-600 hover:bg-slate-100'
-                  }`}
-                >
-                  {label}
-                </button>
-              );
-            })}
-          </div>
-
-          {hasFilters && (
-            <button
-              onClick={clearFilters}
-              className="inline-flex items-center gap-1 text-xs font-bold font-mono text-rose-600 bg-rose-50 hover:bg-rose-100 border border-rose-200 px-2.5 py-1.5 rounded-xl shrink-0 transition-all cursor-pointer"
-            >
-              <X className="w-3 h-3" />
-              Clear
-            </button>
-          )}
+        {/* Row 3: Difficulty Filter Pills */}
+        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 font-mono text-xs scrollbar-none pt-1 border-t border-slate-100">
+          <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mr-1 shrink-0 flex items-center gap-1">
+            <Filter className="w-3 h-3" /> DIFFICULTY:
+          </span>
+          {DIFFICULTIES.map((diff) => {
+            const isSelected = selectedDifficulty === diff.value;
+            return (
+              <button
+                key={diff.label}
+                onClick={() => {
+                  setSelectedDifficulty(diff.value);
+                  setPage(0);
+                }}
+                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all shrink-0 cursor-pointer ${
+                  isSelected
+                    ? 'bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-sm shadow-indigo-500/25 border border-indigo-500/30'
+                    : 'bg-slate-100/80 hover:bg-slate-200/80 text-slate-600 border border-transparent'
+                }`}
+              >
+                {diff.label}
+              </button>
+            );
+          })}
         </div>
       </div>
 
-      {/* ── Challenge List ── */}
+      {/* Challenges List */}
       {loading ? (
-        <div className="flex flex-col items-center justify-center py-24 space-y-3">
-          <Loader2 className="w-8 h-8 animate-spin text-indigo-500" />
-          <p className="text-sm font-mono text-slate-400">Loading problem archive...</p>
+        <div className="flex flex-col items-center justify-center py-24 space-y-4">
+          <Loader2 className="w-9 h-9 animate-spin text-indigo-600" />
+          <p className="text-sm font-mono text-slate-500">Querying live database archive...</p>
         </div>
       ) : challenges.length === 0 ? (
-        <Card className="p-14 text-center max-w-md mx-auto space-y-3">
-          <BookOpen className="w-10 h-10 text-slate-300 mx-auto" />
-          <h3 className="text-base font-bold text-slate-700">No problems found</h3>
-          <p className="text-xs text-slate-400">
-            Try adjusting your search or clearing the filters.
+        <Card className="p-12 text-center max-w-md mx-auto space-y-4 bg-white rounded-3xl border border-slate-200/90 shadow-premium">
+          <div className="w-12 h-12 rounded-2xl bg-indigo-50 flex items-center justify-center mx-auto text-indigo-600">
+            <Code2 className="w-6 h-6" />
+          </div>
+          <h3 className="text-base font-bold text-slate-800">No challenges match your criteria</h3>
+          <p className="text-xs text-slate-500">
+            Try adjusting your keywords, switching categories, or clearing difficulty and problem type filters.
           </p>
-          <Button variant="outline" size="sm" onClick={clearFilters}>
+          <Button variant="outline" size="sm" onClick={resetFilters}>
             Clear All Filters
           </Button>
         </Card>
       ) : (
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={`${currentPage}-${selectedType}-${selectedDifficulty}-${sort}`}
-            initial={{ opacity: 0, y: 6 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.18 }}
-            className="space-y-2.5"
-          >
-            {challenges.map((ch, index) => (
-              <ChallengeRow key={ch.id} ch={ch} index={index} navigate={navigate} />
-            ))}
-          </motion.div>
-        </AnimatePresence>
-      )}
+        <div className="space-y-3">
+          <AnimatePresence mode="popLayout">
+            {challenges.map((ch, index) => {
+              const isSolved = ch.progressStatus === 'SOLVED';
+              const isAttempted = ch.progressStatus === 'ATTEMPTED';
+              const pType = ch.problemType || 'CODING';
 
-      {/* ── Pagination ── */}
-      {!loading && totalPages > 1 && (
-        <div className="flex items-center justify-between pt-2 font-mono">
-          <p className="text-xs text-slate-400">
-            Showing {currentPage * PAGE_SIZE + 1}–{Math.min((currentPage + 1) * PAGE_SIZE, totalCount)} of {totalCount.toLocaleString()} problems
-          </p>
-
-          <div className="flex items-center gap-1.5">
-            <button
-              onClick={() => setCurrentPage(p => Math.max(0, p - 1))}
-              disabled={currentPage === 0}
-              className="w-8 h-8 rounded-xl border border-slate-200 bg-white text-slate-600 flex items-center justify-center disabled:opacity-40 hover:bg-slate-50 transition-all cursor-pointer"
-            >
-              <ChevronLeft className="w-4 h-4" />
-            </button>
-
-            {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-              let page = i;
-              if (totalPages > 5) {
-                if (currentPage <= 2) page = i;
-                else if (currentPage >= totalPages - 3) page = totalPages - 5 + i;
-                else page = currentPage - 2 + i;
-              }
               return (
-                <button
-                  key={page}
-                  onClick={() => setCurrentPage(page)}
-                  className={`w-8 h-8 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                    page === currentPage
-                      ? 'bg-indigo-600 text-white shadow-sm'
-                      : 'border border-slate-200 bg-white text-slate-600 hover:bg-slate-50'
-                  }`}
+                <motion.div
+                  key={ch.id}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.98 }}
+                  transition={{ duration: 0.2, delay: Math.min(index * 0.02, 0.3) }}
                 >
-                  {page + 1}
-                </button>
+                  <Card
+                    className="p-5 bg-white/95 backdrop-blur-xl border border-slate-200/80 shadow-premium hover:shadow-premium-hover hover:border-indigo-300/80 transition-all duration-300 rounded-2xl cursor-pointer flex flex-col md:flex-row md:items-center justify-between gap-4 group shimmer-card"
+                    onClick={() => navigate(`/challenges/${ch.id}`)}
+                  >
+                    <div className="space-y-2 flex-1 min-w-0">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        {/* Title */}
+                        <span className="text-base font-black text-slate-900 group-hover:text-indigo-600 transition-colors">
+                          {ch.title}
+                        </span>
+
+                        {/* Problem Type Badge */}
+                        <span className="text-[10px] font-mono px-2 py-0.5 rounded-full font-bold uppercase tracking-wider bg-slate-100 text-slate-700 border border-slate-200 shadow-2xs">
+                          {pType}
+                        </span>
+
+                        {/* Difficulty Badge */}
+                        <span
+                          className={`text-[10px] font-mono px-2 py-0.5 rounded-full font-bold uppercase shadow-2xs ${
+                            ch.difficulty === 'EASY'
+                              ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
+                              : ch.difficulty === 'MEDIUM'
+                              ? 'bg-amber-50 text-amber-800 border border-amber-200'
+                              : ch.difficulty === 'HARD'
+                              ? 'bg-rose-50 text-rose-800 border border-rose-200'
+                              : 'bg-purple-50 text-purple-800 border border-purple-200'
+                          }`}
+                        >
+                          {ch.difficulty}
+                        </span>
+
+                        {/* Status indicator */}
+                        {isSolved ? (
+                          <span className="inline-flex items-center gap-1 text-[10px] font-mono font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200 shadow-2xs">
+                            <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+                            SOLVED
+                          </span>
+                        ) : isAttempted ? (
+                          <span className="inline-flex items-center gap-1 text-[10px] font-mono font-bold text-amber-800 bg-amber-50 px-2.5 py-0.5 rounded-full border border-amber-200 shadow-2xs">
+                            <Play className="w-2.5 h-2.5 fill-amber-600 text-amber-600" />
+                            ATTEMPTED
+                          </span>
+                        ) : null}
+                      </div>
+
+                      {/* Meta information row */}
+                      <div className="flex items-center gap-2.5 text-xs font-mono text-slate-500 flex-wrap">
+                        <span className="font-semibold text-slate-700 bg-slate-100/70 px-2 py-0.5 rounded-md">
+                          {ch.category.replace(/_/g, ' ')}
+                        </span>
+                        {ch.source && (
+                          <span className="text-[11px] text-indigo-600 font-semibold bg-indigo-50/70 px-2 py-0.5 rounded-md border border-indigo-100">
+                            {ch.source}
+                          </span>
+                        )}
+                        {ch.tags && (
+                          <span className="text-slate-400 truncate max-w-[320px]">
+                            {ch.tags.split(',').map((t) => `#${t.trim()}`).join(' ')}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Right: XP, time, and button */}
+                    <div className="flex items-center justify-between md:justify-end gap-5 shrink-0 font-mono pt-2 md:pt-0 border-t md:border-t-0 border-slate-100">
+                      <div className="text-left md:text-right">
+                        <span className="text-sm font-black text-indigo-600 flex items-center md:justify-end gap-1">
+                          <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+                          +{ch.xpReward} XP
+                        </span>
+                        <span className="text-[11px] text-slate-400 flex items-center md:justify-end gap-1 mt-0.5 font-medium">
+                          <Clock className="w-3 h-3" />
+                          {ch.estimatedMinutes || Math.round((ch.timeLimitSeconds || 900) / 60)}m
+                        </span>
+                      </div>
+
+                      <div className="w-10 h-10 rounded-xl bg-slate-100/90 group-hover:bg-indigo-600 group-hover:text-white text-slate-400 flex items-center justify-center transition-all duration-200 group-hover:scale-105 group-hover:shadow-md">
+                        <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+                      </div>
+                    </div>
+                  </Card>
+                </motion.div>
               );
             })}
+          </AnimatePresence>
 
-            <button
-              onClick={() => setCurrentPage(p => Math.min(totalPages - 1, p + 1))}
-              disabled={currentPage === totalPages - 1}
-              className="w-8 h-8 rounded-xl border border-slate-200 bg-white text-slate-600 flex items-center justify-center disabled:opacity-40 hover:bg-slate-50 transition-all cursor-pointer"
-            >
-              <ChevronRight className="w-4 h-4" />
-            </button>
-          </div>
+          {/* Pagination Controls */}
+          {totalPages > 1 && (
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-6 font-mono">
+              <p className="text-xs text-slate-500">
+                Showing <span className="font-bold text-slate-700">{page * PAGE_SIZE + 1}</span> to{' '}
+                <span className="font-bold text-slate-700">{Math.min((page + 1) * PAGE_SIZE, totalCount)}</span> of{' '}
+                <span className="font-bold text-slate-700">{totalCount}</span> problems
+              </p>
+
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  disabled={page === 0}
+                  onClick={() => setPage((p) => Math.max(0, p - 1))}
+                  leftIcon={<ChevronLeft className="w-4 h-4" />}
+                >
+                  Previous
+                </Button>
+
+                <div className="flex items-center gap-1">
+                  {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                    let pageNum = i;
+                    if (totalPages > 5 && page > 2) {
+                      pageNum = Math.min(totalPages - 1, page - 2 + i);
+                    }
+                    return (
+                      <button
+                        key={pageNum}
+                        onClick={() => setPage(pageNum)}
+                        className={`w-8 h-8 rounded-lg text-xs font-bold transition-all ${
+                          page === pageNum
+                            ? 'bg-indigo-600 text-white shadow-sm'
+                            : 'bg-white hover:bg-slate-100 text-slate-700 border border-slate-200'
+                        }`}
+                      >
+                        {pageNum + 1}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                <Button
+                  variant="outline"
+                  size="sm"
+                  disabled={page >= totalPages - 1}
+                  onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
+                  rightIcon={<ChevronRight className="w-4 h-4" />}
+                >
+                  Next
+                </Button>
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div>
   );
 };
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Challenge Row Card
-// ─────────────────────────────────────────────────────────────────────────────
-interface ChallengeRowProps {
-  ch: Challenge;
-  index: number;
-  navigate: (path: string) => void;
-}
-
-const ChallengeRow: React.FC<ChallengeRowProps> = ({ ch, index, navigate }) => {
-  const isSolved = ch.progressStatus === 'SOLVED';
-  const isAttempted = ch.progressStatus === 'ATTEMPTED';
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.2, delay: index * 0.025 }}
-    >
-      <Card
-        className="p-4 bg-white/95 border border-slate-200/80 hover:border-indigo-300/70 hover:shadow-md transition-all duration-250 rounded-2xl cursor-pointer flex flex-col sm:flex-row sm:items-center justify-between gap-4 group"
-        onClick={() => navigate(`/challenges/${ch.id}`)}
-      >
-        {/* Left: Title + badges + meta */}
-        <div className="space-y-1.5 flex-1 min-w-0">
-          <div className="flex items-center gap-2 flex-wrap">
-            {/* Title */}
-            <span className="text-sm font-black text-slate-900 group-hover:text-indigo-600 transition-colors leading-snug">
-              {ch.title}
-            </span>
-
-            {/* Difficulty */}
-            <span className={`text-[9px] font-mono font-bold px-2 py-0.5 rounded-full border uppercase ${difficultyColor(ch.difficulty)}`}>
-              {ch.difficulty}
-            </span>
-
-            {/* Problem Type */}
-            {ch.problemType && ch.problemType !== 'CODING' && (
-              <span className={`text-[9px] font-mono font-bold px-2 py-0.5 rounded-full border uppercase ${problemTypeBadge(ch.problemType)}`}>
-                {ch.problemType}
-              </span>
-            )}
-
-            {/* Progress Status */}
-            {isSolved ? (
-              <span className="inline-flex items-center gap-1 text-[9px] font-mono font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
-                <CheckCircle2 className="w-2.5 h-2.5" /> SOLVED
-              </span>
-            ) : isAttempted ? (
-              <span className="inline-flex items-center gap-1 text-[9px] font-mono font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200">
-                <Play className="w-2.5 h-2.5 fill-amber-600" /> IN PROGRESS
-              </span>
-            ) : null}
-
-            {/* Source Reference badge */}
-            {ch.sourceReference && (
-              <span className="text-[9px] font-mono text-slate-400 bg-slate-50 px-2 py-0.5 rounded-full border border-slate-200 hidden sm:inline">
-                {ch.sourceReference}
-              </span>
-            )}
-          </div>
-
-          {/* Category + tags */}
-          <div className="flex items-center gap-2 text-xs font-mono text-slate-400 min-w-0">
-            <span className="font-semibold text-slate-600 shrink-0">
-              {formatCategory(ch.category)}
-            </span>
-            {ch.tags && (
-              <>
-                <span className="shrink-0">·</span>
-                <span className="text-slate-400 truncate">
-                  {ch.tags.split(',').slice(0, 4).map((t) => `#${t.trim()}`).join(' ')}
-                </span>
-              </>
-            )}
-          </div>
-        </div>
-
-        {/* Right: XP + time + arrow */}
-        <div className="flex items-center justify-between sm:justify-end gap-5 shrink-0 font-mono">
-          <div className="text-right space-y-0.5">
-            <div className="flex items-center justify-end gap-1 text-sm font-black text-indigo-600">
-              <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-              +{ch.xpReward} XP
-            </div>
-            <div className="flex items-center justify-end gap-1 text-[11px] text-slate-400 font-medium">
-              <Clock className="w-3 h-3" />
-              {ch.estimatedMinutes}m
-            </div>
-          </div>
-
-          <div className="w-8 h-8 rounded-xl bg-slate-100 group-hover:bg-indigo-50 group-hover:text-indigo-600 text-slate-400 flex items-center justify-center transition-all duration-200">
-            <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
-          </div>
-        </div>
-      </Card>
-    </motion.div>
-  );
-};

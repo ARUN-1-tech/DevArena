@@ -17,7 +17,21 @@ public record ChallengeCardDto(
         int xpReward,
         int estimatedMinutes,
         String tags,
-        String supportedLanguages,
-        String sourceReference,
-        ChallengeProgressStatus progressStatus
-) {}
+        ChallengeProgressStatus progressStatus,
+        String options,
+        String source
+) {
+    public ChallengeCardDto(
+            UUID id,
+            String title,
+            String slug,
+            ChallengeDifficulty difficulty,
+            ChallengeCategory category,
+            int xpReward,
+            int estimatedMinutes,
+            String tags,
+            ChallengeProgressStatus progressStatus
+    ) {
+        this(id, title, slug, difficulty, category, ProblemType.CODING, xpReward, estimatedMinutes, tags, progressStatus, null, null);
+    }
+}

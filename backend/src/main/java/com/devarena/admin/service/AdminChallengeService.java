@@ -1,19 +1,18 @@
 package com.devarena.admin.service;
 
 import com.devarena.admin.dto.AdminChallengeDto;
-import com.devarena.admin.dto.ProblemImportDto;
-import com.devarena.admin.dto.ProblemImportResultDto;
 import com.devarena.admin.dto.UpsertChallengeRequest;
 import com.devarena.admin.model.AdminAuditAction;
-import com.devarena.challenge.model.ChallengeCategory;
-import com.devarena.challenge.model.ChallengeEntity;
-import com.devarena.challenge.model.ChallengeStatus;
-import com.devarena.challenge.model.ChallengeTestCaseEntity;
-import com.devarena.challenge.model.ProblemType;
+import com.devarena.challenge.dto.ChallengeImportItemDto;
+import com.devarena.challenge.dto.ChallengeImportResultDto;
+import com.devarena.challenge.model.*;
 import com.devarena.challenge.repository.ChallengeRepository;
+import com.devarena.challenge.repository.ChallengeStarterCodeRepository;
 import com.devarena.challenge.repository.ChallengeTestCaseRepository;
 import com.devarena.common.exception.ResourceNotFoundException;
+import com.devarena.execution.model.ExecutionLanguage;
 import com.devarena.user.model.UserEntity;
+import com.devarena.user.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -21,9 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class AdminChallengeService {
@@ -32,16 +29,19 @@ public class AdminChallengeService {
 
     private final ChallengeRepository challengeRepository;
     private final ChallengeTestCaseRepository testCaseRepository;
+    private final ChallengeStarterCodeRepository starterCodeRepository;
     private final AdminAuditService adminAuditService;
-    private final com.devarena.user.repository.UserRepository userRepository;
+    private final UserRepository userRepository;
 
     public AdminChallengeService(
             ChallengeRepository challengeRepository,
             ChallengeTestCaseRepository testCaseRepository,
+            ChallengeStarterCodeRepository starterCodeRepository,
             AdminAuditService adminAuditService,
-            com.devarena.user.repository.UserRepository userRepository) {
+            UserRepository userRepository) {
         this.challengeRepository = challengeRepository;
         this.testCaseRepository = testCaseRepository;
+        this.starterCodeRepository = starterCodeRepository;
         this.adminAuditService = adminAuditService;
         this.userRepository = userRepository;
     }
@@ -96,6 +96,121 @@ public class AdminChallengeService {
         );
 
         return mapToDto(saved);
+    }
+
+    @Transactional
+    public ChallengeImportResultDto bulkImportChallenges(UUID adminId, List<ChallengeImportItemDto> items) {
+        UserEntity admin = userRepository.findById(adminId)
+                .orElseThrow(() -> new ResourceNotFoundException("Admin not found: " + adminId));
+
+        int total = items != null ? items.size() : 0;
+        int created = 0;
+        int skipped = 0;
+        int errorsCount = 0;
+        List<String> createdTitles = new ArrayList<>();
+        List<String> skippedTitles = new ArrayList<>();
+        List<String> errorMessages = new ArrayList<>();
+
+        if (items == null || items.isEmpty()) {
+            return new ChallengeImportResultDto(0, 0, 0, 0, createdTitles, skippedTitles, errorMessages);
+        }
+
+        for (int i = 0; i < items.size(); i++) {
+            ChallengeImportItemDto item = items.get(i);
+            try {
+                if (item.title() == null || item.title().isBlank()) {
+                    errorsCount++;
+                    errorMessages.add("Record #" + (i + 1) + ": Missing title");
+                    continue;
+                }
+
+                String slug = item.slug();
+                if (slug == null || slug.isBlank()) {
+                    slug = item.title().toLowerCase().replaceAll("[^a-z0-9]+", "-").replaceAll("^-|-$", "");
+                } else {
+                    slug = slug.toLowerCase().replaceAll("[^a-z0-9]+", "-").replaceAll("^-|-$", "");
+                }
+
+                // Check duplicate by slug or title
+                if (challengeRepository.existsBySlugIgnoreCase(slug) || challengeRepository.existsByTitleIgnoreCase(item.title())) {
+                    skipped++;
+                    skippedTitles.add(item.title() + " (Already exists)");
+                    continue;
+                }
+
+                ChallengeDifficulty diff = item.difficulty() != null ? item.difficulty() : ChallengeDifficulty.MEDIUM;
+                ChallengeCategory cat = item.category() != null ? item.category() : ChallengeCategory.ALGORITHMS;
+                ProblemType pType = item.problemType() != null ? item.problemType() : ProblemType.CODING;
+                int xp = (item.xpReward() != null && item.xpReward() > 0) ? item.xpReward() : 100;
+                int estMins = (item.estimatedMinutes() != null && item.estimatedMinutes() > 0) ? item.estimatedMinutes() : 20;
+                int timeLimit = (item.timeLimitSeconds() != null && item.timeLimitSeconds() > 0) ? item.timeLimitSeconds() : estMins * 60;
+                String desc = (item.description() != null && !item.description().isBlank()) ? item.description() : item.title();
+
+                ChallengeEntity challenge = new ChallengeEntity();
+                challenge.setTitle(item.title());
+                challenge.setSlug(slug);
+                challenge.setDescription(desc);
+                challenge.setDifficulty(diff);
+                challenge.setCategory(cat);
+                challenge.setProblemType(pType);
+                challenge.setXpReward(xp);
+                challenge.setEstimatedMinutes(estMins);
+                challenge.setTimeLimitSeconds(timeLimit);
+                challenge.setTags(item.tags());
+                challenge.setOptions(item.options());
+                challenge.setCorrectAnswer(item.correctAnswer());
+                challenge.setHints(item.hints());
+                challenge.setSolutionApproach(item.solutionApproach());
+                challenge.setSource(item.source() != null ? item.source() : "Rising Brain Problem Archive");
+                challenge.setStatus(ChallengeStatus.PUBLISHED);
+
+                ChallengeEntity saved = challengeRepository.save(challenge);
+
+                // Save test cases if any
+                if (item.testCases() != null && !item.testCases().isEmpty()) {
+                    int order = 1;
+                    for (ChallengeImportItemDto.ImportTestCaseDto tcDto : item.testCases()) {
+                        ChallengeTestCaseEntity tc = new ChallengeTestCaseEntity(
+                                saved,
+                                tcDto.input() != null ? tcDto.input() : "",
+                                tcDto.expectedOutput() != null ? tcDto.expectedOutput() : "",
+                                tcDto.hidden() != null ? tcDto.hidden() : false,
+                                tcDto.orderIndex() != null ? tcDto.orderIndex() : order++,
+                                tcDto.explanation()
+                        );
+                        testCaseRepository.save(tc);
+                    }
+                }
+
+                // Save starter templates if any
+                if (item.starterTemplates() != null && !item.starterTemplates().isEmpty()) {
+                    for (Map.Entry<String, String> entry : item.starterTemplates().entrySet()) {
+                        try {
+                            ExecutionLanguage lang = ExecutionLanguage.valueOf(entry.getKey().toUpperCase());
+                            ChallengeStarterCodeEntity sc = new ChallengeStarterCodeEntity(saved, lang, entry.getValue());
+                            starterCodeRepository.save(sc);
+                        } catch (Exception ignored) {}
+                    }
+                }
+
+                created++;
+                createdTitles.add(saved.getTitle());
+            } catch (Exception ex) {
+                errorsCount++;
+                errorMessages.add("Record #" + (i + 1) + " ('" + item.title() + "'): " + ex.getMessage());
+                log.warn("Failed to import challenge record #{}: {}", i, ex.getMessage());
+            }
+        }
+
+        adminAuditService.logAction(
+                admin,
+                AdminAuditAction.CHALLENGE_CREATED,
+                "CHALLENGE_BULK_IMPORT",
+                "IMPORT",
+                "Bulk imported " + created + " challenges, skipped " + skipped + ", errors: " + errorsCount
+        );
+
+        return new ChallengeImportResultDto(total, created, skipped, errorsCount, createdTitles, skippedTitles, errorMessages);
     }
 
     @Transactional
@@ -199,111 +314,4 @@ public class AdminChallengeService {
                 .createdAt(entity.getCreatedAt())
                 .build();
     }
-
-    @Transactional
-    public ProblemImportResultDto importProblems(List<ProblemImportDto> problems, UUID adminId) {
-        UserEntity admin = userRepository.findById(adminId)
-                .orElseThrow(() -> new ResourceNotFoundException("Admin not found: " + adminId));
-
-        int imported = 0;
-        int skipped = 0;
-        int failed = 0;
-        List<String> errors = new ArrayList<>();
-
-        for (ProblemImportDto dto : problems) {
-            try {
-                // Validate required fields
-                if (dto.getTitle() == null || dto.getTitle().isBlank()) {
-                    errors.add("Skipped: missing title");
-                    failed++;
-                    continue;
-                }
-                if (dto.getDescription() == null || dto.getDescription().isBlank()) {
-                    errors.add("Skipped '" + dto.getTitle() + "': missing description");
-                    failed++;
-                    continue;
-                }
-                if (dto.getDifficulty() == null) {
-                    errors.add("Skipped '" + dto.getTitle() + "': missing difficulty");
-                    failed++;
-                    continue;
-                }
-                if (dto.getCategory() == null) {
-                    errors.add("Skipped '" + dto.getTitle() + "': missing category");
-                    failed++;
-                    continue;
-                }
-
-                // Compute slug
-                String slug = dto.getSlug() != null && !dto.getSlug().isBlank()
-                        ? dto.getSlug().toLowerCase().replaceAll("[^a-z0-9-]", "-")
-                        : dto.getTitle().toLowerCase().trim().replaceAll("[^a-z0-9]+", "-");
-
-                // Duplicate check by slug or title
-                if (challengeRepository.existsBySlug(slug)) {
-                    log.debug("Skipping duplicate slug: {}", slug);
-                    skipped++;
-                    continue;
-                }
-                if (challengeRepository.existsByTitle(dto.getTitle())) {
-                    log.debug("Skipping duplicate title: {}", dto.getTitle());
-                    skipped++;
-                    continue;
-                }
-
-                // Build entity
-                ChallengeEntity challenge = new ChallengeEntity(
-                        dto.getTitle(),
-                        slug,
-                        dto.getDescription(),
-                        dto.getDifficulty(),
-                        dto.getCategory(),
-                        dto.getProblemType() != null ? dto.getProblemType() : ProblemType.CODING,
-                        dto.getXpReward() > 0 ? dto.getXpReward() : 100,
-                        dto.getEstimatedMinutes() > 0 ? dto.getEstimatedMinutes() : 15,
-                        dto.getTags(),
-                        dto.getSupportedLanguages() != null ? dto.getSupportedLanguages() : "JAVA,PYTHON,JAVASCRIPT",
-                        dto.getSourceReference()
-                );
-                challenge.setStatus(dto.getStatus() != null ? dto.getStatus() : ChallengeStatus.PUBLISHED);
-
-                ChallengeEntity saved = challengeRepository.save(challenge);
-
-                // Save test cases if provided
-                if (dto.getTestCases() != null) {
-                    for (ProblemImportDto.TestCaseImportItem tc : dto.getTestCases()) {
-                        ChallengeTestCaseEntity testCase = new ChallengeTestCaseEntity(
-                                saved,
-                                tc.getInput() != null ? tc.getInput() : "",
-                                tc.getExpectedOutput() != null ? tc.getExpectedOutput() : "",
-                                tc.isHidden(),
-                                tc.getOrderIndex(),
-                                tc.getExplanation()
-                        );
-                        testCaseRepository.save(testCase);
-                    }
-                }
-
-                imported++;
-            } catch (Exception ex) {
-                log.error("Failed to import problem '{}': {}", dto.getTitle(), ex.getMessage());
-                errors.add("Error importing '" + dto.getTitle() + "': " + ex.getMessage());
-                failed++;
-            }
-        }
-
-        if (imported > 0) {
-            adminAuditService.logAction(
-                    admin,
-                    AdminAuditAction.CHALLENGE_CREATED,
-                    "PROBLEM_IMPORT",
-                    null,
-                    "Bulk imported " + imported + " problems. Skipped: " + skipped + ", Failed: " + failed
-            );
-        }
-
-        log.info("Problem import completed: imported={}, skipped={}, failed={}", imported, skipped, failed);
-        return new ProblemImportResultDto(problems.size(), imported, skipped, failed, errors);
-    }
 }
-

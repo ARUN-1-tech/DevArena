@@ -1,8 +1,6 @@
 package com.devarena.admin.controller;
 
 import com.devarena.admin.dto.*;
-import com.devarena.admin.dto.ProblemImportDto;
-import com.devarena.admin.dto.ProblemImportResultDto;
 import com.devarena.admin.service.AdminAuditService;
 import com.devarena.admin.service.AdminChallengeService;
 import com.devarena.admin.service.AdminDashboardService;
@@ -26,6 +24,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -108,6 +107,14 @@ public class AdminController {
         return ResponseEntity.ok(ApiResponse.ok(challengeService.updateChallenge(challengeId, adminDetails.getId(), request)));
     }
 
+    @PostMapping("/challenges/import")
+    public ResponseEntity<ApiResponse<com.devarena.challenge.dto.ChallengeImportResultDto>> importChallenges(
+            @AuthenticationPrincipal DevArenaUserDetails adminDetails,
+            @RequestBody List<com.devarena.challenge.dto.ChallengeImportItemDto> items) {
+        com.devarena.challenge.dto.ChallengeImportResultDto result = challengeService.bulkImportChallenges(adminDetails.getId(), items);
+        return ResponseEntity.ok(ApiResponse.ok("Import completed", result));
+    }
+
     @PatchMapping("/challenges/{challengeId}/status")
     public ResponseEntity<ApiResponse<AdminChallengeDto>> updateChallengeStatus(
             @PathVariable UUID challengeId,
@@ -117,19 +124,7 @@ public class AdminController {
         return ResponseEntity.ok(ApiResponse.ok(challengeService.updateStatus(challengeId, adminDetails.getId(), status)));
     }
 
-    @PostMapping("/challenges/import")
-    public ResponseEntity<ApiResponse<ProblemImportResultDto>> importProblems(
-            @AuthenticationPrincipal DevArenaUserDetails adminDetails,
-            @RequestBody java.util.List<ProblemImportDto> problems) {
-        ProblemImportResultDto result = challengeService.importProblems(problems, adminDetails.getId());
-        return ResponseEntity.ok(ApiResponse.ok(
-                "Import complete: " + result.imported() + " imported, " + result.skippedDuplicates() + " skipped",
-                result
-        ));
-    }
-
     @GetMapping("/reports")
-
     public ResponseEntity<ApiResponse<Page<ReportDto>>> getReports(
             @RequestParam(required = false) ReportStatus status,
             @RequestParam(defaultValue = "0") int page,

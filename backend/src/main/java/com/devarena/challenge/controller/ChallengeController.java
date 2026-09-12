@@ -1,8 +1,6 @@
 package com.devarena.challenge.controller;
 
-import com.devarena.challenge.dto.ChallengeCardDto;
-import com.devarena.challenge.dto.ChallengeDetailDto;
-import com.devarena.challenge.dto.ChallengeProgressDto;
+import com.devarena.challenge.dto.*;
 import com.devarena.challenge.model.ChallengeCategory;
 import com.devarena.challenge.model.ChallengeDifficulty;
 import com.devarena.challenge.model.ProblemType;
@@ -34,29 +32,47 @@ public class ChallengeController {
             @RequestParam(required = false) String search,
             @RequestParam(required = false) ChallengeDifficulty difficulty,
             @RequestParam(required = false) ChallengeCategory category,
-            @RequestParam(required = false) ProblemType type,
-            @RequestParam(defaultValue = "newest") String sort,
+            @RequestParam(required = false) ProblemType problemType,
+            @RequestParam(required = false) String type,
+            @RequestParam(defaultValue = "recommended") String sortBy,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size,
             @AuthenticationPrincipal DevArenaUserDetails userDetails
     ) {
         UUID userId = userDetails != null ? userDetails.getId() : null;
 
-        Sort sortOrder = switch (sort) {
-            case "xp_desc" -> Sort.by("xpReward").descending();
-            case "xp_asc" -> Sort.by("xpReward").ascending();
+        // Support both problemType and type param alias
+        ProblemType resolvedType = problemType;
+        if (resolvedType == null && type != null && !type.isBlank()) {
+            try {
+                resolvedType = ProblemType.valueOf(type.toUpperCase());
+            } catch (Exception ignored) {}
+        }
+
+        // Determine sorting strategy
+        Sort sort = switch (sortBy.toLowerCase()) {
+            case "newest" -> Sort.by("createdAt").descending();
+            case "oldest" -> Sort.by("createdAt").ascending();
+            case "xp_desc", "xp_high" -> Sort.by("xpReward").descending();
+            case "xp_asc", "xp_low" -> Sort.by("xpReward").ascending();
             case "difficulty_asc" -> Sort.by("difficulty").ascending();
             case "difficulty_desc" -> Sort.by("difficulty").descending();
-            case "title_asc" -> Sort.by("title").ascending();
             default -> Sort.by("createdAt").descending();
         };
 
         Page<ChallengeCardDto> result = challengeService.getChallenges(
-                search, difficulty, category, type,
-                PageRequest.of(page, size, sortOrder),
-                userId
+                search, difficulty, category, resolvedType, PageRequest.of(page, size, sort), userId
         );
         return ResponseEntity.ok(ApiResponse.ok(result));
+    }
+
+    @GetMapping("/stats")
+    public ResponseEntity<ApiResponse<ChallengeCountStatsDto>> getChallengeStats(
+            @AuthenticationPrincipal DevArenaUserDetails userDetails
+    ) {
+        UUID userId = userDetails != null ? userDetails.getId() : null;
+        ChallengeCountStatsDto stats = challengeService.getChallengeStats(userId);
+        return ResponseEntity.ok(ApiResponse.ok(stats));
     }
 
     @GetMapping("/{id}")
@@ -85,6 +101,18 @@ public class ChallengeController {
     ) {
         ChallengeProgressDto progress = challengeService.startChallenge(id, userDetails.getId());
         return ResponseEntity.ok(ApiResponse.ok("Challenge started", progress));
+    }
+
+    @PostMapping("/{id}/answer")
+    public ResponseEntity<ApiResponse<SubmitAnswerResponse>> submitAnswer(
+            @PathVariable UUID id,
+            @RequestBody SubmitAnswerRequest request,
+            @AuthenticationPrincipal DevArenaUserDetails userDetails
+    ) {
+        SubmitAnswerResponse response = challengeService.submitNonCodingAnswer(
+                id, request != null ? request.answer() : null, userDetails.getId()
+        );
+        return ResponseEntity.ok(ApiResponse.ok(response.message(), response));
     }
 
     @PostMapping("/{id}/complete")

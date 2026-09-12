@@ -21,9 +21,13 @@ public interface ChallengeRepository extends JpaRepository<ChallengeEntity, UUID
 
     Optional<ChallengeEntity> findBySlug(String slug);
 
-    boolean existsBySlug(String slug);
+    Optional<ChallengeEntity> findBySlugIgnoreCase(String slug);
 
-    boolean existsByTitle(String title);
+    Optional<ChallengeEntity> findByTitleIgnoreCase(String title);
+
+    boolean existsBySlugIgnoreCase(String slug);
+
+    boolean existsByTitleIgnoreCase(String title);
 
     @Query("SELECT c FROM ChallengeEntity c WHERE c.status = :status " +
            "AND (:difficulty IS NULL OR c.difficulty = :difficulty) " +
@@ -42,4 +46,12 @@ public interface ChallengeRepository extends JpaRepository<ChallengeEntity, UUID
     );
 
     List<ChallengeEntity> findTop5ByStatusOrderByCreatedAtDesc(ChallengeStatus status);
+
+    long countByStatus(ChallengeStatus status);
+
+    long countByDifficultyAndStatus(ChallengeDifficulty difficulty, ChallengeStatus status);
+
+    long countByCategoryAndStatus(ChallengeCategory category, ChallengeStatus status);
+
+    long countByProblemTypeAndStatus(ProblemType problemType, ChallengeStatus status);
 }

@@ -131,4 +131,50 @@ class ChallengeControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.xpEarned").value(0));
     }
+
+    @Test
+    @DisplayName("GET /api/v1/challenges/stats retrieves dynamic problem archive statistics")
+    void testGetChallengeStats() throws Exception {
+        String token = getAuthToken();
+
+        mockMvc.perform(get("/api/v1/challenges/stats")
+                        .header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.success").value(true))
+                .andExpect(jsonPath("$.data.totalChallenges").isNumber())
+                .andExpect(jsonPath("$.data.byDifficulty").isMap());
+    }
+
+    @Test
+    @DisplayName("POST /api/v1/challenges/{id}/answer evaluates non-coding MCQ/aptitude challenge")
+    void testSubmitNonCodingAnswer() throws Exception {
+        String token = getAuthToken();
+
+        // Create an MCQ challenge for testing
+        ChallengeEntity mcq = new ChallengeEntity(
+                "Test MCQ Question",
+                "test-mcq-question",
+                "Which sorting algorithm is O(n log n)?",
+                com.devarena.challenge.model.ChallengeDifficulty.EASY,
+                com.devarena.challenge.model.ChallengeCategory.ALGORITHMS,
+                com.devarena.challenge.model.ProblemType.MCQ,
+                50,
+                10,
+                "sorting,mcq"
+        );
+        mcq.setOptions("[\"Merge Sort\", \"Bubble Sort\", \"Selection Sort\"]");
+        mcq.setCorrectAnswer("Merge Sort");
+        mcq.setSolutionApproach("Merge sort divides and merges in O(n log n)");
+        mcq = challengeRepository.save(mcq);
+
+        // Submit correct answer
+        mockMvc.perform(post("/api/v1/challenges/" + mcq.getId() + "/answer")
+                        .header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"answer\": \"Merge Sort\"}"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.correct").value(true))
+                .andExpect(jsonPath("$.data.rewardResult.xpEarned").value(50));
+    }
 }

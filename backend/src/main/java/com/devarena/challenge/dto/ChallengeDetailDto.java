@@ -20,15 +20,17 @@ public record ChallengeDetailDto(
         ProblemType problemType,
         int xpReward,
         int estimatedMinutes,
+        int timeLimitSeconds,
         String tags,
-        String supportedLanguages,
-        String sourceReference,
+        String options,
+        String hints,
+        String solutionApproach,
+        String source,
         ChallengeProgressStatus progressStatus,
         Instant completedAt,
         List<TestCaseSummaryDto> sampleTestCases,
         Map<String, String> starterTemplates
 ) {
-    // Backward-compatible compact constructor without sampleTestCases / starterTemplates
     public ChallengeDetailDto(
             UUID id,
             String title,
@@ -36,17 +38,18 @@ public record ChallengeDetailDto(
             String description,
             ChallengeDifficulty difficulty,
             ChallengeCategory category,
-            ProblemType problemType,
             int xpReward,
             int estimatedMinutes,
             String tags,
-            String supportedLanguages,
-            String sourceReference,
             ChallengeProgressStatus progressStatus,
-            Instant completedAt
+            Instant completedAt,
+            List<TestCaseSummaryDto> sampleTestCases,
+            Map<String, String> starterTemplates
     ) {
-        this(id, title, slug, description, difficulty, category, problemType,
-                xpReward, estimatedMinutes, tags, supportedLanguages, sourceReference,
-                progressStatus, completedAt, List.of(), Map.of());
+        this(
+                id, title, slug, description, difficulty, category, ProblemType.CODING,
+                xpReward, estimatedMinutes, estimatedMinutes * 60, tags, null, null, null, null,
+                progressStatus, completedAt, sampleTestCases, starterTemplates
+        );
     }
 }

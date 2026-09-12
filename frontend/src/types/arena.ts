@@ -1,32 +1,5 @@
 export type ChallengeDifficulty = 'EASY' | 'MEDIUM' | 'HARD' | 'EXPERT';
 
-export type ChallengeCategory =
-  | 'ARRAYS'
-  | 'STRINGS'
-  | 'LINKED_LIST'
-  | 'STACK_QUEUE'
-  | 'TREES'
-  | 'GRAPHS'
-  | 'DYNAMIC_PROGRAMMING'
-  | 'BINARY_SEARCH'
-  | 'HEAPS'
-  | 'BIT_MANIPULATION'
-  | 'TWO_POINTERS'
-  | 'SLIDING_WINDOW'
-  | 'BACKTRACKING'
-  | 'GREEDY'
-  | 'SORTING'
-  | 'DATABASE'
-  | 'SQL_DB'
-  | 'OPERATING_SYSTEMS'
-  | 'NETWORKING'
-  | 'ALGORITHMS'
-  | 'DEBUGGING'
-  | 'APTITUDE'
-  | 'PUZZLES'
-  | 'INTERVIEW'
-  | 'GENERAL';
-
 export type ProblemType =
   | 'CODING'
   | 'MCQ'
@@ -39,6 +12,32 @@ export type ProblemType =
   | 'INTERVIEW'
   | 'GENERAL';
 
+export type ChallengeCategory =
+  | 'ARRAYS'
+  | 'STRINGS'
+  | 'LINKED_LIST'
+  | 'STACK_QUEUE'
+  | 'TREES'
+  | 'GRAPHS'
+  | 'DYNAMIC_PROGRAMMING'
+  | 'BINARY_SEARCH'
+  | 'BACKTRACKING'
+  | 'HEAPS_PRIORITY_QUEUES'
+  | 'BIT_MANIPULATION'
+  | 'GREEDY'
+  | 'DATABASE'
+  | 'SQL'
+  | 'DBMS'
+  | 'OPERATING_SYSTEMS'
+  | 'NETWORKING'
+  | 'MATH_APTITUDE'
+  | 'PUZZLES'
+  | 'SYSTEM_DESIGN'
+  | 'ALGORITHMS'
+  | 'DEBUGGING'
+  | 'INTERVIEW_PREP'
+  | 'GENERAL_CS';
+
 export type ChallengeProgressStatus = 'NOT_STARTED' | 'ATTEMPTED' | 'SOLVED';
 
 export interface Challenge {
@@ -48,27 +47,44 @@ export interface Challenge {
   description?: string;
   difficulty: ChallengeDifficulty;
   category: ChallengeCategory;
-  problemType: ProblemType;
+  problemType?: ProblemType;
   xpReward: number;
   estimatedMinutes: number;
+  timeLimitSeconds?: number;
   tags?: string;
-  supportedLanguages?: string;
-  sourceReference?: string;
+  options?: string;
+  correctAnswer?: string;
+  hints?: string;
+  solutionApproach?: string;
+  source?: string;
   progressStatus: ChallengeProgressStatus;
   completedAt?: string;
-  // Detail-only fields
-  sampleTestCases?: TestCaseSummary[];
+  sampleTestCases?: Array<{
+    id?: string;
+    orderIndex?: number;
+    input: string;
+    expectedOutput: string;
+    explanation?: string;
+  }>;
   starterTemplates?: Record<string, string>;
 }
 
-export interface TestCaseSummary {
-  id: string;
-  orderIndex: number;
-  input: string;
-  expectedOutput: string;
-  explanation?: string;
+export interface ChallengeStats {
+  totalChallenges: number;
+  totalSolved: number;
+  byDifficulty: Record<string, number>;
+  byCategory: Record<string, number>;
+  byProblemType: Record<string, number>;
 }
 
+export interface SubmitAnswerResponse {
+  correct: boolean;
+  submittedAnswer: string;
+  correctAnswer: string;
+  explanation: string;
+  message: string;
+  rewardResult?: XpRewardResult;
+}
 
 export type QuestType =
   | 'COMPLETE_CHALLENGE'
@@ -141,6 +157,11 @@ export interface PlayerSummary {
   username: string;
   displayName: string;
   avatar: string;
+  level: number;
+  rating: number;
+  rank: number;
+  totalXp: number;
+  currentStreak: number;
   bio?: string;
 }
 
@@ -154,6 +175,12 @@ export interface ArenaHomeData {
   nextMilestone: ProgressionMilestone;
 }
 
+export interface QuestClaimResponse {
+  questId: string;
+  xpEarned: number;
+  xpResult: XpRewardResult;
+}
+
 export interface XpRewardResult {
   previousXp: number;
   newXp: number;
@@ -165,9 +192,3 @@ export interface XpRewardResult {
   leveledUp: boolean;
 }
 
-export interface QuestClaimResponse {
-  id: string;
-  status: PlayerQuestStatus;
-  xpEarned: number;
-  xpResult: XpRewardResult;
-}

@@ -3,7 +3,6 @@ package com.devarena.common.data;
 import com.devarena.challenge.model.ChallengeCategory;
 import com.devarena.challenge.model.ChallengeDifficulty;
 import com.devarena.challenge.model.ChallengeEntity;
-import com.devarena.challenge.model.ProblemType;
 import com.devarena.challenge.repository.ChallengeRepository;
 import com.devarena.quest.model.DailyQuestEntity;
 import com.devarena.quest.model.QuestType;
@@ -27,7 +26,7 @@ public class DataInitializer implements CommandLineRunner {
     private final com.devarena.user.repository.UserRepository userRepository;
     private final com.devarena.user.service.AuthService authService;
     private final ChallengeDataSeeder challengeDataSeeder;
-
+    private final RisingBrainDatasetSeeder risingBrainDatasetSeeder;
     private final com.devarena.achievement.repository.AchievementRepository achievementRepository;
     private final com.devarena.skill.repository.SkillRepository skillRepository;
 
@@ -37,6 +36,7 @@ public class DataInitializer implements CommandLineRunner {
             com.devarena.user.repository.UserRepository userRepository,
             com.devarena.user.service.AuthService authService,
             ChallengeDataSeeder challengeDataSeeder,
+            RisingBrainDatasetSeeder risingBrainDatasetSeeder,
             com.devarena.achievement.repository.AchievementRepository achievementRepository,
             com.devarena.skill.repository.SkillRepository skillRepository) {
         this.challengeRepository = challengeRepository;
@@ -44,6 +44,7 @@ public class DataInitializer implements CommandLineRunner {
         this.userRepository = userRepository;
         this.authService = authService;
         this.challengeDataSeeder = challengeDataSeeder;
+        this.risingBrainDatasetSeeder = risingBrainDatasetSeeder;
         this.achievementRepository = achievementRepository;
         this.skillRepository = skillRepository;
     }
@@ -51,13 +52,13 @@ public class DataInitializer implements CommandLineRunner {
     @Override
     public void run(String... args) {
         seedChallengesIfEmpty();
+        challengeDataSeeder.seedStarterCodesAndTestCasesIfEmpty();
+        risingBrainDatasetSeeder.seedRisingBrainDatasetIfMissing();
         seedDailyQuestsIfEmpty();
         seedDefaultUserIfEmpty();
         seedAdminUserIfEmpty();
-        challengeDataSeeder.seedStarterCodesAndTestCasesIfEmpty();
         seedAchievementsIfEmpty();
         seedSkillsIfEmpty();
-        seedRisingBrainProblemsIfNeeded();
     }
 
     private void seedAdminUserIfEmpty() {
@@ -471,258 +472,4 @@ public class DataInitializer implements CommandLineRunner {
 
         log.info("Successfully seeded 10 skills in the mastery matrix.");
     }
-
-    /**
-     * Seeds a rich set of Rising Brain DSA Sheet problems covering all problem types.
-     * Only seeds titles that don't already exist — safe to run repeatedly.
-     */
-    private void seedRisingBrainProblemsIfNeeded() {
-        // Only seed if total problems are less than 30 (we have ~20 initial)
-        if (challengeRepository.count() >= 30) {
-            return;
-        }
-
-        log.info("Seeding Rising Brain DSA Sheet problems into the complete problem archive...");
-
-        List<ChallengeEntity> problems = new java.util.ArrayList<>();
-
-        // ── TWO POINTERS ──────────────────────────────────────────────────────
-        addIfNew(problems, new ChallengeEntity(
-            "Three Sum", "three-sum",
-            "Given an integer array `nums`, return all the triplets `[nums[i], nums[j], nums[k]]` such that `i != j`, `i != k`, `j != k`, and `nums[i] + nums[j] + nums[k] == 0`.\n\nNotice that the solution set must not contain duplicate triplets.\n\n### Example:\n```\nInput: nums = [-1,0,1,2,-1,-4]\nOutput: [[-1,-1,2],[-1,0,1]]\n```",
-            ChallengeDifficulty.MEDIUM, ChallengeCategory.TWO_POINTERS, ProblemType.CODING,
-            150, 30, "two-pointers,array,sorting", "JAVA,PYTHON,JAVASCRIPT,CPP", "Rising Brain DSA Sheet"));
-
-        addIfNew(problems, new ChallengeEntity(
-            "Move Zeroes", "move-zeroes",
-            "Given an integer array `nums`, move all `0`s to the end of it while maintaining the relative order of the non-zero elements.\n\nNote that you must do this in-place without making a copy of the array.\n\n### Example:\n```\nInput: nums = [0,1,0,3,12]\nOutput: [1,3,12,0,0]\n```",
-            ChallengeDifficulty.EASY, ChallengeCategory.TWO_POINTERS, ProblemType.CODING,
-            60, 15, "two-pointers,array", "JAVA,PYTHON,JAVASCRIPT,CPP", "Rising Brain DSA Sheet"));
-
-        addIfNew(problems, new ChallengeEntity(
-            "Squares of a Sorted Array", "squares-of-sorted-array",
-            "Given an integer array `nums` sorted in non-decreasing order, return an array of the squares of each number sorted in non-decreasing order.\n\n### Example:\n```\nInput: nums = [-4,-1,0,3,10]\nOutput: [0,1,9,16,100]\n```",
-            ChallengeDifficulty.EASY, ChallengeCategory.TWO_POINTERS, ProblemType.CODING,
-            60, 15, "two-pointers,array,sorting", "JAVA,PYTHON,JAVASCRIPT,CPP", "Rising Brain DSA Sheet"));
-
-        // ── SLIDING WINDOW ────────────────────────────────────────────────────
-        addIfNew(problems, new ChallengeEntity(
-            "Maximum Average Subarray I", "maximum-average-subarray",
-            "You are given an integer array `nums` consisting of `n` elements, and an integer `k`. Find a contiguous subarray whose length is equal to `k` that has the maximum average value and return this value.\n\n### Example:\n```\nInput: nums = [1,12,-5,-6,50,3], k = 4\nOutput: 12.75000\n```",
-            ChallengeDifficulty.EASY, ChallengeCategory.SLIDING_WINDOW, ProblemType.CODING,
-            70, 15, "sliding-window,array", "JAVA,PYTHON,JAVASCRIPT,CPP", "Rising Brain DSA Sheet"));
-
-        addIfNew(problems, new ChallengeEntity(
-            "Minimum Size Subarray Sum", "minimum-size-subarray-sum",
-            "Given an array of positive integers `nums` and a positive integer `target`, return the minimal length of a subarray whose sum is greater than or equal to `target`. If there is no such subarray, return `0` instead.\n\n### Example:\n```\nInput: target = 7, nums = [2,3,1,2,4,3]\nOutput: 2\n```",
-            ChallengeDifficulty.MEDIUM, ChallengeCategory.SLIDING_WINDOW, ProblemType.CODING,
-            140, 25, "sliding-window,array,binary-search", "JAVA,PYTHON,JAVASCRIPT,CPP", "Rising Brain DSA Sheet"));
-
-        addIfNew(problems, new ChallengeEntity(
-            "Longest Repeating Character Replacement", "longest-repeating-character-replacement",
-            "You are given a string `s` and an integer `k`. You can choose any character of the string and change it to any other uppercase English character. You can perform this operation at most `k` times.\n\nReturn the length of the longest substring containing the same letter you can get after performing the above operations.\n\n### Example:\n```\nInput: s = \"ABAB\", k = 2\nOutput: 4\n```",
-            ChallengeDifficulty.MEDIUM, ChallengeCategory.SLIDING_WINDOW, ProblemType.CODING,
-            160, 30, "sliding-window,string,hash-table", "JAVA,PYTHON,JAVASCRIPT,CPP", "Rising Brain DSA Sheet"));
-
-        // ── BINARY SEARCH ─────────────────────────────────────────────────────
-        addIfNew(problems, new ChallengeEntity(
-            "Search in Rotated Sorted Array", "search-in-rotated-sorted-array",
-            "There is an integer array `nums` sorted in ascending order (with distinct values). Prior to being passed to your function, `nums` is possibly rotated at an unknown pivot index `k`.\n\nGiven the array `nums` after the possible rotation and an integer `target`, return the index of `target` if it is in nums, or `-1` if it is not in nums.\n\n### Example:\n```\nInput: nums = [4,5,6,7,0,1,2], target = 0\nOutput: 4\n```",
-            ChallengeDifficulty.MEDIUM, ChallengeCategory.BINARY_SEARCH, ProblemType.CODING,
-            150, 25, "binary-search,array", "JAVA,PYTHON,JAVASCRIPT,CPP", "Rising Brain DSA Sheet"));
-
-        addIfNew(problems, new ChallengeEntity(
-            "Find Minimum in Rotated Sorted Array", "find-minimum-in-rotated-sorted-array",
-            "Suppose an array of length `n` sorted in ascending order is rotated between 1 and `n` times. Given the sorted rotated array `nums` of unique elements, return the minimum element of this array.\n\n### Example:\n```\nInput: nums = [3,4,5,1,2]\nOutput: 1\n```",
-            ChallengeDifficulty.MEDIUM, ChallengeCategory.BINARY_SEARCH, ProblemType.CODING,
-            130, 20, "binary-search,array", "JAVA,PYTHON,JAVASCRIPT,CPP", "Rising Brain DSA Sheet"));
-
-        addIfNew(problems, new ChallengeEntity(
-            "Koko Eating Bananas", "koko-eating-bananas",
-            "Koko loves to eat bananas. There are `n` piles of bananas, the `i`th pile has `piles[i]` bananas. Koko can decide her bananas-per-hour eating speed of `k`. Each hour, she chooses some pile of bananas and eats `k` bananas from that pile.\n\nReturn the minimum integer `k` such that she can eat all the bananas within `h` hours.\n\n### Example:\n```\nInput: piles = [3,6,7,11], h = 8\nOutput: 4\n```",
-            ChallengeDifficulty.MEDIUM, ChallengeCategory.BINARY_SEARCH, ProblemType.CODING,
-            160, 30, "binary-search,array", "JAVA,PYTHON,JAVASCRIPT,CPP", "Rising Brain DSA Sheet"));
-
-        // ── HEAPS / PRIORITY QUEUES ───────────────────────────────────────────
-        addIfNew(problems, new ChallengeEntity(
-            "Kth Largest Element in an Array", "kth-largest-element-in-array",
-            "Given an integer array `nums` and an integer `k`, return the `k`th largest element in the array.\n\nNote that it is the `k`th largest element in the sorted order, not the `k`th distinct element.\n\n### Example:\n```\nInput: nums = [3,2,1,5,6,4], k = 2\nOutput: 5\n```",
-            ChallengeDifficulty.MEDIUM, ChallengeCategory.HEAPS, ProblemType.CODING,
-            150, 25, "heap,priority-queue,sorting,quickselect", "JAVA,PYTHON,JAVASCRIPT,CPP", "Rising Brain DSA Sheet"));
-
-        addIfNew(problems, new ChallengeEntity(
-            "Find Median from Data Stream", "find-median-from-data-stream",
-            "The median is the middle value in an ordered integer list. If the size of the list is even, there is no middle value, and the median is the mean of the two middle values.\n\nImplement the `MedianFinder` class with `addNum` and `findMedian` methods.\n\n### Example:\n```\naddNum(1), addNum(2), findMedian() = 1.5\naddNum(3), findMedian() = 2.0\n```",
-            ChallengeDifficulty.HARD, ChallengeCategory.HEAPS, ProblemType.CODING,
-            280, 45, "heap,priority-queue,design,data-stream", "JAVA,PYTHON,JAVASCRIPT,CPP", "Rising Brain DSA Sheet"));
-
-        // ── BACKTRACKING ──────────────────────────────────────────────────────
-        addIfNew(problems, new ChallengeEntity(
-            "Permutations", "permutations",
-            "Given an array `nums` of distinct integers, return all the possible permutations. You can return the answer in any order.\n\n### Example:\n```\nInput: nums = [1,2,3]\nOutput: [[1,2,3],[1,3,2],[2,1,3],[2,3,1],[3,1,2],[3,2,1]]\n```",
-            ChallengeDifficulty.MEDIUM, ChallengeCategory.BACKTRACKING, ProblemType.CODING,
-            150, 30, "backtracking,recursion,array", "JAVA,PYTHON,JAVASCRIPT,CPP", "Rising Brain DSA Sheet"));
-
-        addIfNew(problems, new ChallengeEntity(
-            "Subsets", "subsets",
-            "Given an integer array `nums` of unique elements, return all possible subsets (the power set). The solution set must not contain duplicate subsets. Return the solution in any order.\n\n### Example:\n```\nInput: nums = [1,2,3]\nOutput: [[],[1],[2],[1,2],[3],[1,3],[2,3],[1,2,3]]\n```",
-            ChallengeDifficulty.MEDIUM, ChallengeCategory.BACKTRACKING, ProblemType.CODING,
-            140, 25, "backtracking,recursion,bit-manipulation", "JAVA,PYTHON,JAVASCRIPT,CPP", "Rising Brain DSA Sheet"));
-
-        addIfNew(problems, new ChallengeEntity(
-            "N-Queens", "n-queens",
-            "The n-queens puzzle is the problem of placing `n` queens on an `n x n` chessboard such that no two queens attack each other.\n\nGiven an integer `n`, return all distinct solutions to the n-queens puzzle.\n\n### Example:\n```\nInput: n = 4\nOutput: [[\".Q..\",\"...Q\",\"Q...\",\"..Q.\"],\n         [\"..Q.\",\"Q...\",\"...Q\",\".Q..\"]]\n```",
-            ChallengeDifficulty.HARD, ChallengeCategory.BACKTRACKING, ProblemType.CODING,
-            300, 50, "backtracking,array,constraint-satisfaction", "JAVA,PYTHON,JAVASCRIPT,CPP", "Rising Brain DSA Sheet"));
-
-        // ── GREEDY ────────────────────────────────────────────────────────────
-        addIfNew(problems, new ChallengeEntity(
-            "Jump Game", "jump-game",
-            "You are given an integer array `nums`. You are initially positioned at the array's first index, and each element in the array represents your maximum jump length at that position.\n\nReturn `true` if you can reach the last index, or `false` otherwise.\n\n### Example:\n```\nInput: nums = [2,3,1,1,4]\nOutput: true\n```",
-            ChallengeDifficulty.MEDIUM, ChallengeCategory.GREEDY, ProblemType.CODING,
-            130, 20, "greedy,array,dynamic-programming", "JAVA,PYTHON,JAVASCRIPT,CPP", "Rising Brain DSA Sheet"));
-
-        addIfNew(problems, new ChallengeEntity(
-            "Meeting Rooms II", "meeting-rooms-ii",
-            "Given an array of meeting time intervals `intervals` where `intervals[i] = [starti, endi]`, return the minimum number of conference rooms required.\n\n### Example:\n```\nInput: intervals = [[0,30],[5,10],[15,20]]\nOutput: 2\n```",
-            ChallengeDifficulty.MEDIUM, ChallengeCategory.GREEDY, ProblemType.CODING,
-            160, 30, "greedy,heap,sorting,intervals", "JAVA,PYTHON,JAVASCRIPT,CPP", "Rising Brain DSA Sheet"));
-
-        // ── BIT MANIPULATION ─────────────────────────────────────────────────
-        addIfNew(problems, new ChallengeEntity(
-            "Single Number", "single-number",
-            "Given a non-empty array of integers `nums`, every element appears twice except for one. Find that single one.\n\nYou must implement a solution with a linear runtime complexity and use only constant extra space.\n\n### Example:\n```\nInput: nums = [4,1,2,1,2]\nOutput: 4\n```",
-            ChallengeDifficulty.EASY, ChallengeCategory.BIT_MANIPULATION, ProblemType.CODING,
-            60, 10, "bit-manipulation,xor,array", "JAVA,PYTHON,JAVASCRIPT,CPP", "Rising Brain DSA Sheet"));
-
-        addIfNew(problems, new ChallengeEntity(
-            "Count Bits", "count-bits",
-            "Given an integer `n`, return an array `ans` of length `n + 1` such that for each `i` (0 <= i <= n), `ans[i]` is the number of 1's in the binary representation of `i`.\n\n### Example:\n```\nInput: n = 5\nOutput: [0,1,1,2,1,2]\n```",
-            ChallengeDifficulty.EASY, ChallengeCategory.BIT_MANIPULATION, ProblemType.CODING,
-            70, 15, "bit-manipulation,dynamic-programming", "JAVA,PYTHON,JAVASCRIPT,CPP", "Rising Brain DSA Sheet"));
-
-        // ── SQL / DATABASE ─────────────────────────────────────────────────
-        addIfNew(problems, new ChallengeEntity(
-            "Find Customers Who Never Order", "customers-who-never-order",
-            "Given a `Customers` table and an `Orders` table, find all customers who never ordered anything.\n\n### Schema:\n```sql\nCustomers: id INT, name VARCHAR\nOrders: id INT, customerId INT\n```\n\n### Expected Output:\nReturn the `name` column of customers with no matching orders.\n\n### Hint: Use LEFT JOIN or NOT IN subquery.",
-            ChallengeDifficulty.EASY, ChallengeCategory.SQL_DB, ProblemType.SQL,
-            60, 10, "sql,joins,subquery", "SQL", "Rising Brain DSA Sheet"));
-
-        addIfNew(problems, new ChallengeEntity(
-            "Rank Scores", "rank-scores",
-            "Write a SQL query to rank the scores. The ranking should be calculated according to the following rules: The scores should be ranked from the highest to the lowest. If there is a tie between two scores, both should have the same ranking. After a tie, the next ranking number should be the next consecutive integer value.\n\n### Schema:\n```sql\nScores: id INT, score DECIMAL\n```\n\n### Example Output:\n```\nscore | rank\n3.50  | 1\n3.65  | 1 ← Tied!\n4.00  | 2\n```",
-            ChallengeDifficulty.MEDIUM, ChallengeCategory.SQL_DB, ProblemType.SQL,
-            130, 20, "sql,window-functions,rank,dense_rank", "SQL", "Rising Brain DSA Sheet"));
-
-        addIfNew(problems, new ChallengeEntity(
-            "Department Top Three Salaries", "department-top-three-salaries",
-            "Write a SQL query to find employees who have a high salary in each of the departments. A company's executives are interested in seeing who earns the most money in each of the departments. A high earner in a department is an employee who has a salary in the top three unique salaries for that department.\n\n### Schema:\n```sql\nEmployee: id, name, salary, departmentId\nDepartment: id, name\n```",
-            ChallengeDifficulty.HARD, ChallengeCategory.SQL_DB, ProblemType.SQL,
-            250, 40, "sql,window-functions,subquery,dense_rank", "SQL", "Rising Brain DSA Sheet"));
-
-        // ── OPERATING SYSTEMS ─────────────────────────────────────────────────
-        addIfNew(problems, new ChallengeEntity(
-            "What is a Deadlock?", "what-is-a-deadlock",
-            "A deadlock in an operating system occurs when two or more processes are waiting for each other to release resources, and none of them can proceed.\n\n**Question:** Which of the following conditions is NOT necessary for a deadlock to occur?\n\nA) Mutual Exclusion\nB) Hold and Wait\nC) No Preemption\nD) Aging\n\nChoose the correct answer and explain the four Coffman conditions for deadlock.",
-            ChallengeDifficulty.EASY, ChallengeCategory.OPERATING_SYSTEMS, ProblemType.MCQ,
-            50, 10, "os,deadlock,concurrency,mcq", "N/A", "Rising Brain DSA Sheet"));
-
-        addIfNew(problems, new ChallengeEntity(
-            "Process Scheduling: Round Robin", "round-robin-scheduling",
-            "Consider 4 processes P1, P2, P3, P4 with burst times 6, 4, 2, 5 respectively. If a Round Robin scheduling algorithm with time quantum = 2 is used:\n\n1. Draw the Gantt chart.\n2. Calculate the average waiting time.\n3. Calculate the average turnaround time.\n\n**Show your step-by-step solution.**",
-            ChallengeDifficulty.MEDIUM, ChallengeCategory.OPERATING_SYSTEMS, ProblemType.APTITUDE,
-            130, 20, "os,scheduling,round-robin,aptitude", "N/A", "Rising Brain DSA Sheet"));
-
-        addIfNew(problems, new ChallengeEntity(
-            "Virtual Memory and Page Faults", "virtual-memory-page-faults",
-            "A process references the following pages in order: 1, 2, 3, 4, 2, 1, 5, 6, 2, 1, 2, 3, 7, 6, 3, 2, 1, 2, 3, 6.\n\nWith a physical memory capacity of 3 frames and using the **LRU page replacement algorithm**:\n\n1. Count the total number of page faults.\n2. Show the state of frames after each reference.",
-            ChallengeDifficulty.MEDIUM, ChallengeCategory.OPERATING_SYSTEMS, ProblemType.APTITUDE,
-            160, 30, "os,virtual-memory,page-replacement,lru,aptitude", "N/A", "Rising Brain DSA Sheet"));
-
-        // ── NETWORKING ─────────────────────────────────────────────────────────
-        addIfNew(problems, new ChallengeEntity(
-            "What Happens When You Type a URL?", "what-happens-when-you-type-url",
-            "Describe in detail the complete sequence of events that occurs when a user types `https://www.google.com` in a browser and presses Enter.\n\nYour explanation should cover:\n- DNS resolution process\n- TCP connection (three-way handshake)\n- TLS/HTTPS handshake\n- HTTP request/response cycle\n- Browser rendering\n\nThis is a classic system design / networking interview question.",
-            ChallengeDifficulty.MEDIUM, ChallengeCategory.NETWORKING, ProblemType.INTERVIEW,
-            120, 20, "networking,http,tcp,dns,tls,interview", "N/A", "Rising Brain DSA Sheet"));
-
-        addIfNew(problems, new ChallengeEntity(
-            "TCP vs UDP", "tcp-vs-udp",
-            "**Multiple Choice:** Which of the following statements about TCP and UDP is FALSE?\n\nA) TCP is connection-oriented; UDP is connectionless.\nB) TCP guarantees delivery and ordering; UDP does not.\nC) UDP is used by DNS for initial queries because of lower overhead.\nD) TCP uses a two-way handshake to establish a connection.\n\nExplain the key differences between TCP and UDP and give real-world use cases for each.",
-            ChallengeDifficulty.EASY, ChallengeCategory.NETWORKING, ProblemType.MCQ,
-            50, 10, "networking,tcp,udp,protocols,mcq", "N/A", "Rising Brain DSA Sheet"));
-
-        addIfNew(problems, new ChallengeEntity(
-            "Subnet Calculation", "subnet-calculation",
-            "An organization is assigned the IP address block `192.168.10.0/24`.\n\nThey need to divide this into **5 subnets** where the largest subnet should accommodate at least **50 hosts**.\n\n1. What subnet mask should be used?\n2. How many subnets can be created?\n3. How many usable hosts per subnet?\n4. List the network address, first host, last host, and broadcast address for the first 3 subnets.",
-            ChallengeDifficulty.MEDIUM, ChallengeCategory.NETWORKING, ProblemType.APTITUDE,
-            150, 25, "networking,subnetting,cidr,ip-addressing,aptitude", "N/A", "Rising Brain DSA Sheet"));
-
-        // ── PUZZLES ────────────────────────────────────────────────────────────
-        addIfNew(problems, new ChallengeEntity(
-            "8 Balls, One Heavy — Find It in 2 Weighings", "eight-balls-two-weighings",
-            "You have 8 identical-looking balls. One of them is heavier than the rest. You have a balance scale and are allowed only **2 weighings**.\n\n**Question:** How do you determine which ball is the heaviest in exactly 2 weighings?\n\nDescribe your strategy step by step.",
-            ChallengeDifficulty.EASY, ChallengeCategory.PUZZLES, ProblemType.PUZZLE,
-            70, 15, "puzzle,logic,divide-and-conquer,reasoning", "N/A", "Rising Brain DSA Sheet"));
-
-        addIfNew(problems, new ChallengeEntity(
-            "Water Jug Problem", "water-jug-problem",
-            "You have a 3-liter jug and a 5-liter jug. You need to measure exactly **4 liters** of water.\n\nYou can:\n- Fill either jug completely from a tap\n- Empty either jug\n- Pour water from one jug into the other\n\n**Question:** Describe the sequence of steps to obtain exactly 4 liters.",
-            ChallengeDifficulty.EASY, ChallengeCategory.PUZZLES, ProblemType.PUZZLE,
-            60, 10, "puzzle,logic,state-machine,reasoning", "N/A", "Rising Brain DSA Sheet"));
-
-        addIfNew(problems, new ChallengeEntity(
-            "Egg Drop Problem", "egg-drop-problem",
-            "You are given `n` floors and `k` eggs. You need to determine the **minimum number of trials** needed to find the critical floor (the highest floor from which an egg can be dropped without breaking).\n\n### Classic Case:\n- `n = 100` floors, `k = 2` eggs\n\n**Question:** What is the minimum number of trials in the worst case? Derive the formula.\n\n### Extended:\nSolve the general case using dynamic programming.",
-            ChallengeDifficulty.HARD, ChallengeCategory.PUZZLES, ProblemType.PUZZLE,
-            280, 45, "puzzle,dynamic-programming,binary-search,reasoning", "JAVA,PYTHON,JAVASCRIPT", "Rising Brain DSA Sheet"));
-
-        // ── INTERVIEW PROBLEMS ────────────────────────────────────────────────
-        addIfNew(problems, new ChallengeEntity(
-            "Design a URL Shortener", "design-url-shortener",
-            "Design a URL shortening service like bit.ly.\n\n**Requirements:**\n- Given a long URL, generate a short unique URL (e.g., bit.ly/abc123)\n- Redirect users from short URL to original URL\n- Handle 100M URLs, 10:1 read:write ratio\n- Short URLs should expire after 1 year\n\n**Discuss:**\n1. API design\n2. Database schema\n3. Hashing algorithm (Base62 encoding)\n4. Scalability and caching strategy\n5. Analytics (click tracking)",
-            ChallengeDifficulty.MEDIUM, ChallengeCategory.INTERVIEW, ProblemType.INTERVIEW,
-            200, 40, "system-design,hashing,scalability,caching,interview", "N/A", "Rising Brain DSA Sheet"));
-
-        addIfNew(problems, new ChallengeEntity(
-            "OOP: Design a Parking Lot", "design-parking-lot",
-            "Design an object-oriented parking lot system.\n\n**Requirements:**\n- Multiple floors with different spot sizes: SMALL, MEDIUM, LARGE\n- Vehicles: Motorcycle, Car, Bus\n- Park and unpark vehicles\n- Track available spots\n- Generate a ticket on parking\n\n**Implement using clean OOP principles:**\n- Identify all classes, interfaces, and relationships\n- Implement core methods: `park()`, `unpark()`, `getAvailableSpots()`",
-            ChallengeDifficulty.MEDIUM, ChallengeCategory.INTERVIEW, ProblemType.INTERVIEW,
-            200, 40, "oop,system-design,low-level-design,interview", "JAVA,PYTHON", "Rising Brain DSA Sheet"));
-
-        // ── APTITUDE ──────────────────────────────────────────────────────────
-        addIfNew(problems, new ChallengeEntity(
-            "Train Speed and Time", "train-speed-time",
-            "A train traveling at 60 km/h crosses a 200-metre-long bridge in 30 seconds.\n\n**Question:** What is the length of the train?\n\n**Hint:** Speed = Distance / Time. The distance the train covers is its own length plus the bridge length.",
-            ChallengeDifficulty.EASY, ChallengeCategory.APTITUDE, ProblemType.APTITUDE,
-            40, 5, "aptitude,speed-time-distance,reasoning", "N/A", "Rising Brain DSA Sheet"));
-
-        addIfNew(problems, new ChallengeEntity(
-            "Probability: Dice Throw", "probability-dice-throw",
-            "Two fair dice are thrown simultaneously.\n\n**Questions:**\n1. What is the probability that the sum of the two dice equals 7?\n2. What is the probability of getting at least one 6?\n3. What is the probability that both dice show even numbers?\n\n**Show your work using sample space enumeration.**",
-            ChallengeDifficulty.EASY, ChallengeCategory.APTITUDE, ProblemType.APTITUDE,
-            50, 10, "aptitude,probability,combinatorics,reasoning", "N/A", "Rising Brain DSA Sheet"));
-
-        addIfNew(problems, new ChallengeEntity(
-            "Work and Time Problem", "work-and-time",
-            "A can complete a task in 12 days. B can complete the same task in 18 days.\n\n**Questions:**\n1. How many days will A and B together take to complete the task?\n2. If they work together for 4 days, how much of the task is completed?\n3. If A leaves after 4 days, how many more days will B need to finish the remaining work?",
-            ChallengeDifficulty.EASY, ChallengeCategory.APTITUDE, ProblemType.APTITUDE,
-            40, 5, "aptitude,work-time,fractions,reasoning", "N/A", "Rising Brain DSA Sheet"));
-
-        // Save all new problems
-        if (!problems.isEmpty()) {
-            challengeRepository.saveAll(problems);
-            log.info("Rising Brain DSA Sheet: seeded {} new problems into the archive.", problems.size());
-        } else {
-            log.info("Rising Brain DSA Sheet: all problems already exist, nothing to seed.");
-        }
-    }
-
-    private void addIfNew(List<ChallengeEntity> list, ChallengeEntity entity) {
-        if (!challengeRepository.existsByTitle(entity.getTitle()) &&
-            !challengeRepository.existsBySlug(entity.getSlug())) {
-            list.add(entity);
-        }
-    }
 }
-

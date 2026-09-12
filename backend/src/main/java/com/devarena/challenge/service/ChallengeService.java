@@ -1,15 +1,16 @@
 package com.devarena.challenge.service;
 
-import com.devarena.challenge.dto.ChallengeCardDto;
-import com.devarena.challenge.dto.ChallengeDetailDto;
-import com.devarena.challenge.dto.ChallengeProgressDto;
+import com.devarena.challenge.dto.*;
 import com.devarena.challenge.model.*;
 import com.devarena.challenge.repository.ChallengeRepository;
+import com.devarena.challenge.repository.ChallengeStarterCodeRepository;
+import com.devarena.challenge.repository.ChallengeTestCaseRepository;
 import com.devarena.challenge.repository.PlayerChallengeRepository;
 import com.devarena.common.exception.ResourceNotFoundException;
 import com.devarena.progression.dto.XpRewardResult;
 import com.devarena.progression.model.ActivityType;
 import com.devarena.progression.service.XPService;
+import com.devarena.quest.service.DailyQuestService;
 import com.devarena.user.model.PlayerProgressionEntity;
 import com.devarena.user.model.UserEntity;
 import com.devarena.user.repository.PlayerProgressionRepository;
@@ -32,9 +33,9 @@ public class ChallengeService {
     private final UserRepository userRepository;
     private final PlayerProgressionRepository progressionRepository;
     private final XPService xpService;
-    private final com.devarena.quest.service.DailyQuestService dailyQuestService;
-    private final com.devarena.challenge.repository.ChallengeTestCaseRepository testCaseRepository;
-    private final com.devarena.challenge.repository.ChallengeStarterCodeRepository starterCodeRepository;
+    private final DailyQuestService dailyQuestService;
+    private final ChallengeTestCaseRepository testCaseRepository;
+    private final ChallengeStarterCodeRepository starterCodeRepository;
 
     public ChallengeService(
             ChallengeRepository challengeRepository,
@@ -42,9 +43,9 @@ public class ChallengeService {
             UserRepository userRepository,
             PlayerProgressionRepository progressionRepository,
             XPService xpService,
-            com.devarena.quest.service.DailyQuestService dailyQuestService,
-            com.devarena.challenge.repository.ChallengeTestCaseRepository testCaseRepository,
-            com.devarena.challenge.repository.ChallengeStarterCodeRepository starterCodeRepository) {
+            DailyQuestService dailyQuestService,
+            ChallengeTestCaseRepository testCaseRepository,
+            ChallengeStarterCodeRepository starterCodeRepository) {
         this.challengeRepository = challengeRepository;
         this.playerChallengeRepository = playerChallengeRepository;
         this.userRepository = userRepository;
@@ -55,14 +56,18 @@ public class ChallengeService {
         this.starterCodeRepository = starterCodeRepository;
     }
 
+    public Page<ChallengeCardDto> getChallenges(String search, ChallengeDifficulty difficulty, ChallengeCategory category, Pageable pageable, UUID userId) {
+        return getChallenges(search, difficulty, category, null, pageable, userId);
+    }
+
     public Page<ChallengeCardDto> getChallenges(
             String search,
             ChallengeDifficulty difficulty,
             ChallengeCategory category,
             ProblemType problemType,
             Pageable pageable,
-            UUID userId) {
-
+            UUID userId
+    ) {
         Page<ChallengeEntity> entityPage = challengeRepository.searchChallenges(
                 ChallengeStatus.PUBLISHED,
                 difficulty,
@@ -90,12 +95,43 @@ public class ChallengeService {
                 c.getXpReward(),
                 c.getEstimatedMinutes(),
                 c.getTags(),
-                c.getSupportedLanguages(),
-                c.getSourceReference(),
-                progressMap.getOrDefault(c.getId(), ChallengeProgressStatus.NOT_STARTED)
+                progressMap.getOrDefault(c.getId(), ChallengeProgressStatus.NOT_STARTED),
+                c.getOptions(),
+                c.getSource()
         )).collect(Collectors.toList());
 
         return new PageImpl<>(cards, pageable, entityPage.getTotalElements());
+    }
+
+    public ChallengeCountStatsDto getChallengeStats(UUID userId) {
+        long total = challengeRepository.countByStatus(ChallengeStatus.PUBLISHED);
+        long solvedCount = 0;
+        if (userId != null) {
+            solvedCount = playerChallengeRepository.countByUserIdAndStatus(userId, ChallengeProgressStatus.SOLVED);
+        }
+
+        Map<String, Long> byDifficulty = new LinkedHashMap<>();
+        for (ChallengeDifficulty diff : ChallengeDifficulty.values()) {
+            byDifficulty.put(diff.name(), challengeRepository.countByDifficultyAndStatus(diff, ChallengeStatus.PUBLISHED));
+        }
+
+        Map<String, Long> byCategory = new LinkedHashMap<>();
+        for (ChallengeCategory cat : ChallengeCategory.values()) {
+            long count = challengeRepository.countByCategoryAndStatus(cat, ChallengeStatus.PUBLISHED);
+            if (count > 0) {
+                byCategory.put(cat.name(), count);
+            }
+        }
+
+        Map<String, Long> byProblemType = new LinkedHashMap<>();
+        for (ProblemType type : ProblemType.values()) {
+            long count = challengeRepository.countByProblemTypeAndStatus(type, ChallengeStatus.PUBLISHED);
+            if (count > 0) {
+                byProblemType.put(type.name(), count);
+            }
+        }
+
+        return new ChallengeCountStatsDto(total, solvedCount, byDifficulty, byCategory, byProblemType);
     }
 
     public ChallengeDetailDto getChallengeDetail(UUID challengeId, UUID userId) {
@@ -113,10 +149,10 @@ public class ChallengeService {
             }
         }
 
-        List<com.devarena.challenge.dto.TestCaseSummaryDto> sampleCases = testCaseRepository
+        List<TestCaseSummaryDto> sampleCases = testCaseRepository
                 .findByChallengeIdAndHiddenFalseOrderByOrderIndexAsc(challenge.getId())
                 .stream()
-                .map(tc -> new com.devarena.challenge.dto.TestCaseSummaryDto(
+                .map(tc -> new TestCaseSummaryDto(
                         tc.getId(),
                         tc.getOrderIndex(),
                         tc.getInput(),
@@ -140,9 +176,12 @@ public class ChallengeService {
                 challenge.getProblemType(),
                 challenge.getXpReward(),
                 challenge.getEstimatedMinutes(),
+                challenge.getTimeLimitSeconds(),
                 challenge.getTags(),
-                challenge.getSupportedLanguages(),
-                challenge.getSourceReference(),
+                challenge.getOptions(),
+                challenge.getHints(),
+                challenge.getSolutionApproach(),
+                challenge.getSource(),
                 progressStatus,
                 completedAt,
                 sampleCases,
@@ -192,6 +231,34 @@ public class ChallengeService {
                 progress.getLastSubmissionAt(),
                 progress.getCompletedAt()
         );
+    }
+
+    @Transactional
+    public SubmitAnswerResponse submitNonCodingAnswer(UUID challengeId, String submittedAnswer, UUID userId) {
+        ChallengeEntity challenge = challengeRepository.findById(challengeId)
+                .orElseThrow(() -> new ResourceNotFoundException("Challenge not found: " + challengeId));
+
+        String correctAnswer = challenge.getCorrectAnswer();
+        boolean isCorrect = false;
+
+        if (correctAnswer != null && submittedAnswer != null) {
+            isCorrect = correctAnswer.trim().equalsIgnoreCase(submittedAnswer.trim());
+        } else if (challenge.getProblemType() == ProblemType.GENERAL) {
+            isCorrect = true; // General conceptual task completion
+        }
+
+        XpRewardResult rewardResult = null;
+        if (isCorrect) {
+            rewardResult = solveChallenge(challengeId, userId);
+        }
+
+        String explanation = challenge.getSolutionApproach();
+        if (explanation == null || explanation.isBlank()) {
+            explanation = challenge.getHints();
+        }
+
+        String message = isCorrect ? "Correct answer! XP awarded." : "Incorrect answer. Check the explanation and try again!";
+        return new SubmitAnswerResponse(isCorrect, submittedAnswer, correctAnswer, explanation, message, rewardResult);
     }
 
     @Transactional

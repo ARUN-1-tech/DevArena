@@ -98,11 +98,11 @@ public class ArenaHomeService {
         ChallengeDifficulty targetDiff = level <= 2 ? ChallengeDifficulty.EASY :
                 level <= 5 ? ChallengeDifficulty.MEDIUM : ChallengeDifficulty.HARD;
         List<ChallengeCardDto> recommended = challengeService.getChallenges(
-                null, targetDiff, null, null, PageRequest.of(0, 3), userId
+                null, targetDiff, null, PageRequest.of(0, 3), userId
         ).getContent();
         if (recommended.isEmpty()) {
             recommended = challengeService.getChallenges(
-                    null, null, null, null, PageRequest.of(0, 3), userId
+                    null, null, null, PageRequest.of(0, 3), userId
             ).getContent();
         }
 

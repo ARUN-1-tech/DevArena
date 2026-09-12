@@ -7,6 +7,7 @@ import {
   CheckCircle,
   AlertTriangle,
   X,
+  UploadCloud,
 } from 'lucide-react';
 import { adminService } from '../../services/adminService';
 import { AdminChallengeDto, UpsertChallengeRequest } from '../../types/admin';
@@ -34,6 +35,12 @@ export const AdminChallengesPage: React.FC = () => {
     ],
   });
 
+  // Bulk import modal state
+  const [isImportModalOpen, setIsImportModalOpen] = useState(false);
+  const [importJsonText, setImportJsonText] = useState('');
+  const [importing, setImporting] = useState(false);
+  const [importResult, setImportResult] = useState<{ total: number; inserted: number; skipped: number; errors: string[] } | null>(null);
+
   const fetchChallenges = async () => {
     setLoading(true);
     setError(null);
@@ -58,6 +65,30 @@ export const AdminChallengesPage: React.FC = () => {
       setChallenges((prev) => prev.map((c) => (c.id === updated.id ? updated : c)));
     } catch (err: unknown) {
       alert(err instanceof Error ? err.message : 'Failed to update challenge status');
+    }
+  };
+
+  const handleBulkImport = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!importJsonText.trim()) return;
+    try {
+      setImporting(true);
+      setImportResult(null);
+      let parsed = JSON.parse(importJsonText.trim());
+      if (!Array.isArray(parsed)) {
+        if (parsed.challenges && Array.isArray(parsed.challenges)) {
+          parsed = parsed.challenges;
+        } else {
+          parsed = [parsed];
+        }
+      }
+      const res = await adminService.bulkImportChallenges(parsed);
+      setImportResult(res);
+      await fetchChallenges();
+    } catch (err: unknown) {
+      alert(err instanceof Error ? err.message : 'Invalid JSON format or import failed');
+    } finally {
+      setImporting(false);
     }
   };
 
@@ -96,17 +127,30 @@ export const AdminChallengesPage: React.FC = () => {
             <span>Challenge Catalog Lifecycle</span>
           </h2>
           <p className="text-xs text-slate-500 mt-1">
-            Author, edit, publish, and archive competitive programming katas and test suites.
+            Author, edit, bulk import, and archive competitive programming katas and test suites.
           </p>
         </div>
 
-        <button
-          onClick={() => setIsModalOpen(true)}
-          className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white text-xs font-bold shadow-sm shadow-emerald-500/25 transition self-start sm:self-auto"
-        >
-          <Plus className="w-4 h-4" />
-          <span>Create Challenge</span>
-        </button>
+        <div className="flex items-center gap-2.5 self-start sm:self-auto">
+          <button
+            onClick={() => {
+              setIsImportModalOpen(true);
+              setImportResult(null);
+            }}
+            className="flex items-center gap-2 px-3.5 py-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-bold shadow-2xs transition"
+          >
+            <UploadCloud className="w-4 h-4 text-indigo-600" />
+            <span>Bulk Import</span>
+          </button>
+
+          <button
+            onClick={() => setIsModalOpen(true)}
+            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white text-xs font-bold shadow-sm shadow-emerald-500/25 transition"
+          >
+            <Plus className="w-4 h-4" />
+            <span>Create Challenge</span>
+          </button>
+        </div>
       </div>
 
       {error && (
@@ -319,6 +363,97 @@ export const AdminChallengesPage: React.FC = () => {
                   className="flex-1 px-4 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white text-xs font-bold transition disabled:opacity-50 shadow-sm"
                 >
                   {saving ? 'Creating...' : 'Create & Publish'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Bulk Import Modal */}
+      {isImportModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm overflow-y-auto">
+          <div className="w-full max-w-2xl bg-white border border-slate-200 rounded-3xl p-6 shadow-premium-hover relative my-8">
+            <button
+              onClick={() => setIsImportModalOpen(false)}
+              className="absolute top-4 right-4 p-1.5 rounded-xl text-slate-400 hover:text-slate-800 hover:bg-slate-100 transition"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            <h3 className="text-lg font-black text-slate-900 mb-1 flex items-center gap-2">
+              <UploadCloud className="w-5 h-5 text-indigo-600" />
+              <span>Bulk Import Problem Dataset</span>
+            </h3>
+            <p className="text-xs text-slate-500 mb-4">
+              Paste JSON dataset array or upload a dataset file. Existing problems with duplicate titles/slugs will be safely skipped.
+            </p>
+
+            <form onSubmit={handleBulkImport} className="space-y-4">
+              <div>
+                <div className="flex items-center justify-between mb-1">
+                  <label className="text-xs font-semibold text-slate-700">JSON Dataset Array</label>
+                  <label className="text-[11px] font-bold text-indigo-600 hover:text-indigo-800 cursor-pointer">
+                    Upload .json file
+                    <input
+                      type="file"
+                      accept=".json,.csv"
+                      className="hidden"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          const reader = new FileReader();
+                          reader.onload = (event) => {
+                            if (event.target?.result) {
+                              setImportJsonText(event.target.result as string);
+                            }
+                          };
+                          reader.readAsText(file);
+                        }
+                      }}
+                    />
+                  </label>
+                </div>
+                <textarea
+                  required
+                  rows={8}
+                  value={importJsonText}
+                  onChange={(e) => setImportJsonText(e.target.value)}
+                  placeholder={`[\n  {\n    "title": "Median of Two Sorted Arrays",\n    "difficulty": "HARD",\n    "category": "ARRAYS",\n    "problemType": "CODING",\n    "description": "Given two sorted arrays...",\n    "xpReward": 250\n  }\n]`}
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-800 focus:outline-none focus:border-indigo-600 resize-none font-mono"
+                />
+              </div>
+
+              {/* Import Results Banner */}
+              {importResult && (
+                <div className="p-4 rounded-2xl bg-indigo-50/80 border border-indigo-200 text-xs font-mono space-y-1">
+                  <p className="font-bold text-indigo-900">
+                    Import Finished: {importResult.inserted} inserted, {importResult.skipped} skipped (Total: {importResult.total})
+                  </p>
+                  {importResult.errors && importResult.errors.length > 0 && (
+                    <div className="text-rose-600 text-[11px] pt-1">
+                      {importResult.errors.map((err, i) => (
+                        <p key={i}>• {err}</p>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              <div className="flex gap-3 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setIsImportModalOpen(false)}
+                  className="flex-1 px-4 py-2.5 rounded-xl border border-slate-200 text-slate-700 hover:bg-slate-50 text-xs font-bold transition shadow-2xs"
+                >
+                  Close
+                </button>
+                <button
+                  type="submit"
+                  disabled={importing || !importJsonText.trim()}
+                  className="flex-1 px-4 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white text-xs font-bold transition disabled:opacity-50 shadow-sm"
+                >
+                  {importing ? 'Importing Dataset...' : 'Execute Import'}
                 </button>
               </div>
             </form>

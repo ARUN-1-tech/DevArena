@@ -34,18 +34,12 @@ public class ChallengeDataSeeder {
     }
 
     public void seedStarterCodesAndTestCasesIfEmpty() {
-        if (testCaseRepository.count() > 0) {
-            return;
-        }
-
-        log.info("Seeding starter codes and test cases for DevArena challenges catalog...");
-
         List<ChallengeEntity> allChallenges = challengeRepository.findAll();
         for (ChallengeEntity challenge : allChallenges) {
-            seedChallengeData(challenge);
+            if (testCaseRepository.findByChallengeIdOrderByOrderIndexAsc(challenge.getId()).isEmpty()) {
+                seedChallengeData(challenge);
+            }
         }
-
-        log.info("Successfully seeded test cases and starter codes.");
     }
 
     private void seedChallengeData(ChallengeEntity c) {

@@ -93,4 +93,60 @@ class AdminServiceTest {
         AdminChallengeDto published = challengeService.updateStatus(created.getId(), admin, ChallengeStatus.PUBLISHED);
         assertThat(published.getStatus()).isEqualTo(ChallengeStatus.PUBLISHED);
     }
+
+    @Test
+    @DisplayName("Should bulk import challenges, prevent duplicates, and report results")
+    void testBulkImportChallenges() {
+        UserEntity admin = userRepository.save(new UserEntity("admin_importer", "importer@devarena.io", "pass"));
+
+        com.devarena.challenge.dto.ChallengeImportItemDto item1 = new com.devarena.challenge.dto.ChallengeImportItemDto(
+                "Unique Bulk Problem 1",
+                "unique-bulk-problem-1",
+                "Description for problem 1",
+                ChallengeDifficulty.EASY,
+                ChallengeCategory.ARRAYS,
+                com.devarena.challenge.model.ProblemType.CODING,
+                50,
+                15,
+                900,
+                "array,test",
+                null,
+                null,
+                "Hint 1",
+                "Approach 1",
+                "Rising Brain Sheet",
+                List.of(new com.devarena.challenge.dto.ChallengeImportItemDto.ImportTestCaseDto("1,2", "3", false, 1, "test")),
+                null
+        );
+
+        com.devarena.challenge.dto.ChallengeImportItemDto item2Duplicate = new com.devarena.challenge.dto.ChallengeImportItemDto(
+                "Unique Bulk Problem 1", // Duplicate
+                "unique-bulk-problem-1",
+                "Duplicate description",
+                ChallengeDifficulty.EASY,
+                ChallengeCategory.ARRAYS,
+                com.devarena.challenge.model.ProblemType.CODING,
+                50,
+                15,
+                900,
+                "array,test",
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+        );
+
+        com.devarena.challenge.dto.ChallengeImportResultDto result = challengeService.bulkImportChallenges(
+                admin.getId(), List.of(item1, item2Duplicate)
+        );
+
+        assertThat(result).isNotNull();
+        assertThat(result.totalProcessed()).isEqualTo(2);
+        assertThat(result.createdCount()).isEqualTo(1);
+        assertThat(result.skippedCount()).isEqualTo(1);
+        assertThat(result.createdTitles()).contains("Unique Bulk Problem 1");
+    }
 }

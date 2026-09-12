@@ -5,11 +5,13 @@ import {
   ChallengeCategory,
   ChallengeDifficulty,
   ChallengeProgressStatus,
+  ChallengeStats,
   ProblemType,
+  SubmitAnswerResponse,
   XpRewardResult,
 } from '../types/arena';
 
-interface PageResponse<T> {
+export interface PageResponse<T> {
   content: T[];
   totalElements: number;
   totalPages: number;
@@ -21,8 +23,8 @@ export interface ChallengeFilterParams {
   search?: string;
   difficulty?: ChallengeDifficulty;
   category?: ChallengeCategory;
-  type?: ProblemType;
-  sort?: 'newest' | 'xp_desc' | 'xp_asc' | 'difficulty_asc' | 'difficulty_desc' | 'title_asc';
+  problemType?: ProblemType;
+  sortBy?: 'recommended' | 'newest' | 'xp' | 'difficulty' | string;
   page?: number;
   size?: number;
 }
@@ -32,6 +34,11 @@ export const challengeService = {
     const response = await apiClient.get<ApiResponse<PageResponse<Challenge>>>('/challenges', {
       params,
     });
+    return response.data.data;
+  },
+
+  async getChallengeStats(): Promise<ChallengeStats> {
+    const response = await apiClient.get<ApiResponse<ChallengeStats>>('/challenges/stats');
     return response.data.data;
   },
 
@@ -49,4 +56,12 @@ export const challengeService = {
     const response = await apiClient.post<ApiResponse<XpRewardResult>>(`/challenges/${id}/complete`);
     return response.data.data;
   },
+
+  async submitAnswer(id: string, answer: string): Promise<SubmitAnswerResponse> {
+    const response = await apiClient.post<ApiResponse<SubmitAnswerResponse>>(`/challenges/${id}/answer`, {
+      answer,
+    });
+    return response.data.data;
+  },
 };
+
