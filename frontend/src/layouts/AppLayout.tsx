@@ -15,11 +15,11 @@ import {
   X,
   Sparkles,
   Flame,
-  Shield,
   ShieldAlert,
 } from 'lucide-react';
 import { APP_NAME } from '../data/constants';
 import { NotificationDropdown } from '../components/notification/NotificationDropdown';
+import { SidebarPetCompanion } from '../components/layout/SidebarPetCompanion';
 
 interface NavItem {
   name: string;
@@ -36,7 +36,6 @@ const NAV_ITEMS: NavItem[] = [
   { name: 'Skills', href: '/skills', icon: Zap },
   { name: 'Achievements', href: '/achievements', icon: Award },
   { name: 'Friends', href: '/friends', icon: Users },
-  { name: 'Teams', href: '/teams', icon: Shield },
   { name: 'Profile', href: '/profile', icon: User },
 ];
 
@@ -235,6 +234,9 @@ export const AppLayout: React.FC = () => {
             );
           })}
         </nav>
+
+        {/* Live Baby Animal Pet Companion in Sidebar */}
+        <SidebarPetCompanion />
 
         {/* Mini Player Profile at Bottom */}
         <div className="p-3 border-t border-slate-100/90 bg-slate-50/50 backdrop-blur-sm">

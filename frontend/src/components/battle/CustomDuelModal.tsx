@@ -96,7 +96,8 @@ export const CustomDuelModal: React.FC<CustomDuelModalProps> = ({
       });
       setCreatedRoom(room);
     } catch (err: any) {
-      setErrorMessage(err.response?.data?.message || 'Failed to create custom duel room');
+      const msg = err.message || err.response?.data?.message || 'Failed to create custom duel room';
+      setErrorMessage(msg);
     } finally {
       setCreating(false);
     }
@@ -104,18 +105,24 @@ export const CustomDuelModal: React.FC<CustomDuelModalProps> = ({
 
   const handleJoinRoom = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
-    if (!joinCode.trim()) {
-      setErrorMessage('Please enter a 6-digit room code');
+    const sanitizedCode = joinCode.replace(/[^A-Za-z0-9]/g, '').trim().toUpperCase();
+    if (!sanitizedCode) {
+      setErrorMessage('Please enter the 6-digit room code');
       return;
     }
     try {
       setJoining(true);
       setErrorMessage(null);
-      const room = await customDuelService.joinRoom(joinCode.trim());
-      onClose();
-      navigate(`/battle/${room.battleId}`);
+      const room = await customDuelService.joinRoom(sanitizedCode);
+      if (room && room.battleId) {
+        onClose();
+        navigate(`/battle/${room.battleId}`);
+      } else {
+        setErrorMessage('Room joined but battle initialization failed. Please try again.');
+      }
     } catch (err: any) {
-      setErrorMessage(err.response?.data?.message || 'Invalid or expired room code');
+      const msg = err.message || err.response?.data?.message || 'Invalid or expired room code';
+      setErrorMessage(msg);
     } finally {
       setJoining(false);
     }
