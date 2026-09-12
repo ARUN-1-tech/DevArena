@@ -85,9 +85,9 @@ export const BattlePage: React.FC = () => {
       const data = await battleService.getBattle(id);
       setBattle(data);
 
-      // Set initial code from starter templates
-      if (!code && data.challenge?.starterTemplates) {
-        setCode(data.challenge.starterTemplates[language] || data.challenge.starterTemplates.PYTHON || '');
+      // User writes their own code, start blank
+      if (code === undefined) {
+        setCode('');
       }
 
       // Calculate server remaining time

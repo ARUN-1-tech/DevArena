@@ -130,10 +130,11 @@ export const CodeLabPage: React.FC = () => {
 
         const storageKey = `devarena_code_${id}_${language}`;
         const savedCode = localStorage.getItem(storageKey);
-        if (savedCode) {
+        if (savedCode !== null) {
           setSourceCode(savedCode);
-        } else if (data.starterTemplates && data.starterTemplates[language]) {
-          setSourceCode(data.starterTemplates[language]);
+        } else {
+          // Code is done by user, start with blank clean editor
+          setSourceCode('');
         }
       } catch (err: any) {
         console.error('Failed to load challenge', err);
@@ -280,10 +281,8 @@ export const CodeLabPage: React.FC = () => {
 
     const storageKey = `devarena_code_${id}_${newLang}`;
     const savedCode = localStorage.getItem(storageKey);
-    if (savedCode) {
+    if (savedCode !== null) {
       setSourceCode(savedCode);
-    } else if (challenge.starterTemplates?.[newLang]) {
-      setSourceCode(challenge.starterTemplates[newLang]);
     } else {
       setSourceCode('');
     }
