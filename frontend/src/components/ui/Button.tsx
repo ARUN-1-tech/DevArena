@@ -26,21 +26,21 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     ref
   ) => {
     const baseStyles =
-      'inline-flex items-center justify-center font-medium rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-[#0B0C0E] disabled:opacity-40 disabled:cursor-not-allowed select-none active:scale-[0.98]';
+      'inline-flex items-center justify-center font-medium rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-[#0D0506] disabled:opacity-40 disabled:cursor-not-allowed select-none active:scale-[0.98]';
 
     const variants = {
       primary:
-        'bg-white text-[#0B0C0E] hover:bg-[#E5E7EB] border border-white/80 font-semibold shadow-[0_0_20px_rgba(255,255,255,0.12)] focus:ring-white',
+        'bg-[#EFEFE1] text-[#0D0506] hover:bg-white border border-[#D1C7BD] font-semibold shadow-[0_0_20px_rgba(239,239,225,0.18)] focus:ring-[#D1C7BD]',
       secondary:
-        'bg-[#1A1B1F] text-[#F0F1F3] border border-[#27292F] hover:bg-[#27292F] hover:border-[#3E4148] shadow-sm focus:ring-[#5C6069]',
+        'bg-[#220D0F] text-[#EFEFE1] border border-[#3A1417] hover:bg-[#321317] hover:border-[#5A1E22] shadow-sm focus:ring-[#72282D]',
       outline:
-        'border border-[#3E4148] text-[#D4D7DC] hover:bg-[#1A1B1F] hover:text-white hover:border-[#5C6069] bg-[#111215]/60 backdrop-blur-sm focus:ring-[#5C6069]',
+        'border border-[#3A1417] text-[#D9D9D9] hover:bg-[#220D0F] hover:text-[#EFEFE1] hover:border-[#AC9C8D]/50 bg-[#160809]/60 backdrop-blur-sm focus:ring-[#AC9C8D]',
       ghost:
-        'text-[#B2B6BD] hover:bg-[#1A1B1F] hover:text-white focus:ring-[#3E4148]',
+        'text-[#D1C7BD] hover:bg-[#220D0F] hover:text-[#EFEFE1] focus:ring-[#5A1E22]',
       glow:
-        'bg-gradient-to-r from-white via-[#E5E7EB] to-[#B2B6BD] text-[#0B0C0E] hover:brightness-105 shadow-[0_0_25px_rgba(255,255,255,0.2)] focus:ring-white font-semibold tracking-wide',
+        'bg-gradient-to-r from-[#72282D] via-[#8E3239] to-[#72282D] text-[#EFEFE1] hover:brightness-110 border border-[#A6464E]/50 shadow-[0_0_25px_rgba(114,40,45,0.45)] focus:ring-[#72282D] font-semibold tracking-wide',
       danger:
-        'bg-[#2A1215] text-[#FCA5A5] border border-[#7F1D1D]/70 hover:bg-[#3B181C] focus:ring-rose-500 shadow-sm',
+        'bg-[#3A1417] text-[#FCA5A5] border border-[#72282D]/80 hover:bg-[#4E1B20] focus:ring-rose-500 shadow-sm',
     };
 
     const sizes = {

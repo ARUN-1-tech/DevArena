@@ -14,15 +14,15 @@ export const Badge: React.FC<BadgeProps> = ({
   ...props
 }) => {
   const variants = {
-    default: 'bg-[#1A1B1F] text-[#D4D7DC] border-[#27292F]',
-    neutral: 'bg-[#1A1B1F] text-[#D4D7DC] border-[#27292F]',
-    platinum: 'bg-white/10 text-white border-white/20 shadow-xs',
+    default: 'bg-[#220D0F] text-[#D1C7BD] border-[#3A1417]',
+    neutral: 'bg-[#220D0F] text-[#D1C7BD] border-[#3A1417]',
+    platinum: 'bg-[#EFEFE1]/15 text-[#EFEFE1] border-[#EFEFE1]/30 shadow-xs',
     success: 'bg-[#0E2018] text-[#34D399] border-[#065F46]/60',
     warning: 'bg-[#24180A] text-[#FBBF24] border-[#78350F]/70',
     info: 'bg-[#121E2A] text-[#7DD3FC] border-[#0369A1]/60',
     cyan: 'bg-[#161D24] text-[#E2E8F0] border-[#38BDF8]/40',
-    purple: 'bg-[#1E1528] text-[#D8B4FE] border-[#6B21A8]/60',
-    danger: 'bg-[#261014] text-[#FCA5A5] border-[#991B1B]/60',
+    purple: 'bg-[#240C12] text-[#EFEFE1] border-[#72282D]/70',
+    danger: 'bg-[#3A1417] text-[#FCA5A5] border-[#72282D]/80',
   };
 
   const sizes = {

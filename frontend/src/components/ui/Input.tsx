@@ -14,13 +14,13 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
     return (
       <div className="w-full space-y-1.5">
         {label && (
-          <label htmlFor={inputId} className="block text-xs font-semibold text-[#D4D7DC] uppercase tracking-wider">
+          <label htmlFor={inputId} className="block text-xs font-semibold text-[#D1C7BD] uppercase tracking-wider">
             {label}
           </label>
         )}
         <div className="relative flex items-center">
           {leftIcon && (
-            <div className="absolute left-3 text-[#6C717B] pointer-events-none flex items-center">
+            <div className="absolute left-3 text-[#AC9C8D] pointer-events-none flex items-center">
               {leftIcon}
             </div>
           )}
@@ -28,10 +28,10 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
             id={inputId}
             ref={ref}
             className={cn(
-              'w-full bg-[#111215] border border-[#27292F] rounded-xl py-2.5 text-sm text-white placeholder:text-[#5C6069] transition-all duration-150',
-              'focus:outline-none focus:ring-2 focus:ring-white/30 focus:border-[#4A4E57] focus:bg-[#141518]',
+              'w-full bg-[#160809] border border-[#3A1417] rounded-xl py-2.5 text-sm text-[#EFEFE1] placeholder:text-[#8C7A70] transition-all duration-150',
+              'focus:outline-none focus:ring-2 focus:ring-[#72282D]/40 focus:border-[#72282D] focus:bg-[#1E0C0E]',
               leftIcon ? 'pl-9 pr-4' : 'px-4',
-              error && 'border-[#7F1D1D] focus:ring-rose-500',
+              error && 'border-[#72282D] focus:ring-rose-500',
               className
             )}
             {...props}

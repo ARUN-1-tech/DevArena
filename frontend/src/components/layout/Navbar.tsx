@@ -38,14 +38,14 @@ export const Navbar: React.FC<NavbarProps> = ({ backendConnected = false }) => {
   };
 
   return (
-    <header className="sticky top-0 z-50 bg-[#0B0C0E]/85 backdrop-blur-xl border-b border-[#212328] transition-all">
+    <header className="sticky top-0 z-50 bg-[#0D0506]/85 backdrop-blur-xl border-b border-[#3A1417] transition-all">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         {/* Brand */}
         <Link to="/" className="flex items-center gap-2.5 group">
-          <div className="w-9 h-9 rounded-xl bg-white text-[#0B0C0E] flex items-center justify-center shadow-glow-white group-hover:scale-105 transition-transform font-bold">
+          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#72282D] to-[#8E3239] text-[#EFEFE1] flex items-center justify-center shadow-glow-wine group-hover:scale-105 transition-transform font-bold border border-[#A6464E]/40">
             <Swords className="w-4 h-4" />
           </div>
-          <span className="text-lg font-black text-white tracking-tight">
+          <span className="text-lg font-black text-[#EFEFE1] tracking-tight">
             {APP_NAME}
           </span>
         </Link>
@@ -57,7 +57,7 @@ export const Navbar: React.FC<NavbarProps> = ({ backendConnected = false }) => {
               key={link.label}
               href={link.href}
               onClick={(e) => handleScrollTo(e, link.href)}
-              className="text-sm font-medium text-[#B2B6BD] hover:text-white transition-colors"
+              className="text-sm font-medium text-[#D1C7BD] hover:text-[#EFEFE1] transition-colors"
             >
               {link.label}
             </a>
@@ -68,7 +68,7 @@ export const Navbar: React.FC<NavbarProps> = ({ backendConnected = false }) => {
         <div className="flex items-center gap-3">
           <div
             className={`w-2 h-2 rounded-full hidden sm:block ${
-              backendConnected ? 'bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.6)]' : 'bg-[#3E4148]'
+              backendConnected ? 'bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.6)]' : 'bg-[#5A1E22]'
             }`}
             title={backendConnected ? 'API Connected' : 'API Standby'}
           />
@@ -76,7 +76,7 @@ export const Navbar: React.FC<NavbarProps> = ({ backendConnected = false }) => {
           {!isAuthenticated && (
             <Link
               to="/login"
-              className="hidden sm:inline-block text-xs font-semibold text-[#D4D7DC] hover:text-white transition-colors px-2 py-1"
+              className="hidden sm:inline-block text-xs font-semibold text-[#D1C7BD] hover:text-white transition-colors px-2 py-1"
             >
               Sign In
             </Link>
@@ -93,7 +93,7 @@ export const Navbar: React.FC<NavbarProps> = ({ backendConnected = false }) => {
           {/* Mobile hamburger button */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden p-2 rounded-xl text-[#B2B6BD] hover:text-white hover:bg-[#1A1B1F]"
+            className="md:hidden p-2 rounded-xl text-[#D1C7BD] hover:text-white hover:bg-[#220D0F]"
             aria-label="Toggle Navigation Menu"
           >
             {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -103,31 +103,31 @@ export const Navbar: React.FC<NavbarProps> = ({ backendConnected = false }) => {
 
       {/* Mobile Menu Dropdown */}
       {mobileMenuOpen && (
-        <div className="md:hidden bg-[#111215] border-b border-[#212328] px-4 py-3 space-y-2">
+        <div className="md:hidden bg-[#160809] border-b border-[#3A1417] px-4 py-3 space-y-2">
           {navLinks.map((link) => (
             <a
               key={link.label}
               href={link.href}
               onClick={(e) => handleScrollTo(e, link.href)}
-              className="block py-2 text-sm font-medium text-[#D4D7DC] hover:text-white"
+              className="block py-2 text-sm font-medium text-[#D1C7BD] hover:text-[#EFEFE1]"
             >
               {link.label}
             </a>
           ))}
-          <div className="pt-2 border-t border-[#212328] flex flex-col gap-2">
+          <div className="pt-2 border-t border-[#3A1417] flex flex-col gap-2">
             {!isAuthenticated ? (
               <>
                 <Link
                   to="/login"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="py-2 text-sm font-medium text-[#D4D7DC] hover:text-white"
+                  className="py-2 text-sm font-medium text-[#D1C7BD] hover:text-[#EFEFE1]"
                 >
                   Sign In
                 </Link>
                 <Link
                   to="/register"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="py-2 text-sm font-semibold text-white"
+                  className="py-2 text-sm font-semibold text-[#EFEFE1]"
                 >
                   Create Account
                 </Link>
@@ -135,7 +135,7 @@ export const Navbar: React.FC<NavbarProps> = ({ backendConnected = false }) => {
             ) : (
               <button
                 onClick={handleArenaAction}
-                className="w-full text-left py-2 text-sm font-semibold text-white"
+                className="w-full text-left py-2 text-sm font-semibold text-[#EFEFE1]"
               >
                 Launch DevArena HQ
               </button>
