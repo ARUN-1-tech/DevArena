@@ -3,6 +3,7 @@ package com.devarena.challenge.dto;
 import com.devarena.challenge.model.ChallengeCategory;
 import com.devarena.challenge.model.ChallengeDifficulty;
 import com.devarena.challenge.model.ChallengeProgressStatus;
+import com.devarena.challenge.model.ProblemType;
 
 import java.time.Instant;
 import java.util.List;
@@ -16,14 +17,18 @@ public record ChallengeDetailDto(
         String description,
         ChallengeDifficulty difficulty,
         ChallengeCategory category,
+        ProblemType problemType,
         int xpReward,
         int estimatedMinutes,
         String tags,
+        String supportedLanguages,
+        String sourceReference,
         ChallengeProgressStatus progressStatus,
         Instant completedAt,
         List<TestCaseSummaryDto> sampleTestCases,
         Map<String, String> starterTemplates
 ) {
+    // Backward-compatible compact constructor without sampleTestCases / starterTemplates
     public ChallengeDetailDto(
             UUID id,
             String title,
@@ -31,12 +36,17 @@ public record ChallengeDetailDto(
             String description,
             ChallengeDifficulty difficulty,
             ChallengeCategory category,
+            ProblemType problemType,
             int xpReward,
             int estimatedMinutes,
             String tags,
+            String supportedLanguages,
+            String sourceReference,
             ChallengeProgressStatus progressStatus,
             Instant completedAt
     ) {
-        this(id, title, slug, description, difficulty, category, xpReward, estimatedMinutes, tags, progressStatus, completedAt, List.of(), Map.of());
+        this(id, title, slug, description, difficulty, category, problemType,
+                xpReward, estimatedMinutes, tags, supportedLanguages, sourceReference,
+                progressStatus, completedAt, List.of(), Map.of());
     }
 }

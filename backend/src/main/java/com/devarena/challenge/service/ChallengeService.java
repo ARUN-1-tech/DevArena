@@ -55,11 +55,19 @@ public class ChallengeService {
         this.starterCodeRepository = starterCodeRepository;
     }
 
-    public Page<ChallengeCardDto> getChallenges(String search, ChallengeDifficulty difficulty, ChallengeCategory category, Pageable pageable, UUID userId) {
+    public Page<ChallengeCardDto> getChallenges(
+            String search,
+            ChallengeDifficulty difficulty,
+            ChallengeCategory category,
+            ProblemType problemType,
+            Pageable pageable,
+            UUID userId) {
+
         Page<ChallengeEntity> entityPage = challengeRepository.searchChallenges(
                 ChallengeStatus.PUBLISHED,
                 difficulty,
                 category,
+                problemType,
                 (search != null && !search.isBlank()) ? search.trim() : null,
                 pageable
         );
@@ -78,9 +86,12 @@ public class ChallengeService {
                 c.getSlug(),
                 c.getDifficulty(),
                 c.getCategory(),
+                c.getProblemType(),
                 c.getXpReward(),
                 c.getEstimatedMinutes(),
                 c.getTags(),
+                c.getSupportedLanguages(),
+                c.getSourceReference(),
                 progressMap.getOrDefault(c.getId(), ChallengeProgressStatus.NOT_STARTED)
         )).collect(Collectors.toList());
 
@@ -126,9 +137,12 @@ public class ChallengeService {
                 challenge.getDescription(),
                 challenge.getDifficulty(),
                 challenge.getCategory(),
+                challenge.getProblemType(),
                 challenge.getXpReward(),
                 challenge.getEstimatedMinutes(),
                 challenge.getTags(),
+                challenge.getSupportedLanguages(),
+                challenge.getSourceReference(),
                 progressStatus,
                 completedAt,
                 sampleCases,

@@ -1,25 +1,34 @@
 package com.devarena.admin.service;
 
 import com.devarena.admin.dto.AdminChallengeDto;
+import com.devarena.admin.dto.ProblemImportDto;
+import com.devarena.admin.dto.ProblemImportResultDto;
 import com.devarena.admin.dto.UpsertChallengeRequest;
 import com.devarena.admin.model.AdminAuditAction;
+import com.devarena.challenge.model.ChallengeCategory;
 import com.devarena.challenge.model.ChallengeEntity;
 import com.devarena.challenge.model.ChallengeStatus;
 import com.devarena.challenge.model.ChallengeTestCaseEntity;
+import com.devarena.challenge.model.ProblemType;
 import com.devarena.challenge.repository.ChallengeRepository;
 import com.devarena.challenge.repository.ChallengeTestCaseRepository;
 import com.devarena.common.exception.ResourceNotFoundException;
 import com.devarena.user.model.UserEntity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 @Service
 public class AdminChallengeService {
+
+    private static final Logger log = LoggerFactory.getLogger(AdminChallengeService.class);
 
     private final ChallengeRepository challengeRepository;
     private final ChallengeTestCaseRepository testCaseRepository;
@@ -190,4 +199,111 @@ public class AdminChallengeService {
                 .createdAt(entity.getCreatedAt())
                 .build();
     }
+
+    @Transactional
+    public ProblemImportResultDto importProblems(List<ProblemImportDto> problems, UUID adminId) {
+        UserEntity admin = userRepository.findById(adminId)
+                .orElseThrow(() -> new ResourceNotFoundException("Admin not found: " + adminId));
+
+        int imported = 0;
+        int skipped = 0;
+        int failed = 0;
+        List<String> errors = new ArrayList<>();
+
+        for (ProblemImportDto dto : problems) {
+            try {
+                // Validate required fields
+                if (dto.getTitle() == null || dto.getTitle().isBlank()) {
+                    errors.add("Skipped: missing title");
+                    failed++;
+                    continue;
+                }
+                if (dto.getDescription() == null || dto.getDescription().isBlank()) {
+                    errors.add("Skipped '" + dto.getTitle() + "': missing description");
+                    failed++;
+                    continue;
+                }
+                if (dto.getDifficulty() == null) {
+                    errors.add("Skipped '" + dto.getTitle() + "': missing difficulty");
+                    failed++;
+                    continue;
+                }
+                if (dto.getCategory() == null) {
+                    errors.add("Skipped '" + dto.getTitle() + "': missing category");
+                    failed++;
+                    continue;
+                }
+
+                // Compute slug
+                String slug = dto.getSlug() != null && !dto.getSlug().isBlank()
+                        ? dto.getSlug().toLowerCase().replaceAll("[^a-z0-9-]", "-")
+                        : dto.getTitle().toLowerCase().trim().replaceAll("[^a-z0-9]+", "-");
+
+                // Duplicate check by slug or title
+                if (challengeRepository.existsBySlug(slug)) {
+                    log.debug("Skipping duplicate slug: {}", slug);
+                    skipped++;
+                    continue;
+                }
+                if (challengeRepository.existsByTitle(dto.getTitle())) {
+                    log.debug("Skipping duplicate title: {}", dto.getTitle());
+                    skipped++;
+                    continue;
+                }
+
+                // Build entity
+                ChallengeEntity challenge = new ChallengeEntity(
+                        dto.getTitle(),
+                        slug,
+                        dto.getDescription(),
+                        dto.getDifficulty(),
+                        dto.getCategory(),
+                        dto.getProblemType() != null ? dto.getProblemType() : ProblemType.CODING,
+                        dto.getXpReward() > 0 ? dto.getXpReward() : 100,
+                        dto.getEstimatedMinutes() > 0 ? dto.getEstimatedMinutes() : 15,
+                        dto.getTags(),
+                        dto.getSupportedLanguages() != null ? dto.getSupportedLanguages() : "JAVA,PYTHON,JAVASCRIPT",
+                        dto.getSourceReference()
+                );
+                challenge.setStatus(dto.getStatus() != null ? dto.getStatus() : ChallengeStatus.PUBLISHED);
+
+                ChallengeEntity saved = challengeRepository.save(challenge);
+
+                // Save test cases if provided
+                if (dto.getTestCases() != null) {
+                    for (ProblemImportDto.TestCaseImportItem tc : dto.getTestCases()) {
+                        ChallengeTestCaseEntity testCase = new ChallengeTestCaseEntity(
+                                saved,
+                                tc.getInput() != null ? tc.getInput() : "",
+                                tc.getExpectedOutput() != null ? tc.getExpectedOutput() : "",
+                                tc.isHidden(),
+                                tc.getOrderIndex(),
+                                tc.getExplanation()
+                        );
+                        testCaseRepository.save(testCase);
+                    }
+                }
+
+                imported++;
+            } catch (Exception ex) {
+                log.error("Failed to import problem '{}': {}", dto.getTitle(), ex.getMessage());
+                errors.add("Error importing '" + dto.getTitle() + "': " + ex.getMessage());
+                failed++;
+            }
+        }
+
+        if (imported > 0) {
+            adminAuditService.logAction(
+                    admin,
+                    AdminAuditAction.CHALLENGE_CREATED,
+                    "PROBLEM_IMPORT",
+                    null,
+                    "Bulk imported " + imported + " problems. Skipped: " + skipped + ", Failed: " + failed
+            );
+        }
+
+        log.info("Problem import completed: imported={}, skipped={}, failed={}", imported, skipped, failed);
+        return new ProblemImportResultDto(problems.size(), imported, skipped, failed, errors);
+    }
 }
+

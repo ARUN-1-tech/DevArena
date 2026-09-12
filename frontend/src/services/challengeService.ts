@@ -1,6 +1,13 @@
 import { apiClient } from '../lib/api-client';
 import { ApiResponse } from '../types/auth';
-import { Challenge, ChallengeCategory, ChallengeDifficulty, ChallengeProgressStatus, XpRewardResult } from '../types/arena';
+import {
+  Challenge,
+  ChallengeCategory,
+  ChallengeDifficulty,
+  ChallengeProgressStatus,
+  ProblemType,
+  XpRewardResult,
+} from '../types/arena';
 
 interface PageResponse<T> {
   content: T[];
@@ -14,6 +21,8 @@ export interface ChallengeFilterParams {
   search?: string;
   difficulty?: ChallengeDifficulty;
   category?: ChallengeCategory;
+  type?: ProblemType;
+  sort?: 'newest' | 'xp_desc' | 'xp_asc' | 'difficulty_asc' | 'difficulty_desc' | 'title_asc';
   page?: number;
   size?: number;
 }

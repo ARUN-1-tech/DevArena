@@ -1,4 +1,4 @@
-﻿export type ChallengeDifficulty = 'EASY' | 'MEDIUM' | 'HARD' | 'EXPERT';
+export type ChallengeDifficulty = 'EASY' | 'MEDIUM' | 'HARD' | 'EXPERT';
 
 export type ChallengeCategory =
   | 'ARRAYS'
@@ -8,9 +8,36 @@ export type ChallengeCategory =
   | 'TREES'
   | 'GRAPHS'
   | 'DYNAMIC_PROGRAMMING'
+  | 'BINARY_SEARCH'
+  | 'HEAPS'
+  | 'BIT_MANIPULATION'
+  | 'TWO_POINTERS'
+  | 'SLIDING_WINDOW'
+  | 'BACKTRACKING'
+  | 'GREEDY'
+  | 'SORTING'
   | 'DATABASE'
+  | 'SQL_DB'
+  | 'OPERATING_SYSTEMS'
+  | 'NETWORKING'
   | 'ALGORITHMS'
-  | 'DEBUGGING';
+  | 'DEBUGGING'
+  | 'APTITUDE'
+  | 'PUZZLES'
+  | 'INTERVIEW'
+  | 'GENERAL';
+
+export type ProblemType =
+  | 'CODING'
+  | 'MCQ'
+  | 'APTITUDE'
+  | 'SQL'
+  | 'DBMS'
+  | 'OS'
+  | 'NETWORKING'
+  | 'PUZZLE'
+  | 'INTERVIEW'
+  | 'GENERAL';
 
 export type ChallengeProgressStatus = 'NOT_STARTED' | 'ATTEMPTED' | 'SOLVED';
 
@@ -21,12 +48,27 @@ export interface Challenge {
   description?: string;
   difficulty: ChallengeDifficulty;
   category: ChallengeCategory;
+  problemType: ProblemType;
   xpReward: number;
   estimatedMinutes: number;
   tags?: string;
+  supportedLanguages?: string;
+  sourceReference?: string;
   progressStatus: ChallengeProgressStatus;
   completedAt?: string;
+  // Detail-only fields
+  sampleTestCases?: TestCaseSummary[];
+  starterTemplates?: Record<string, string>;
 }
+
+export interface TestCaseSummary {
+  id: string;
+  orderIndex: number;
+  input: string;
+  expectedOutput: string;
+  explanation?: string;
+}
+
 
 export type QuestType =
   | 'COMPLETE_CHALLENGE'

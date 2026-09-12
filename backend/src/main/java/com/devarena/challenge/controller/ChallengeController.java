@@ -5,6 +5,7 @@ import com.devarena.challenge.dto.ChallengeDetailDto;
 import com.devarena.challenge.dto.ChallengeProgressDto;
 import com.devarena.challenge.model.ChallengeCategory;
 import com.devarena.challenge.model.ChallengeDifficulty;
+import com.devarena.challenge.model.ProblemType;
 import com.devarena.challenge.service.ChallengeService;
 import com.devarena.common.api.ApiResponse;
 import com.devarena.progression.dto.XpRewardResult;
@@ -33,13 +34,27 @@ public class ChallengeController {
             @RequestParam(required = false) String search,
             @RequestParam(required = false) ChallengeDifficulty difficulty,
             @RequestParam(required = false) ChallengeCategory category,
+            @RequestParam(required = false) ProblemType type,
+            @RequestParam(defaultValue = "newest") String sort,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size,
             @AuthenticationPrincipal DevArenaUserDetails userDetails
     ) {
         UUID userId = userDetails != null ? userDetails.getId() : null;
+
+        Sort sortOrder = switch (sort) {
+            case "xp_desc" -> Sort.by("xpReward").descending();
+            case "xp_asc" -> Sort.by("xpReward").ascending();
+            case "difficulty_asc" -> Sort.by("difficulty").ascending();
+            case "difficulty_desc" -> Sort.by("difficulty").descending();
+            case "title_asc" -> Sort.by("title").ascending();
+            default -> Sort.by("createdAt").descending();
+        };
+
         Page<ChallengeCardDto> result = challengeService.getChallenges(
-                search, difficulty, category, PageRequest.of(page, size, Sort.by("createdAt").descending()), userId
+                search, difficulty, category, type,
+                PageRequest.of(page, size, sortOrder),
+                userId
         );
         return ResponseEntity.ok(ApiResponse.ok(result));
     }
