@@ -12,8 +12,11 @@ import {
   AlertCircle,
   Trophy,
   Loader2,
-  Code2,
   Terminal,
+  ChevronDown,
+  Maximize2,
+  Minimize2,
+  Check,
 } from 'lucide-react';
 import { battleService, BattleSubmitResult } from '../../services/battleService';
 import { submissionService } from '../../services/submissionService';
@@ -23,6 +26,20 @@ import { ExecutionLanguage, RunCodeResponse } from '../../types/submission';
 import { useAuth } from '../../contexts/AuthContext';
 import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
+
+interface LanguageOption {
+  key: ExecutionLanguage;
+  name: string;
+  version: string;
+  badge: string;
+  icon: string;
+}
+
+const LANGUAGES: LanguageOption[] = [
+  { key: 'JAVA', name: 'Java', version: 'OpenJDK 17', badge: 'Java 17', icon: '☕' },
+  { key: 'PYTHON', name: 'Python', version: 'Python 3.11', badge: 'Python 3', icon: '🐍' },
+  { key: 'JAVASCRIPT', name: 'JavaScript', version: 'Node.js 20 (ES6)', badge: 'Node.js', icon: '⚡' },
+];
 
 export const BattlePage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -48,6 +65,9 @@ export const BattlePage: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [runResult, setRunResult] = useState<RunCodeResponse | null>(null);
   const [activeTab, setActiveTab] = useState<'tests' | 'console'>('tests');
+  const [isLangDropdownOpen, setIsLangDropdownOpen] = useState(false);
+  const [isFullScreen, setIsFullScreen] = useState(false);
+  const langDropdownRef = useRef<HTMLDivElement>(null);
 
   // Opponent Live Beacon
   const [opponentStatusText, setOpponentStatusText] = useState<string>('Opponent connected');
@@ -219,6 +239,64 @@ export const BattlePage: React.FC = () => {
     }
   };
 
+  // Full Screen Mode Toggler
+  const toggleFullScreen = () => {
+    if (!isFullScreen) {
+      setIsFullScreen(true);
+      try {
+        if (!document.fullscreenElement && document.documentElement.requestFullscreen) {
+          document.documentElement.requestFullscreen().catch(() => {});
+        }
+      } catch {}
+    } else {
+      setIsFullScreen(false);
+      try {
+        if (document.fullscreenElement && document.exitFullscreen) {
+          document.exitFullscreen().catch(() => {});
+        }
+      } catch {}
+    }
+  };
+
+  // Full Screen Esc and browser change sync
+  useEffect(() => {
+    const handleFullScreenChange = () => {
+      if (!document.fullscreenElement && isFullScreen) {
+        setIsFullScreen(false);
+      }
+    };
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isFullScreen) {
+        setIsFullScreen(false);
+        if (document.fullscreenElement && document.exitFullscreen) {
+          document.exitFullscreen().catch(() => {});
+        }
+      }
+    };
+
+    document.addEventListener('fullscreenchange', handleFullScreenChange);
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('fullscreenchange', handleFullScreenChange);
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isFullScreen]);
+
+  // Handle outside click to close Language dropdown
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (langDropdownRef.current && !langDropdownRef.current.contains(e.target as Node)) {
+        setIsLangDropdownOpen(false);
+      }
+    };
+    if (isLangDropdownOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isLangDropdownOpen]);
+
   // Run Test Cases
   const handleRunCode = async () => {
     if (!battle?.challenge) return;
@@ -305,6 +383,8 @@ export const BattlePage: React.FC = () => {
   const isMePlayer1 = battle.player1.userId === user?.id;
   const me: BattlePlayer = isMePlayer1 ? battle.player1 : battle.player2;
   const opponent: BattlePlayer = isMePlayer1 ? battle.player2 : battle.player1;
+
+  const currentLangConfig = LANGUAGES.find((l) => l.key === language) || LANGUAGES[1];
 
   return (
     <div className="h-screen flex flex-col bg-slate-50 text-slate-800 overflow-hidden select-none">
@@ -496,26 +576,93 @@ export const BattlePage: React.FC = () => {
         <div className="w-1/2 flex flex-col bg-white">
           {/* Editor Action Header */}
           <div className="h-12 bg-white/95 border-b border-slate-200/80 px-4 flex items-center justify-between shrink-0">
-            {/* Language Selector */}
-            <div className="flex items-center gap-1.5">
-              <Code2 className="w-4 h-4 text-indigo-600 mr-1" />
-              {(['JAVA', 'PYTHON', 'JAVASCRIPT'] as ExecutionLanguage[]).map((lang) => (
-                <button
-                  key={lang}
-                  onClick={() => handleLanguageChange(lang)}
-                  className={`px-2.5 py-1 text-xs font-bold rounded-lg transition-all ${
-                    language === lang
-                      ? 'bg-gradient-to-r from-indigo-600 to-cyan-600 text-white shadow-2xs'
-                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+            {/* Language Selector Dropdown */}
+            <div className="relative" ref={langDropdownRef}>
+              <button
+                type="button"
+                onClick={() => setIsLangDropdownOpen((prev) => !prev)}
+                className="flex items-center gap-2 px-3 py-1 rounded-xl border border-slate-200/90 bg-white hover:bg-slate-50 text-slate-800 font-semibold text-xs transition-all shadow-2xs cursor-pointer group"
+                title="Select Programming Language"
+              >
+                <span className="text-sm leading-none">{currentLangConfig.icon}</span>
+                <span className="font-mono font-bold text-slate-900">{currentLangConfig.name}</span>
+                <span className="text-[10px] font-mono text-slate-400 hidden sm:inline">
+                  ({currentLangConfig.version})
+                </span>
+                <ChevronDown
+                  className={`w-3.5 h-3.5 text-slate-400 group-hover:text-slate-600 transition-transform duration-200 ${
+                    isLangDropdownOpen ? 'rotate-180 text-indigo-600' : ''
                   }`}
-                >
-                  {lang}
-                </button>
-              ))}
+                />
+              </button>
+
+              <AnimatePresence>
+                {isLangDropdownOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -6, scale: 0.96 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: -6, scale: 0.96 }}
+                    transition={{ duration: 0.15 }}
+                    className="absolute left-0 mt-1.5 w-56 rounded-2xl bg-white/95 backdrop-blur-2xl border border-slate-200/90 shadow-xl ring-1 ring-slate-900/5 z-50 p-1.5 space-y-1"
+                  >
+                    <div className="px-2.5 py-1 text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400 border-b border-slate-100">
+                      Select Language
+                    </div>
+                    {LANGUAGES.map((item) => {
+                      const isSelected = language === item.key;
+                      return (
+                        <button
+                          key={item.key}
+                          type="button"
+                          onClick={() => {
+                            setIsLangDropdownOpen(false);
+                            handleLanguageChange(item.key);
+                          }}
+                          className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-mono transition-all text-left cursor-pointer ${
+                            isSelected
+                              ? 'bg-gradient-to-r from-indigo-50 to-cyan-50 text-indigo-900 font-bold border border-indigo-200/70 shadow-2xs'
+                              : 'text-slate-700 hover:bg-slate-100/80 hover:text-slate-900'
+                          }`}
+                        >
+                          <div className="flex items-center gap-2.5 min-w-0">
+                            <span className="text-base leading-none">{item.icon}</span>
+                            <div>
+                              <div className="font-bold leading-tight flex items-center gap-1.5">
+                                <span>{item.name}</span>
+                                <span className="text-[9px] font-sans px-1.5 py-0.2 rounded-md bg-slate-100 text-slate-600 border border-slate-200/60 font-medium">
+                                  {item.badge}
+                                </span>
+                              </div>
+                              <span className="text-[10px] text-slate-400 font-sans block">{item.version}</span>
+                            </div>
+                          </div>
+                          {isSelected && <Check className="w-4 h-4 text-indigo-600 shrink-0" />}
+                        </button>
+                      );
+                    })}
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
 
-            {/* Action Buttons: Run, Submit, Forfeit */}
+            {/* Action Buttons: Fullscreen, Run, Submit, Forfeit */}
             <div className="flex items-center gap-2">
+              <button
+                onClick={toggleFullScreen}
+                title={isFullScreen ? 'Exit full screen (Esc)' : 'Enter full screen mode'}
+                className={`p-1.5 rounded-lg border text-xs transition-all duration-200 flex items-center gap-1 cursor-pointer ${
+                  isFullScreen
+                    ? 'bg-indigo-50 border-indigo-300 text-indigo-700'
+                    : 'border-slate-200 text-slate-500 hover:text-slate-900 hover:bg-slate-50'
+                }`}
+              >
+                {isFullScreen ? (
+                  <Minimize2 className="w-3.5 h-3.5 text-indigo-600" />
+                ) : (
+                  <Maximize2 className="w-3.5 h-3.5" />
+                )}
+              </button>
+
               <Button
                 size="sm"
                 variant="outline"
