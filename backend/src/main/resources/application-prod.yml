@@ -15,11 +15,11 @@ spring:
   application:
     name: devarena-backend
 
-  # Database DataSource Configuration (PostgreSQL)
+  # Database DataSource Configuration (Production / Supabase / Render PostgreSQL)
   datasource:
-    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://postgres:5432/devarena}
-    username: ${SPRING_DATASOURCE_USERNAME:devarena_user}
-    password: ${SPRING_DATASOURCE_PASSWORD:devarena_secret}
+    url: ${DATABASE_URL:${SPRING_DATASOURCE_URL:}}
+    username: ${SPRING_DATASOURCE_USERNAME:${DATABASE_USERNAME:}}
+    password: ${SPRING_DATASOURCE_PASSWORD:${DATABASE_PASSWORD:}}
     driver-class-name: org.postgresql.Driver
     hikari:
       pool-name: DevArenaProdHikariPool
@@ -29,6 +29,9 @@ spring:
       idle-timeout: 600000
       max-lifetime: 1800000
       leak-detection-threshold: 60000
+      data-source-properties:
+        sslmode: ${PG_SSL_MODE:require}
+        ssl: ${PG_SSL:true}
 
   # JPA & Hibernate Production Configuration
   jpa:
@@ -56,9 +59,9 @@ spring:
   # Redis Configuration
   data:
     redis:
-      host: ${SPRING_DATA_REDIS_HOST:redis}
-      port: ${SPRING_DATA_REDIS_PORT:6379}
-      password: ${SPRING_DATA_REDIS_PASSWORD:}
+      host: ${SPRING_DATA_REDIS_HOST:${REDIS_HOST:localhost}}
+      port: ${SPRING_DATA_REDIS_PORT:${REDIS_PORT:6379}}
+      password: ${SPRING_DATA_REDIS_PASSWORD:${REDIS_PASSWORD:}}
       timeout: 3000ms
 
 # DevArena Platform Configuration

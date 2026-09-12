@@ -9,11 +9,11 @@ spring:
   application:
     name: devarena-backend
 
-  # Database DataSource Configuration (PostgreSQL)
+  # Database DataSource Configuration (PostgreSQL / Supabase / Render / H2)
   datasource:
-    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/devarena}
-    username: ${SPRING_DATASOURCE_USERNAME:devarena_user}
-    password: ${SPRING_DATASOURCE_PASSWORD:devarena_secret}
+    url: ${DATABASE_URL:${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/devarena}}
+    username: ${SPRING_DATASOURCE_USERNAME:${DATABASE_USERNAME:devarena_user}}
+    password: ${SPRING_DATASOURCE_PASSWORD:${DATABASE_PASSWORD:devarena_secret}}
     driver-class-name: org.postgresql.Driver
     hikari:
       pool-name: DevArenaHikariPool
@@ -46,9 +46,9 @@ spring:
   # Redis Configuration
   data:
     redis:
-      host: ${SPRING_DATA_REDIS_HOST:localhost}
-      port: ${SPRING_DATA_REDIS_PORT:6379}
-      password: ${SPRING_DATA_REDIS_PASSWORD:}
+      host: ${SPRING_DATA_REDIS_HOST:${REDIS_HOST:localhost}}
+      port: ${SPRING_DATA_REDIS_PORT:${REDIS_PORT:6379}}
+      password: ${SPRING_DATA_REDIS_PASSWORD:${REDIS_PASSWORD:}}
       timeout: 2000ms
 
 # DevArena Platform Custom Configuration
