@@ -3,7 +3,7 @@ import { cn } from '../../lib/utils';
 
 export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
   hoverEffect?: boolean;
-  glow?: 'cyan' | 'violet' | 'emerald' | 'none';
+  glow?: 'cyan' | 'violet' | 'emerald' | 'silver' | 'none';
 }
 
 export const Card: React.FC<CardProps> = ({
@@ -15,16 +15,17 @@ export const Card: React.FC<CardProps> = ({
 }) => {
   const glowStyles = {
     none: '',
-    cyan: 'hover:shadow-glow-cyan border-cyan-200/60',
-    violet: 'hover:shadow-glow-violet border-violet-200/60',
-    emerald: 'hover:shadow-glow-emerald border-emerald-200/60',
+    silver: 'hover:shadow-glow-silver hover:border-[#4A4E57]',
+    cyan: 'hover:shadow-[0_0_20px_-5px_rgba(255,255,255,0.15)] hover:border-[#5C6069]',
+    violet: 'hover:shadow-[0_0_20px_-5px_rgba(255,255,255,0.15)] hover:border-[#5C6069]',
+    emerald: 'hover:shadow-[0_0_20px_-5px_rgba(16,185,129,0.25)] hover:border-[#10B981]/50',
   };
 
   return (
     <div
       className={cn(
-        'bg-white/90 backdrop-blur-md rounded-xl border border-slate-200/80 shadow-sm p-6 transition-all duration-200',
-        hoverEffect && 'hover:-translate-y-1 hover:shadow-md cursor-pointer',
+        'bg-[#141518]/90 backdrop-blur-xl rounded-2xl border border-[#27292F] shadow-luxury-card p-6 transition-all duration-200 text-[#F0F1F3]',
+        hoverEffect && 'hover:-translate-y-0.5 hover:border-[#3E4148] hover:shadow-luxury cursor-pointer',
         glowStyles[glow],
         className
       )}

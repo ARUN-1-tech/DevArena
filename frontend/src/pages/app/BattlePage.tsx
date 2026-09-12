@@ -307,7 +307,7 @@ export const BattlePage: React.FC = () => {
   const opponent: BattlePlayer = isMePlayer1 ? battle.player2 : battle.player1;
 
   return (
-    <div className="h-screen flex flex-col bg-slate-950 text-slate-100 overflow-hidden select-none">
+    <div className="h-screen flex flex-col bg-sandwich-950 text-sandwich-100 overflow-hidden select-none">
       {/* 3-2-1 FIGHT Countdown Overlay */}
       <AnimatePresence>
         {countdown !== null && (
@@ -327,7 +327,7 @@ export const BattlePage: React.FC = () => {
             >
               <span
                 className={`text-8xl md:text-9xl font-black tracking-tighter ${
-                  countdown === 0 ? 'text-amber-400' : 'text-indigo-400'
+                  countdown === 0 ? 'text-sandwich-50 shadow-glow-white' : 'text-sandwich-200'
                 }`}
               >
                 {countdown === 0 ? 'FIGHT!' : countdown}
@@ -338,36 +338,36 @@ export const BattlePage: React.FC = () => {
       </AnimatePresence>
 
       {/* TOP HEADER: Player vs Opponent & Server Timer */}
-      <header className="h-16 bg-slate-900 border-b border-slate-800 px-6 flex items-center justify-between shrink-0 z-20">
+      <header className="h-16 bg-sandwich-900/95 border-b border-sandwich-800 px-6 flex items-center justify-between shrink-0 z-20">
         {/* Your Player Card */}
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center font-black text-white text-base shadow-md shadow-indigo-600/30">
+          <div className="w-10 h-10 rounded-xl bg-sandwich-800 border border-sandwich-600 flex items-center justify-center font-black text-sandwich-50 text-base shadow-glow-silver">
             {me.username[0]?.toUpperCase()}
           </div>
           <div className="flex flex-col">
             <div className="flex items-center gap-2">
-              <span className="font-bold text-sm text-white">{me.username}</span>
-              <span className="text-[10px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded bg-indigo-500/20 text-indigo-400 border border-indigo-500/30">
+              <span className="font-bold text-sm text-sandwich-100">{me.username}</span>
+              <span className="text-[10px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded bg-sandwich-800 text-sandwich-300 border border-sandwich-700">
                 Lvl {me.level}
               </span>
             </div>
-            <span className="text-xs font-semibold text-amber-400 flex items-center gap-1">
-              <Trophy className="w-3 h-3" /> {me.rating} MMR
+            <span className="text-xs font-semibold text-sandwich-300 flex items-center gap-1">
+              <Trophy className="w-3 h-3 text-sandwich-400" /> {me.rating} MMR
             </span>
           </div>
         </div>
 
         {/* Center: Server Timer & VS Badge */}
         <div className="flex flex-col items-center">
-          <div className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-800 border border-slate-700 shadow-inner">
+          <div className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-sandwich-950 border border-sandwich-800 shadow-inner">
             <Clock
               className={`w-4 h-4 ${
-                timeRemaining < 120 ? 'text-rose-400 animate-pulse' : 'text-indigo-400'
+                timeRemaining < 120 ? 'text-rose-400 animate-pulse' : 'text-sandwich-300'
               }`}
             />
             <span
               className={`font-mono font-black text-base tracking-wider ${
-                timeRemaining < 120 ? 'text-rose-400' : 'text-white'
+                timeRemaining < 120 ? 'text-rose-400' : 'text-sandwich-50'
               }`}
             >
               {formatClock(timeRemaining)}
@@ -381,10 +381,10 @@ export const BattlePage: React.FC = () => {
                   ? 'bg-emerald-400 animate-ping'
                   : opponentStatusType === 'warning'
                   ? 'bg-amber-400'
-                  : 'bg-slate-400'
+                  : 'bg-sandwich-500'
               }`}
             />
-            <span className="text-slate-400 font-medium">{opponentStatusText}</span>
+            <span className="text-sandwich-400 font-medium">{opponentStatusText}</span>
           </div>
         </div>
 
@@ -392,16 +392,16 @@ export const BattlePage: React.FC = () => {
         <div className="flex items-center gap-3">
           <div className="flex flex-col text-right">
             <div className="flex items-center justify-end gap-2">
-              <span className="text-[10px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded bg-rose-500/20 text-rose-400 border border-rose-500/30">
+              <span className="text-[10px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded bg-sandwich-800 text-sandwich-400 border border-sandwich-700">
                 Lvl {opponent.level}
               </span>
-              <span className="font-bold text-sm text-white">{opponent.username}</span>
+              <span className="font-bold text-sm text-sandwich-100">{opponent.username}</span>
             </div>
-            <span className="text-xs font-semibold text-amber-400 flex items-center justify-end gap-1">
-              <Trophy className="w-3 h-3" /> {opponent.rating} MMR
+            <span className="text-xs font-semibold text-sandwich-300 flex items-center justify-end gap-1">
+              <Trophy className="w-3 h-3 text-sandwich-400" /> {opponent.rating} MMR
             </span>
           </div>
-          <div className="w-10 h-10 rounded-xl bg-rose-600 flex items-center justify-center font-black text-white text-base shadow-md shadow-rose-600/30">
+          <div className="w-10 h-10 rounded-xl bg-sandwich-800 border border-sandwich-700 flex items-center justify-center font-black text-sandwich-300 text-base shadow-sm">
             {opponent.username[0]?.toUpperCase()}
           </div>
         </div>
@@ -409,9 +409,9 @@ export const BattlePage: React.FC = () => {
 
       {/* LOBBY WAITING BANNER (If not started yet) */}
       {battle.status === 'WAITING' && (
-        <div className="bg-indigo-950/60 border-b border-indigo-900/40 px-6 py-3 flex items-center justify-between z-10">
-          <div className="flex items-center gap-2 text-indigo-300 text-sm">
-            <Swords className="w-4 h-4 text-indigo-400 animate-pulse" />
+        <div className="bg-sandwich-900 border-b border-sandwich-800 px-6 py-3 flex items-center justify-between z-10">
+          <div className="flex items-center gap-2 text-sandwich-300 text-sm">
+            <Swords className="w-4 h-4 text-sandwich-100 animate-pulse" />
             <span>Match is preparing. Both players must mark Ready to begin.</span>
           </div>
           <Button
@@ -429,10 +429,10 @@ export const BattlePage: React.FC = () => {
       {/* MAIN WORKSPACE: SPLIT SCREEN */}
       <div className="flex-1 flex overflow-hidden">
         {/* LEFT COLUMN: Challenge Specs & Examples */}
-        <div className="w-1/2 border-r border-slate-800 flex flex-col bg-slate-900/50 overflow-y-auto p-6">
+        <div className="w-1/2 border-r border-sandwich-800 flex flex-col bg-sandwich-950 overflow-y-auto p-6">
           <div className="mb-4">
             <div className="flex items-center gap-2 mb-2">
-              <Badge variant="purple">{battle.challenge.category}</Badge>
+              <Badge variant="default" className="bg-sandwich-900 text-sandwich-200 border-sandwich-700">{battle.challenge.category}</Badge>
               <Badge
                 variant={
                   battle.challenge.difficulty === 'EASY'
@@ -444,43 +444,43 @@ export const BattlePage: React.FC = () => {
               >
                 {battle.challenge.difficulty}
               </Badge>
-              <span className="text-xs text-slate-400 font-medium ml-auto flex items-center gap-1">
+              <span className="text-xs text-sandwich-400 font-medium ml-auto flex items-center gap-1">
                 <Clock className="w-3.5 h-3.5" /> 15 min limit
               </span>
             </div>
-            <h1 className="text-2xl font-black text-white tracking-tight">
+            <h1 className="text-2xl font-black text-sandwich-50 tracking-tight">
               {battle.challenge.title}
             </h1>
           </div>
 
           {/* Description */}
-          <div className="prose prose-invert prose-sm max-w-none text-slate-300 whitespace-pre-line mb-6 leading-relaxed">
+          <div className="prose prose-invert prose-sm max-w-none text-sandwich-200 whitespace-pre-line mb-6 leading-relaxed">
             {battle.challenge.description}
           </div>
 
           {/* Sample Test Cases */}
           {battle.challenge.sampleTestCases && battle.challenge.sampleTestCases.length > 0 && (
             <div className="mt-4">
-              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-sandwich-400 mb-3">
                 Visible Test Cases
               </h3>
               <div className="space-y-3">
                 {battle.challenge.sampleTestCases.map((tc, idx) => (
                   <div
                     key={tc.id || idx}
-                    className="bg-slate-800/60 border border-slate-750 rounded-xl p-3 text-xs"
+                    className="bg-sandwich-900/80 border border-sandwich-800 rounded-xl p-3 text-xs"
                   >
-                    <div className="text-slate-400 mb-1 font-semibold">Case {idx + 1}</div>
+                    <div className="text-sandwich-300 mb-1 font-semibold">Case {idx + 1}</div>
                     <div className="grid grid-cols-2 gap-2 font-mono">
                       <div>
-                        <span className="text-slate-400 block text-[11px]">Input:</span>
-                        <div className="bg-slate-950/80 p-2 rounded text-slate-200 mt-0.5 whitespace-pre-wrap">
+                        <span className="text-sandwich-400 block text-[11px]">Input:</span>
+                        <div className="bg-sandwich-950 p-2 rounded text-sandwich-200 mt-0.5 whitespace-pre-wrap border border-sandwich-800">
                           {tc.input}
                         </div>
                       </div>
                       <div>
-                        <span className="text-slate-400 block text-[11px]">Expected:</span>
-                        <div className="bg-slate-950/80 p-2 rounded text-emerald-300 mt-0.5 whitespace-pre-wrap">
+                        <span className="text-sandwich-400 block text-[11px]">Expected:</span>
+                        <div className="bg-sandwich-950 p-2 rounded text-emerald-400 mt-0.5 whitespace-pre-wrap border border-sandwich-800">
                           {tc.expectedOutput}
                         </div>
                       </div>
@@ -493,20 +493,20 @@ export const BattlePage: React.FC = () => {
         </div>
 
         {/* RIGHT COLUMN: Monaco Editor & Interactive Console */}
-        <div className="w-1/2 flex flex-col bg-slate-950">
+        <div className="w-1/2 flex flex-col bg-[#0A0B0E]">
           {/* Editor Action Header */}
-          <div className="h-12 bg-slate-900/90 border-b border-slate-800 px-4 flex items-center justify-between shrink-0">
+          <div className="h-12 bg-sandwich-900/90 border-b border-sandwich-800 px-4 flex items-center justify-between shrink-0">
             {/* Language Selector */}
             <div className="flex items-center gap-2">
-              <Code2 className="w-4 h-4 text-indigo-400" />
+              <Code2 className="w-4 h-4 text-sandwich-300" />
               {(['JAVA', 'PYTHON', 'JAVASCRIPT'] as ExecutionLanguage[]).map((lang) => (
                 <button
                   key={lang}
                   onClick={() => handleLanguageChange(lang)}
                   className={`px-2.5 py-1 text-xs font-bold rounded-lg transition-colors ${
                     language === lang
-                      ? 'bg-indigo-600 text-white shadow-sm'
-                      : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800'
+                      ? 'bg-sandwich-50 text-sandwich-950 shadow-glow-white'
+                      : 'text-sandwich-400 hover:text-sandwich-200 hover:bg-sandwich-800'
                   }`}
                 >
                   {lang}
@@ -521,12 +521,12 @@ export const BattlePage: React.FC = () => {
                 variant="outline"
                 onClick={handleRunCode}
                 disabled={isRunning || isSubmitting}
-                className="text-xs h-8 border-slate-700 hover:bg-slate-800 gap-1.5"
+                className="text-xs h-8 border-sandwich-700 bg-sandwich-850 text-sandwich-200 hover:bg-sandwich-750 gap-1.5"
               >
                 {isRunning ? (
                   <Loader2 className="w-3.5 h-3.5 animate-spin" />
                 ) : (
-                  <Play className="w-3.5 h-3.5 text-emerald-400 fill-emerald-400" />
+                  <Play className="w-3.5 h-3.5 text-sandwich-200 fill-sandwich-200" />
                 )}
                 Run
               </Button>
@@ -536,12 +536,12 @@ export const BattlePage: React.FC = () => {
                 variant="primary"
                 onClick={handleSubmitCode}
                 disabled={isRunning || isSubmitting}
-                className="text-xs h-8 bg-indigo-600 hover:bg-indigo-500 font-bold gap-1.5 shadow-md shadow-indigo-600/30"
+                className="text-xs h-8 gap-1.5"
               >
                 {isSubmitting ? (
-                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                  <Loader2 className="w-3.5 h-3.5 animate-spin text-sandwich-950" />
                 ) : (
-                  <Send className="w-3.5 h-3.5" />
+                  <Send className="w-3.5 h-3.5 text-sandwich-950" />
                 )}
                 Submit
               </Button>
@@ -549,7 +549,7 @@ export const BattlePage: React.FC = () => {
               <button
                 onClick={() => setShowForfeitModal(true)}
                 title="Forfeit Match"
-                className="p-1.5 rounded-lg text-slate-500 hover:text-rose-400 hover:bg-rose-500/10 transition-colors ml-2"
+                className="p-1.5 rounded-lg text-sandwich-500 hover:text-rose-400 hover:bg-rose-950/20 transition-colors ml-2"
               >
                 <Flag className="w-4 h-4" />
               </button>
@@ -576,15 +576,15 @@ export const BattlePage: React.FC = () => {
           </div>
 
           {/* Bottom Results Drawer */}
-          <div className="h-44 bg-slate-900 border-t border-slate-800 flex flex-col shrink-0">
+          <div className="h-44 bg-sandwich-900 border-t border-sandwich-800 flex flex-col shrink-0">
             {/* Drawer Tabs */}
-            <div className="h-9 border-b border-slate-800 px-4 flex items-center gap-4 text-xs font-semibold">
+            <div className="h-9 border-b border-sandwich-800 px-4 flex items-center gap-4 text-xs font-semibold">
               <button
                 onClick={() => setActiveTab('tests')}
                 className={`flex items-center gap-1.5 py-1.5 border-b-2 transition-colors ${
                   activeTab === 'tests'
-                    ? 'border-indigo-500 text-indigo-400'
-                    : 'border-transparent text-slate-400 hover:text-slate-200'
+                    ? 'border-sandwich-400 text-sandwich-100 font-bold'
+                    : 'border-transparent text-sandwich-400 hover:text-sandwich-200'
                 }`}
               >
                 <CheckCircle2 className="w-3.5 h-3.5" />
@@ -595,8 +595,8 @@ export const BattlePage: React.FC = () => {
                 onClick={() => setActiveTab('console')}
                 className={`flex items-center gap-1.5 py-1.5 border-b-2 transition-colors ${
                   activeTab === 'console'
-                    ? 'border-indigo-500 text-indigo-400'
-                    : 'border-transparent text-slate-400 hover:text-slate-200'
+                    ? 'border-sandwich-400 text-sandwich-100 font-bold'
+                    : 'border-transparent text-sandwich-400 hover:text-sandwich-200'
                 }`}
               >
                 <Terminal className="w-3.5 h-3.5" />
@@ -609,7 +609,7 @@ export const BattlePage: React.FC = () => {
               {activeTab === 'tests' && (
                 <div>
                   {!runResult ? (
-                    <span className="text-slate-500 italic">
+                    <span className="text-sandwich-500 italic">
                       Click "Run" to test your solution against visible test cases.
                     </span>
                   ) : (
@@ -622,7 +622,7 @@ export const BattlePage: React.FC = () => {
                         >
                           {runResult.status} ({runResult.passedTests}/{runResult.totalTests} Passed)
                         </span>
-                        <span className="text-slate-500 text-xs font-normal">
+                        <span className="text-sandwich-400 text-xs font-normal">
                           in {runResult.executionTimeMs}ms
                         </span>
                       </div>
@@ -633,14 +633,14 @@ export const BattlePage: React.FC = () => {
                             key={i}
                             className={`p-2 rounded border ${
                               r.passed
-                                ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-300'
-                                : 'bg-rose-500/10 border-rose-500/20 text-rose-300'
+                                ? 'bg-emerald-950/20 border-emerald-900/40 text-emerald-300'
+                                : 'bg-rose-950/20 border-rose-900/40 text-rose-300'
                             }`}
                           >
                             <div className="font-semibold mb-1">
                               Case {r.orderIndex}: {r.passed ? 'PASSED' : 'FAILED'}
                             </div>
-                            <div className="text-[11px] text-slate-400">
+                            <div className="text-[11px] text-sandwich-400">
                               Input: {r.input} | Expected: {r.expectedOutput} | Output: {r.actualOutput || '(none)'}
                             </div>
                             {r.errorMessage && (
@@ -657,9 +657,9 @@ export const BattlePage: React.FC = () => {
               )}
 
               {activeTab === 'console' && (
-                <div className="whitespace-pre-wrap text-slate-300">
+                <div className="whitespace-pre-wrap text-sandwich-200">
                   {runResult?.stdout || runResult?.stderr || (
-                    <span className="text-slate-500 italic">No standard output logged.</span>
+                    <span className="text-sandwich-500 italic">No standard output logged.</span>
                   )}
                 </div>
               )}
@@ -676,18 +676,18 @@ export const BattlePage: React.FC = () => {
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-slate-900 border border-slate-800 rounded-3xl p-6 max-w-sm w-full text-center shadow-2xl"
+              className="bg-sandwich-900 border border-sandwich-700 rounded-3xl p-6 max-w-sm w-full text-center shadow-luxury-card"
             >
-              <Flag className="w-12 h-12 text-rose-500 mx-auto mb-3" />
-              <h3 className="text-lg font-bold text-white mb-2">Forfeit Battle?</h3>
-              <p className="text-slate-400 text-xs mb-6">
+              <Flag className="w-12 h-12 text-rose-400 mx-auto mb-3" />
+              <h3 className="text-lg font-bold text-sandwich-50 mb-2">Forfeit Battle?</h3>
+              <p className="text-sandwich-300 text-xs mb-6">
                 Are you sure you want to forfeit? Your opponent will instantly receive the victory and rating MMR.
               </p>
               <div className="grid grid-cols-2 gap-3">
                 <Button
                   variant="outline"
                   onClick={() => setShowForfeitModal(false)}
-                  className="w-full text-xs"
+                  className="w-full text-xs border-sandwich-700 text-sandwich-300"
                 >
                   Cancel
                 </Button>

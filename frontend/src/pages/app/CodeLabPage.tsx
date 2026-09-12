@@ -309,20 +309,20 @@ export const CodeLabPage: React.FC = () => {
     submitResult?.status || runResult?.status || null;
 
   return (
-    <div className="flex flex-col h-[calc(100vh-5rem)] -m-4 sm:-m-6 lg:-m-8 bg-slate-900 text-slate-100 overflow-hidden">
+    <div className="flex flex-col h-[calc(100vh-5rem)] -m-4 sm:-m-6 lg:-m-8 bg-sandwich-950 text-sandwich-100 overflow-hidden">
       {/* Top Bar */}
-      <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3 bg-slate-950/80 border-b border-slate-800 text-sm">
+      <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3 bg-sandwich-900/95 border-b border-sandwich-800 text-sm">
         <div className="flex items-center gap-3">
           <Link
             to={`/challenges/${challenge.id}`}
-            className="inline-flex items-center gap-1.5 text-xs font-mono font-semibold text-slate-400 hover:text-cyan-400 transition-colors"
+            className="inline-flex items-center gap-1.5 text-xs font-mono font-semibold text-sandwich-400 hover:text-sandwich-100 transition-colors"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
             BACK
           </Link>
-          <div className="h-4 w-px bg-slate-800" />
+          <div className="h-4 w-px bg-sandwich-800" />
           <div className="flex items-center gap-2">
-            <h1 className="font-bold text-slate-100 truncate max-w-xs sm:max-w-md">
+            <h1 className="font-bold text-sandwich-100 truncate max-w-xs sm:max-w-md">
               {challenge.title}
             </h1>
             <Badge
@@ -347,15 +347,15 @@ export const CodeLabPage: React.FC = () => {
 
         {/* Action Controls */}
         <div className="flex items-center gap-2">
-          <div className="inline-flex rounded-lg bg-slate-900 p-1 border border-slate-800">
+          <div className="inline-flex rounded-lg bg-sandwich-950 p-1 border border-sandwich-800">
             {(['JAVA', 'PYTHON', 'JAVASCRIPT'] as ExecutionLanguage[]).map((lang) => (
               <button
                 key={lang}
                 onClick={() => handleLanguageSelect(lang)}
                 className={`px-2.5 py-1 text-xs font-mono font-bold rounded-md transition-all ${
                   language === lang
-                    ? 'bg-cyan-600 text-white shadow-sm'
-                    : 'text-slate-400 hover:text-slate-200'
+                    ? 'bg-sandwich-50 text-sandwich-950 shadow-glow-white'
+                    : 'text-sandwich-400 hover:text-sandwich-200'
                 }`}
               >
                 {lang === 'JAVASCRIPT' ? 'JavaScript' : lang === 'PYTHON' ? 'Python' : 'Java'}
@@ -363,15 +363,15 @@ export const CodeLabPage: React.FC = () => {
             ))}
           </div>
 
-          <div className="h-4 w-px bg-slate-800 hidden sm:block" />
+          <div className="h-4 w-px bg-sandwich-800 hidden sm:block" />
 
           <button
             onClick={() => setShowMinimap(!showMinimap)}
             title={showMinimap ? 'Hide minimap' : 'Show minimap'}
             className={`p-1.5 rounded-lg border text-xs transition-colors hidden sm:inline-flex ${
               showMinimap
-                ? 'bg-cyan-950/60 border-cyan-800 text-cyan-400'
-                : 'border-slate-800 text-slate-400 hover:text-slate-200'
+                ? 'bg-sandwich-800 border-sandwich-600 text-sandwich-100'
+                : 'border-sandwich-800 text-sandwich-400 hover:text-sandwich-200'
             }`}
           >
             {showMinimap ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
@@ -382,7 +382,7 @@ export const CodeLabPage: React.FC = () => {
             size="sm"
             onClick={() => setShowResetConfirm(true)}
             leftIcon={<RotateCcw className="w-3.5 h-3.5" />}
-            className="border-slate-700 bg-slate-800/80 text-slate-300 hover:bg-slate-700 hover:text-white"
+            className="border-sandwich-700 bg-sandwich-800/80 text-sandwich-300 hover:bg-sandwich-700 hover:text-white"
           >
             RESET
           </Button>
@@ -394,26 +394,26 @@ export const CodeLabPage: React.FC = () => {
             disabled={isRunning || isSubmitting}
             leftIcon={
               isRunning ? (
-                <Loader2 className="w-3.5 h-3.5 animate-spin text-cyan-400" />
+                <Loader2 className="w-3.5 h-3.5 animate-spin text-sandwich-200" />
               ) : (
-                <Play className="w-3.5 h-3.5 text-cyan-400 fill-cyan-400" />
+                <Play className="w-3.5 h-3.5 text-sandwich-200 fill-sandwich-200" />
               )
             }
-            className="border-cyan-800/80 bg-cyan-950/40 text-cyan-300 hover:bg-cyan-900/60 hover:text-white"
+            className="border-sandwich-700 bg-sandwich-850 text-sandwich-200 hover:bg-sandwich-750 hover:text-white"
           >
             {isRunning ? 'RUNNING...' : 'RUN'}
           </Button>
 
           <Button
-            variant="glow"
+            variant="primary"
             size="sm"
             onClick={handleSubmitCode}
             disabled={isRunning || isSubmitting}
             leftIcon={
               isSubmitting ? (
-                <Loader2 className="w-3.5 h-3.5 animate-spin text-white" />
+                <Loader2 className="w-3.5 h-3.5 animate-spin text-sandwich-950" />
               ) : (
-                <Send className="w-3.5 h-3.5" />
+                <Send className="w-3.5 h-3.5 text-sandwich-950" />
               )
             }
           >
@@ -424,8 +424,8 @@ export const CodeLabPage: React.FC = () => {
             variant="outline"
             size="sm"
             onClick={() => setIsAiCoachOpen(!isAiCoachOpen)}
-            leftIcon={<Bot className="w-3.5 h-3.5 text-cyan-400" />}
-            className="border-indigo-700/80 bg-indigo-950/40 text-indigo-300 hover:bg-indigo-900/60 hover:text-white"
+            leftIcon={<Bot className="w-3.5 h-3.5 text-sandwich-300" />}
+            className="border-sandwich-700 bg-sandwich-850 text-sandwich-200 hover:bg-sandwich-750 hover:text-white"
           >
             AI COACH
           </Button>
@@ -433,7 +433,7 @@ export const CodeLabPage: React.FC = () => {
           <button
             onClick={() => setIsReportModalOpen(true)}
             title="Report challenge issue"
-            className="p-1.5 rounded-lg border border-slate-800 text-slate-400 hover:text-rose-400 hover:border-rose-900/40 transition-colors"
+            className="p-1.5 rounded-lg border border-sandwich-800 text-sandwich-400 hover:text-sandwich-200 hover:border-sandwich-600 transition-colors"
           >
             <Flag className="w-4 h-4" />
           </button>
@@ -470,45 +470,45 @@ export const CodeLabPage: React.FC = () => {
       {/* Workspace */}
       <div className="grid grid-cols-1 lg:grid-cols-12 flex-1 overflow-hidden">
         {/* Left: Challenge Specs */}
-        <div className="lg:col-span-5 h-full overflow-y-auto border-r border-slate-800 p-6 space-y-6 bg-slate-900/50">
+        <div className="lg:col-span-5 h-full overflow-y-auto border-r border-sandwich-800 p-6 space-y-6 bg-sandwich-950">
           <div>
-            <div className="text-xs font-mono text-cyan-400 font-bold uppercase tracking-wider mb-1">
+            <div className="text-xs font-mono text-sandwich-300 font-bold uppercase tracking-wider mb-1">
               {challenge.category} • {challenge.xpReward} XP
             </div>
-            <h2 className="text-2xl font-black text-slate-100 tracking-tight">
+            <h2 className="text-2xl font-black text-sandwich-50 tracking-tight">
               {challenge.title}
             </h2>
           </div>
 
-          <div className="prose prose-invert prose-sm max-w-none text-slate-300 leading-relaxed whitespace-pre-line font-sans">
+          <div className="prose prose-invert prose-sm max-w-none text-sandwich-200 leading-relaxed whitespace-pre-line font-sans">
             {challenge.description}
           </div>
 
           {challenge.sampleTestCases.length > 0 && (
             <div className="space-y-3">
-              <h3 className="text-xs font-mono uppercase tracking-wider font-bold text-slate-400">
+              <h3 className="text-xs font-mono uppercase tracking-wider font-bold text-sandwich-400">
                 Official Examples
               </h3>
               {challenge.sampleTestCases.map((tc, idx) => (
                 <div
                   key={tc.id}
-                  className="p-3.5 rounded-xl bg-slate-950/60 border border-slate-800/80 space-y-2 text-xs"
+                  className="p-3.5 rounded-xl bg-sandwich-900/80 border border-sandwich-800 space-y-2 text-xs"
                 >
-                  <p className="font-mono font-bold text-cyan-400">Example {idx + 1}</p>
+                  <p className="font-mono font-bold text-sandwich-200">Example {idx + 1}</p>
                   <div>
-                    <span className="text-slate-400 font-mono">Input: </span>
-                    <code className="bg-slate-900 px-1.5 py-0.5 rounded text-slate-200 font-mono">
+                    <span className="text-sandwich-400 font-mono">Input: </span>
+                    <code className="bg-sandwich-950 px-1.5 py-0.5 rounded text-sandwich-200 font-mono border border-sandwich-800">
                       {tc.input}
                     </code>
                   </div>
                   <div>
-                    <span className="text-slate-400 font-mono">Expected Output: </span>
-                    <code className="bg-slate-900 px-1.5 py-0.5 rounded text-emerald-400 font-mono">
+                    <span className="text-sandwich-400 font-mono">Expected Output: </span>
+                    <code className="bg-sandwich-950 px-1.5 py-0.5 rounded text-emerald-400 font-mono border border-sandwich-800">
                       {tc.expectedOutput}
                     </code>
                   </div>
                   {tc.explanation && (
-                    <p className="text-slate-400 italic text-[11px] pt-1 border-t border-slate-800/60">
+                    <p className="text-sandwich-400 italic text-[11px] pt-1 border-t border-sandwich-800">
                       {tc.explanation}
                     </p>
                   )}
@@ -517,13 +517,13 @@ export const CodeLabPage: React.FC = () => {
             </div>
           )}
 
-          <div className="pt-2 border-t border-slate-800">
+          <div className="pt-2 border-t border-sandwich-800">
             <button
               onClick={() => setShowHints(!showHints)}
-              className="w-full flex items-center justify-between p-3 rounded-xl bg-slate-950/40 border border-slate-800 text-xs font-mono font-bold text-slate-300 hover:text-white transition-colors"
+              className="w-full flex items-center justify-between p-3 rounded-xl bg-sandwich-900/60 border border-sandwich-800 text-xs font-mono font-bold text-sandwich-300 hover:text-white transition-colors"
             >
               <div className="flex items-center gap-2">
-                <HelpCircle className="w-4 h-4 text-amber-400" />
+                <HelpCircle className="w-4 h-4 text-sandwich-300" />
                 <span>NEED A HINT?</span>
               </div>
               {showHints ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
@@ -534,7 +534,7 @@ export const CodeLabPage: React.FC = () => {
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: 'auto' }}
                   exit={{ opacity: 0, height: 0 }}
-                  className="mt-2 p-3.5 rounded-xl bg-amber-950/20 border border-amber-800/40 text-xs text-amber-200/90 space-y-2"
+                  className="mt-2 p-3.5 rounded-xl bg-sandwich-900 border border-sandwich-700 text-xs text-sandwich-200 space-y-2"
                 >
                   <p>💡 Check standard library hash tables/dictionaries for O(N) lookups.</p>
                   <p>💡 Pay attention to constraints: inputs can contain duplicate elements or negative values.</p>
@@ -545,7 +545,7 @@ export const CodeLabPage: React.FC = () => {
         </div>
 
         {/* Right: Monaco Editor + Bottom Results */}
-        <div className="lg:col-span-7 flex flex-col h-full overflow-hidden bg-slate-950">
+        <div className="lg:col-span-7 flex flex-col h-full overflow-hidden bg-[#0A0B0E]">
           <div className="flex-1 min-h-[350px] relative">
             <Editor
               height="100%"
@@ -569,18 +569,18 @@ export const CodeLabPage: React.FC = () => {
           </div>
 
           {/* Results Panel */}
-          <div className="h-64 flex flex-col border-t border-slate-800 bg-slate-900/95">
-            <div className="flex items-center justify-between px-4 py-2 bg-slate-950 border-b border-slate-800 text-xs">
+          <div className="h-64 flex flex-col border-t border-sandwich-800 bg-sandwich-900/95">
+            <div className="flex items-center justify-between px-4 py-2 bg-sandwich-950 border-b border-sandwich-800 text-xs">
               <div className="flex items-center gap-1">
                 <button
                   onClick={() => handleTabChange('testcases')}
                   className={`px-3 py-1.5 rounded-lg font-mono font-bold flex items-center gap-1.5 transition-colors ${
                     activeTab === 'testcases'
-                      ? 'bg-slate-800 text-white'
-                      : 'text-slate-400 hover:text-slate-200'
+                      ? 'bg-sandwich-800 text-sandwich-50 border border-sandwich-700'
+                      : 'text-sandwich-400 hover:text-sandwich-200'
                   }`}
                 >
-                  <CheckCircle2 className="w-3.5 h-3.5 text-cyan-400" />
+                  <CheckCircle2 className="w-3.5 h-3.5 text-sandwich-200" />
                   Test Results
                 </button>
 
@@ -588,11 +588,11 @@ export const CodeLabPage: React.FC = () => {
                   onClick={() => handleTabChange('console')}
                   className={`px-3 py-1.5 rounded-lg font-mono font-bold flex items-center gap-1.5 transition-colors ${
                     activeTab === 'console'
-                      ? 'bg-slate-800 text-white'
-                      : 'text-slate-400 hover:text-slate-200'
+                      ? 'bg-sandwich-800 text-sandwich-50 border border-sandwich-700'
+                      : 'text-sandwich-400 hover:text-sandwich-200'
                   }`}
                 >
-                  <Terminal className="w-3.5 h-3.5 text-slate-400" />
+                  <Terminal className="w-3.5 h-3.5 text-sandwich-400" />
                   Console Output
                 </button>
 
@@ -600,11 +600,11 @@ export const CodeLabPage: React.FC = () => {
                   onClick={() => handleTabChange('history')}
                   className={`px-3 py-1.5 rounded-lg font-mono font-bold flex items-center gap-1.5 transition-colors ${
                     activeTab === 'history'
-                      ? 'bg-slate-800 text-white'
-                      : 'text-slate-400 hover:text-slate-200'
+                      ? 'bg-sandwich-800 text-sandwich-50 border border-sandwich-700'
+                      : 'text-sandwich-400 hover:text-sandwich-200'
                   }`}
                 >
-                  <History className="w-3.5 h-3.5 text-amber-400" />
+                  <History className="w-3.5 h-3.5 text-sandwich-300" />
                   Submissions
                 </button>
               </div>
@@ -617,13 +617,13 @@ export const CodeLabPage: React.FC = () => {
                         ? 'text-emerald-400'
                         : activeResultStatus === 'COMPILATION_ERROR' || activeResultStatus === 'RUNTIME_ERROR'
                         ? 'text-rose-400'
-                        : 'text-amber-400'
+                        : 'text-amber-300'
                     }`}
                   >
                     {activeResultStatus}
                   </span>
                   {(submitResult || runResult) && (
-                    <span className="text-slate-400 text-[11px]">
+                    <span className="text-sandwich-400 text-[11px]">
                       ({(submitResult || runResult)?.passedTests}/{(submitResult || runResult)?.totalTests} passed in{' '}
                       {(submitResult || runResult)?.executionTimeMs}ms)
                     </span>
@@ -645,14 +645,14 @@ export const CodeLabPage: React.FC = () => {
                           onClick={() => setSelectedTestCaseIndex(idx)}
                           className={`px-3 py-1 rounded-lg border text-xs font-mono font-bold flex items-center gap-1.5 transition-all ${
                             selectedTestCaseIndex === idx
-                              ? 'bg-slate-800 border-cyan-500 text-cyan-300'
-                              : 'bg-slate-950 border-slate-800 text-slate-400 hover:text-slate-200'
+                              ? 'bg-sandwich-800 border-sandwich-400 text-sandwich-50 shadow-glow-silver'
+                              : 'bg-sandwich-950 border-sandwich-800 text-sandwich-400 hover:text-sandwich-200'
                           }`}
                         >
                           <span
                             className={`w-2 h-2 rounded-full ${
                               !hasExecuted
-                                ? 'bg-slate-600'
+                                ? 'bg-sandwich-600'
                                 : isPassed
                                 ? 'bg-emerald-400'
                                 : 'bg-rose-500'
@@ -665,9 +665,9 @@ export const CodeLabPage: React.FC = () => {
                   </div>
 
                   {currentTestResults[selectedTestCaseIndex] ? (
-                    <div className="p-3 bg-slate-950 rounded-xl border border-slate-800 space-y-2">
+                    <div className="p-3 bg-sandwich-950 rounded-xl border border-sandwich-800 space-y-2">
                       {currentTestResults[selectedTestCaseIndex].hidden ? (
-                        <div className="text-center py-4 text-slate-400 italic">
+                        <div className="text-center py-4 text-sandwich-400 italic">
                           🔒 Hidden test case content is protected to prevent hardcoding.
                           <div className="mt-2">
                             <Badge
@@ -681,23 +681,23 @@ export const CodeLabPage: React.FC = () => {
                       ) : (
                         <>
                           <div>
-                            <span className="text-slate-500">Input:</span>
-                            <pre className="mt-1 p-2 rounded bg-slate-900 border border-slate-800 text-slate-200 overflow-x-auto">
+                            <span className="text-sandwich-400">Input:</span>
+                            <pre className="mt-1 p-2 rounded bg-sandwich-900 border border-sandwich-800 text-sandwich-200 overflow-x-auto">
                               {currentTestResults[selectedTestCaseIndex].input}
                             </pre>
                           </div>
 
                           <div className="grid grid-cols-2 gap-3">
                             <div>
-                              <span className="text-slate-500">Expected Output:</span>
-                              <pre className="mt-1 p-2 rounded bg-slate-900 border border-slate-800 text-emerald-400 overflow-x-auto">
+                              <span className="text-sandwich-400">Expected Output:</span>
+                              <pre className="mt-1 p-2 rounded bg-sandwich-900 border border-sandwich-800 text-emerald-400 overflow-x-auto">
                                 {currentTestResults[selectedTestCaseIndex].expectedOutput}
                               </pre>
                             </div>
                             <div>
-                              <span className="text-slate-500">Your Output:</span>
+                              <span className="text-sandwich-400">Your Output:</span>
                               <pre
-                                className={`mt-1 p-2 rounded bg-slate-900 border border-slate-800 overflow-x-auto ${
+                                className={`mt-1 p-2 rounded bg-sandwich-900 border border-sandwich-800 overflow-x-auto ${
                                   currentTestResults[selectedTestCaseIndex].passed
                                     ? 'text-emerald-400'
                                     : 'text-rose-400'
@@ -713,7 +713,7 @@ export const CodeLabPage: React.FC = () => {
                       )}
                     </div>
                   ) : (
-                    <div className="text-slate-500 text-center py-6">
+                    <div className="text-sandwich-400 text-center py-6">
                       Click Run or Submit to evaluate your solution.
                     </div>
                   )}
@@ -722,24 +722,24 @@ export const CodeLabPage: React.FC = () => {
 
               {activeTab === 'console' && (
                 <div className="space-y-2">
-                  <div className="p-3 bg-slate-950 rounded-xl border border-slate-800 text-slate-300 min-h-[120px] overflow-x-auto">
+                  <div className="p-3 bg-sandwich-950 rounded-xl border border-sandwich-800 text-sandwich-200 min-h-[120px] overflow-x-auto">
                     {(runResult?.stdout || submitResult?.status) ? (
                       <div>
                         {runResult?.stdout && (
                           <div>
-                            <div className="text-slate-500 text-[10px] uppercase font-bold mb-1">Standard Output:</div>
-                            <pre className="text-slate-200">{runResult.stdout}</pre>
+                            <div className="text-sandwich-400 text-[10px] uppercase font-bold mb-1">Standard Output:</div>
+                            <pre className="text-sandwich-200">{runResult.stdout}</pre>
                           </div>
                         )}
                         {(runResult?.stderr || submitResult?.errorMessage) && (
                           <div className="mt-2 text-rose-400">
-                            <div className="text-rose-500 text-[10px] uppercase font-bold mb-1">Standard Error:</div>
+                            <div className="text-rose-400 text-[10px] uppercase font-bold mb-1">Standard Error:</div>
                             <pre>{runResult?.stderr || submitResult?.errorMessage}</pre>
                           </div>
                         )}
                       </div>
                     ) : (
-                      <span className="text-slate-600">Console logs and runtime output will appear here.</span>
+                      <span className="text-sandwich-500">Console logs and runtime output will appear here.</span>
                     )}
                   </div>
                 </div>
@@ -748,11 +748,11 @@ export const CodeLabPage: React.FC = () => {
               {activeTab === 'history' && (
                 <div>
                   {submissionsLoading ? (
-                    <div className="flex items-center justify-center py-6 text-slate-500">
-                      <Loader2 className="w-5 h-5 animate-spin mr-2" /> Loading history...
+                    <div className="flex items-center justify-center py-6 text-sandwich-400">
+                      <Loader2 className="w-5 h-5 animate-spin mr-2 text-sandwich-300" /> Loading history...
                     </div>
                   ) : submissions.length === 0 ? (
-                    <div className="text-slate-500 text-center py-6">
+                    <div className="text-sandwich-400 text-center py-6">
                       No submissions recorded for this challenge yet.
                     </div>
                   ) : (
@@ -760,7 +760,7 @@ export const CodeLabPage: React.FC = () => {
                       {submissions.map((sub) => (
                         <div
                           key={sub.id}
-                          className="flex items-center justify-between p-2.5 rounded-lg bg-slate-950 border border-slate-800 hover:border-slate-700 transition-colors"
+                          className="flex items-center justify-between p-2.5 rounded-lg bg-sandwich-950 border border-sandwich-800 hover:border-sandwich-700 transition-colors"
                         >
                           <div className="flex items-center gap-3">
                             <span
@@ -769,13 +769,13 @@ export const CodeLabPage: React.FC = () => {
                               }`}
                             />
                             <div>
-                              <span className="font-bold text-slate-200">{sub.status}</span>
-                              <span className="text-slate-500 ml-2">
+                              <span className="font-bold text-sandwich-100">{sub.status}</span>
+                              <span className="text-sandwich-400 ml-2">
                                 ({sub.passedTests}/{sub.totalTests} tests)
                               </span>
                             </div>
                           </div>
-                          <div className="flex items-center gap-4 text-slate-400 text-[11px]">
+                          <div className="flex items-center gap-4 text-sandwich-400 text-[11px]">
                             <span>{sub.language}</span>
                             <span>{sub.executionTimeMs}ms</span>
                             <span>{new Date(sub.createdAt).toLocaleTimeString()}</span>
@@ -799,20 +799,20 @@ export const CodeLabPage: React.FC = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm"
+              className="fixed inset-0 bg-sandwich-950/80 backdrop-blur-sm"
               onClick={() => setPendingLanguage(null)}
             />
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="relative z-10 w-full max-w-sm bg-slate-900 border border-slate-800 rounded-2xl p-6 text-slate-100 shadow-2xl space-y-4"
+              className="relative z-10 w-full max-w-sm bg-sandwich-900 border border-sandwich-700 rounded-2xl p-6 text-sandwich-100 shadow-luxury-card space-y-4"
             >
-              <div className="flex items-center gap-3 text-amber-400 font-bold">
+              <div className="flex items-center gap-3 text-amber-300 font-bold">
                 <AlertTriangle className="w-5 h-5" />
                 <span>Switch Language?</span>
               </div>
-              <p className="text-xs text-slate-300 leading-relaxed">
+              <p className="text-xs text-sandwich-300 leading-relaxed">
                 Switching to <strong className="text-white">{pendingLanguage}</strong> will load its starter code. Your current edits for {language} are saved in local storage.
               </p>
               <div className="flex items-center justify-end gap-2 pt-2">
@@ -820,7 +820,7 @@ export const CodeLabPage: React.FC = () => {
                   variant="outline"
                   size="sm"
                   onClick={() => setPendingLanguage(null)}
-                  className="border-slate-700 text-slate-300 hover:bg-slate-800"
+                  className="border-sandwich-700 text-sandwich-300 hover:bg-sandwich-800"
                 >
                   Cancel
                 </Button>
@@ -845,20 +845,20 @@ export const CodeLabPage: React.FC = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm"
+              className="fixed inset-0 bg-sandwich-950/80 backdrop-blur-sm"
               onClick={() => setShowResetConfirm(false)}
             />
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="relative z-10 w-full max-w-sm bg-slate-900 border border-slate-800 rounded-2xl p-6 text-slate-100 shadow-2xl space-y-4"
+              className="relative z-10 w-full max-w-sm bg-sandwich-900 border border-sandwich-700 rounded-2xl p-6 text-sandwich-100 shadow-luxury-card space-y-4"
             >
               <div className="flex items-center gap-3 text-rose-400 font-bold">
                 <RotateCcw className="w-5 h-5" />
                 <span>Reset to Starter Code?</span>
               </div>
-              <p className="text-xs text-slate-300 leading-relaxed">
+              <p className="text-xs text-sandwich-300 leading-relaxed">
                 This will overwrite your current code with the default starter template for {language}.
               </p>
               <div className="flex items-center justify-end gap-2 pt-2">
@@ -866,15 +866,14 @@ export const CodeLabPage: React.FC = () => {
                   variant="outline"
                   size="sm"
                   onClick={() => setShowResetConfirm(false)}
-                  className="border-slate-700 text-slate-300 hover:bg-slate-800"
+                  className="border-sandwich-700 text-sandwich-300 hover:bg-sandwich-800"
                 >
                   Keep Code
                 </Button>
                 <Button
-                  variant="primary"
+                  variant="danger"
                   size="sm"
                   onClick={handleResetCode}
-                  className="bg-rose-600 hover:bg-rose-500"
                 >
                   Reset Code
                 </Button>

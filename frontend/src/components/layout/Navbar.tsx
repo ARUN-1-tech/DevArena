@@ -11,7 +11,7 @@ export interface NavbarProps {
 
 export const Navbar: React.FC<NavbarProps> = ({ backendConnected = false }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const { isAuthenticated, user } = useAuth();
+  const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
   const navLinks = [
@@ -38,14 +38,14 @@ export const Navbar: React.FC<NavbarProps> = ({ backendConnected = false }) => {
   };
 
   return (
-    <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-200/80 transition-all">
+    <header className="sticky top-0 z-50 bg-[#0B0C0E]/85 backdrop-blur-xl border-b border-[#212328] transition-all">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         {/* Brand */}
         <Link to="/" className="flex items-center gap-2.5 group">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-cyan-600 to-violet-600 flex items-center justify-center text-white shadow-sm group-hover:scale-105 transition-transform">
-            <Swords className="w-5 h-5" />
+          <div className="w-9 h-9 rounded-xl bg-white text-[#0B0C0E] flex items-center justify-center shadow-glow-white group-hover:scale-105 transition-transform font-bold">
+            <Swords className="w-4 h-4" />
           </div>
-          <span className="text-lg font-bold text-slate-900 tracking-tight">
+          <span className="text-lg font-black text-white tracking-tight">
             {APP_NAME}
           </span>
         </Link>
@@ -57,7 +57,7 @@ export const Navbar: React.FC<NavbarProps> = ({ backendConnected = false }) => {
               key={link.label}
               href={link.href}
               onClick={(e) => handleScrollTo(e, link.href)}
-              className="text-sm font-medium text-slate-600 hover:text-slate-950 transition-colors"
+              className="text-sm font-medium text-[#B2B6BD] hover:text-white transition-colors"
             >
               {link.label}
             </a>
@@ -68,7 +68,7 @@ export const Navbar: React.FC<NavbarProps> = ({ backendConnected = false }) => {
         <div className="flex items-center gap-3">
           <div
             className={`w-2 h-2 rounded-full hidden sm:block ${
-              backendConnected ? 'bg-emerald-500' : 'bg-slate-300'
+              backendConnected ? 'bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.6)]' : 'bg-[#3E4148]'
             }`}
             title={backendConnected ? 'API Connected' : 'API Standby'}
           />
@@ -76,7 +76,7 @@ export const Navbar: React.FC<NavbarProps> = ({ backendConnected = false }) => {
           {!isAuthenticated && (
             <Link
               to="/login"
-              className="hidden sm:inline-block text-xs font-semibold text-slate-600 hover:text-slate-900 transition-colors px-2 py-1"
+              className="hidden sm:inline-block text-xs font-semibold text-[#D4D7DC] hover:text-white transition-colors px-2 py-1"
             >
               Sign In
             </Link>
@@ -84,7 +84,7 @@ export const Navbar: React.FC<NavbarProps> = ({ backendConnected = false }) => {
 
           <Button
             size="sm"
-            variant="glow"
+            variant="primary"
             onClick={handleArenaAction}
           >
             {isAuthenticated ? 'GO TO ARENA' : 'ENTER ARENA'}
@@ -93,7 +93,7 @@ export const Navbar: React.FC<NavbarProps> = ({ backendConnected = false }) => {
           {/* Mobile hamburger button */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden p-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100"
+            className="md:hidden p-2 rounded-xl text-[#B2B6BD] hover:text-white hover:bg-[#1A1B1F]"
             aria-label="Toggle Navigation Menu"
           >
             {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -103,49 +103,42 @@ export const Navbar: React.FC<NavbarProps> = ({ backendConnected = false }) => {
 
       {/* Mobile Menu Dropdown */}
       {mobileMenuOpen && (
-        <div className="md:hidden bg-white border-b border-slate-200 px-4 py-3 space-y-2">
+        <div className="md:hidden bg-[#111215] border-b border-[#212328] px-4 py-3 space-y-2">
           {navLinks.map((link) => (
             <a
               key={link.label}
               href={link.href}
               onClick={(e) => handleScrollTo(e, link.href)}
-              className="block py-2 text-sm font-medium text-slate-700 hover:text-cyan-600"
+              className="block py-2 text-sm font-medium text-[#D4D7DC] hover:text-white"
             >
               {link.label}
             </a>
           ))}
-          <div className="pt-2 border-t border-slate-100 flex flex-col gap-2">
+          <div className="pt-2 border-t border-[#212328] flex flex-col gap-2">
             {!isAuthenticated ? (
               <>
                 <Link
                   to="/login"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="block py-2 text-sm font-semibold text-slate-800"
+                  className="py-2 text-sm font-medium text-[#D4D7DC] hover:text-white"
                 >
                   Sign In
                 </Link>
-                <Button
-                  size="sm"
-                  variant="glow"
-                  onClick={() => {
-                    setMobileMenuOpen(false);
-                    navigate('/register');
-                  }}
+                <Link
+                  to="/register"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="py-2 text-sm font-semibold text-white"
                 >
-                  CREATE ACCOUNT
-                </Button>
+                  Create Account
+                </Link>
               </>
             ) : (
-              <Button
-                size="sm"
-                variant="glow"
-                onClick={() => {
-                  setMobileMenuOpen(false);
-                  navigate('/home');
-                }}
+              <button
+                onClick={handleArenaAction}
+                className="w-full text-left py-2 text-sm font-semibold text-white"
               >
-                OPEN HQ (Lvl {user?.progression?.level || 1})
-              </Button>
+                Launch DevArena HQ
+              </button>
             )}
           </div>
         </div>

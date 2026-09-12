@@ -93,25 +93,25 @@ export const ChallengeDetailPage: React.FC = () => {
           variant="ghost"
           size="sm"
           onClick={() => navigate('/challenges')}
-          leftIcon={<ArrowLeft className="w-4 h-4" />}
-          className="text-slate-600 hover:text-slate-900"
+          leftIcon={<ArrowLeft className="w-4 h-4 text-sandwich-300" />}
+          className="text-sandwich-300 hover:text-sandwich-50"
         >
           BACK TO CHALLENGES
         </Button>
 
         <div className="flex items-center gap-2 font-mono text-xs">
           {isSolved ? (
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 font-bold">
-              <CheckCircle2 className="w-3.5 h-3.5" />
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-950/40 text-emerald-400 border border-emerald-800/80 font-bold">
+              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
               SOLVED
             </span>
           ) : isAttempted ? (
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 text-amber-700 border border-amber-200 font-bold">
-              <Play className="w-3 h-3 fill-amber-600" />
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-950/40 text-amber-300 border border-amber-800/80 font-bold">
+              <Play className="w-3 h-3 fill-amber-300 text-amber-300" />
               IN PROGRESS
             </span>
           ) : (
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 text-slate-600 border border-slate-200">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-sandwich-950 text-sandwich-400 border border-sandwich-800">
               NOT STARTED
             </span>
           )}
@@ -119,8 +119,8 @@ export const ChallengeDetailPage: React.FC = () => {
       </div>
 
       {/* Main Challenge Header Card */}
-      <Card className="p-6 sm:p-8 bg-white border-slate-200/90 shadow-md rounded-2xl">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-6 border-b border-slate-100">
+      <Card className="p-6 sm:p-8 bg-sandwich-900/90 border-sandwich-700/80 shadow-luxury-card rounded-2xl backdrop-blur-md">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-6 border-b border-sandwich-800">
           <div className="space-y-2">
             <div className="flex items-center gap-2 flex-wrap">
               <Badge
@@ -135,30 +135,30 @@ export const ChallengeDetailPage: React.FC = () => {
               >
                 {challenge.difficulty}
               </Badge>
-              <span className="text-xs font-mono font-semibold text-slate-500 bg-slate-100 px-2.5 py-0.5 rounded-full border border-slate-200">
+              <span className="text-xs font-mono font-semibold text-sandwich-300 bg-sandwich-800 px-2.5 py-0.5 rounded-full border border-sandwich-700">
                 {challenge.category.replace('_', ' ')}
               </span>
             </div>
 
-            <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
+            <h1 className="text-2xl sm:text-3xl font-black text-sandwich-50 tracking-tight">
               {challenge.title}
             </h1>
           </div>
 
           {/* Quick Metrics */}
-          <div className="flex items-center gap-4 bg-slate-50 p-3 rounded-xl border border-slate-100 shrink-0 font-mono">
+          <div className="flex items-center gap-4 bg-sandwich-950 p-3 rounded-xl border border-sandwich-800 shrink-0 font-mono">
             <div className="text-center px-2">
-              <p className="text-[10px] text-slate-400 uppercase font-semibold">REWARD</p>
-              <p className="text-base font-extrabold text-cyan-600 flex items-center justify-center gap-1">
-                <Sparkles className="w-3.5 h-3.5" />
+              <p className="text-[10px] text-sandwich-400 uppercase font-semibold">REWARD</p>
+              <p className="text-base font-extrabold text-sandwich-100 flex items-center justify-center gap-1">
+                <Sparkles className="w-3.5 h-3.5 text-sandwich-200" />
                 +{challenge.xpReward} XP
               </p>
             </div>
-            <div className="w-px h-8 bg-slate-200" />
+            <div className="w-px h-8 bg-sandwich-800" />
             <div className="text-center px-2">
-              <p className="text-[10px] text-slate-400 uppercase font-semibold">EST. TIME</p>
-              <p className="text-base font-extrabold text-slate-700 flex items-center justify-center gap-1">
-                <Clock className="w-3.5 h-3.5 text-slate-400" />
+              <p className="text-[10px] text-sandwich-400 uppercase font-semibold">EST. TIME</p>
+              <p className="text-base font-extrabold text-sandwich-200 flex items-center justify-center gap-1">
+                <Clock className="w-3.5 h-3.5 text-sandwich-400" />
                 {challenge.estimatedMinutes}m
               </p>
             </div>
@@ -170,12 +170,12 @@ export const ChallengeDetailPage: React.FC = () => {
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mt-4 p-3 rounded-xl bg-cyan-50 border border-cyan-200 text-xs font-mono text-cyan-800 flex items-center justify-between"
+            className="mt-4 p-3 rounded-xl bg-sandwich-800 border border-sandwich-600 text-xs font-mono text-sandwich-200 flex items-center justify-between"
           >
             <span>{actionMessage}</span>
             <button
               onClick={() => setActionMessage(null)}
-              className="text-cyan-600 hover:text-cyan-900 font-bold ml-2"
+              className="text-sandwich-400 hover:text-white font-bold ml-2"
             >
               ✕
             </button>
@@ -185,10 +185,10 @@ export const ChallengeDetailPage: React.FC = () => {
         {/* Problem Description Body */}
         <div className="mt-6 space-y-6">
           <div>
-            <h3 className="text-xs font-mono uppercase font-bold text-slate-400 tracking-wider mb-2">
+            <h3 className="text-xs font-mono uppercase font-bold text-sandwich-400 tracking-wider mb-2">
               PROBLEM DESCRIPTION
             </h3>
-            <div className="prose prose-slate max-w-none text-sm text-slate-700 leading-relaxed whitespace-pre-line bg-slate-50/50 p-6 rounded-xl border border-slate-100">
+            <div className="prose prose-invert max-w-none text-sm text-sandwich-200 leading-relaxed whitespace-pre-line bg-[#08090B] p-6 rounded-xl border border-sandwich-800">
               {challenge.description}
             </div>
           </div>
@@ -196,15 +196,15 @@ export const ChallengeDetailPage: React.FC = () => {
           {/* Tags */}
           {challenge.tags && (
             <div>
-              <h3 className="text-xs font-mono uppercase font-bold text-slate-400 tracking-wider mb-2 flex items-center gap-1.5">
-                <Tag className="w-3.5 h-3.5" />
+              <h3 className="text-xs font-mono uppercase font-bold text-sandwich-400 tracking-wider mb-2 flex items-center gap-1.5">
+                <Tag className="w-3.5 h-3.5 text-sandwich-400" />
                 CONCEPT TAGS
               </h3>
               <div className="flex flex-wrap gap-2">
                 {challenge.tags.split(',').map((t, idx) => (
                   <span
                     key={idx}
-                    className="text-xs font-mono px-2.5 py-1 rounded-lg bg-slate-100 text-slate-600 border border-slate-200"
+                    className="text-xs font-mono px-2.5 py-1 rounded-lg bg-sandwich-950 text-sandwich-300 border border-sandwich-800"
                   >
                     #{t.trim()}
                   </span>
@@ -214,11 +214,11 @@ export const ChallengeDetailPage: React.FC = () => {
           )}
 
           {/* Bottom Action Tray */}
-          <div className="pt-6 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="text-xs font-mono text-slate-500">
+          <div className="pt-6 border-t border-sandwich-800 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="text-xs font-mono text-sandwich-400">
               {isSolved ? (
-                <span className="text-emerald-600 font-semibold flex items-center gap-1.5">
-                  <Check className="w-4 h-4" />
+                <span className="text-emerald-400 font-semibold flex items-center gap-1.5">
+                  <Check className="w-4 h-4 text-emerald-400" />
                   Completed and verified on the DevArena ledger.
                 </span>
               ) : (
@@ -228,11 +228,11 @@ export const ChallengeDetailPage: React.FC = () => {
 
             <div className="flex items-center gap-3 w-full sm:w-auto">
               <Button
-                variant="glow"
+                variant="primary"
                 size="md"
                 onClick={handleStartChallenge}
                 disabled={actionLoading}
-                leftIcon={<Code2 className="w-4 h-4" />}
+                leftIcon={<Code2 className="w-4 h-4 text-sandwich-950" />}
               >
                 {isSolved ? 'OPEN CODE LAB' : isAttempted ? 'CONTINUE IN CODE LAB' : 'ENTER CODE LAB'}
               </Button>

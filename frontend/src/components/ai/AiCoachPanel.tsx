@@ -123,30 +123,30 @@ export const AiCoachPanel: React.FC<AiCoachPanelProps> = ({
           animate={{ x: 0, opacity: 1 }}
           exit={{ x: 400, opacity: 0 }}
           transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-          className="fixed inset-y-0 right-0 z-40 w-full max-w-md bg-slate-900/95 backdrop-blur-md border-l border-slate-800 flex flex-col shadow-2xl"
+          className="fixed inset-y-0 right-0 z-40 w-full max-w-md bg-sandwich-950/95 backdrop-blur-xl border-l border-sandwich-800 flex flex-col shadow-luxury"
         >
           {/* Header */}
-          <div className="p-4 border-b border-slate-800/80 flex items-center justify-between bg-slate-900/60">
+          <div className="p-4 border-b border-sandwich-800 flex items-center justify-between bg-sandwich-950/80">
             <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-cyan-500 to-indigo-600 flex items-center justify-center text-white shadow-lg shadow-indigo-500/20">
-                <Bot className="w-5 h-5" />
+              <div className="w-9 h-9 rounded-xl bg-sandwich-800 border border-sandwich-700 flex items-center justify-center text-sandwich-100 shadow-glow-silver">
+                <Bot className="w-5 h-5 text-sandwich-100" />
               </div>
               <div>
                 <div className="flex items-center gap-2">
-                  <h3 className="font-semibold text-slate-100 text-sm">AI Coach</h3>
-                  <span className="px-1.5 py-0.5 rounded text-[10px] font-medium bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
+                  <h3 className="font-semibold text-sandwich-100 text-sm">AI Coach</h3>
+                  <span className="px-1.5 py-0.5 rounded text-[10px] font-mono font-bold bg-sandwich-800 text-sandwich-200 border border-sandwich-700">
                     Socratic Mode
                   </span>
                 </div>
-                <p className="text-xs text-slate-400 flex items-center gap-1.5 mt-0.5">
-                  <Zap className="w-3 h-3 text-amber-400" />
+                <p className="text-xs text-sandwich-400 flex items-center gap-1.5 mt-0.5 font-mono">
+                  <Zap className="w-3 h-3 text-sandwich-300" />
                   <span>{remainingQueries} / 50 daily queries left</span>
                 </p>
               </div>
             </div>
             <button
               onClick={onClose}
-              className="p-1.5 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800 transition"
+              className="p-1.5 rounded-lg text-sandwich-400 hover:text-sandwich-100 hover:bg-sandwich-800 transition"
               aria-label="Close AI Coach"
             >
               <X className="w-5 h-5" />
@@ -154,16 +154,16 @@ export const AiCoachPanel: React.FC<AiCoachPanelProps> = ({
           </div>
 
           {/* Socratic Hint Progression Bar */}
-          <div className="px-4 py-2.5 bg-slate-800/40 border-b border-slate-800/60 flex items-center justify-between text-xs">
-            <span className="text-slate-400 font-medium">Hint Progression:</span>
+          <div className="px-4 py-2.5 bg-sandwich-900/60 border-b border-sandwich-800 flex items-center justify-between text-xs">
+            <span className="text-sandwich-400 font-medium">Hint Progression:</span>
             <div className="flex items-center gap-1.5">
               {[1, 2, 3].map((lvl) => (
                 <div
                   key={lvl}
-                  className={`flex items-center gap-1 px-2 py-0.5 rounded-full font-medium text-[11px] transition ${
+                  className={`flex items-center gap-1 px-2.5 py-0.5 rounded-full font-mono font-bold text-[11px] transition ${
                     currentHintLevel >= lvl
-                      ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
-                      : 'bg-slate-800 text-slate-500'
+                      ? 'bg-sandwich-100 text-sandwich-950 shadow-glow-white'
+                      : 'bg-sandwich-800 text-sandwich-500'
                   }`}
                 >
                   <span>Level {lvl}</span>
@@ -173,37 +173,37 @@ export const AiCoachPanel: React.FC<AiCoachPanelProps> = ({
           </div>
 
           {/* Quick Action Chips */}
-          <div className="p-3 bg-slate-900/40 border-b border-slate-800/60 flex flex-wrap gap-2">
+          <div className="p-3 bg-sandwich-950/60 border-b border-sandwich-800 flex flex-wrap gap-2">
             <button
               disabled={loading}
               onClick={() => sendMessage('HINT')}
-              className="px-2.5 py-1.5 rounded-lg text-xs font-medium bg-amber-500/10 text-amber-300 hover:bg-amber-500/20 border border-amber-500/20 flex items-center gap-1.5 transition disabled:opacity-50"
+              className="px-2.5 py-1.5 rounded-lg text-xs font-mono font-medium bg-sandwich-900 text-sandwich-200 hover:bg-sandwich-800 border border-sandwich-700 flex items-center gap-1.5 transition disabled:opacity-50"
             >
-              <Lightbulb className="w-3.5 h-3.5" />
+              <Lightbulb className="w-3.5 h-3.5 text-sandwich-300" />
               <span>Hint {currentHintLevel}</span>
             </button>
             <button
               disabled={loading}
               onClick={() => sendMessage('DEBUG')}
-              className="px-2.5 py-1.5 rounded-lg text-xs font-medium bg-rose-500/10 text-rose-300 hover:bg-rose-500/20 border border-rose-500/20 flex items-center gap-1.5 transition disabled:opacity-50"
+              className="px-2.5 py-1.5 rounded-lg text-xs font-mono font-medium bg-sandwich-900 text-sandwich-200 hover:bg-sandwich-800 border border-sandwich-700 flex items-center gap-1.5 transition disabled:opacity-50"
             >
-              <Bug className="w-3.5 h-3.5" />
+              <Bug className="w-3.5 h-3.5 text-sandwich-300" />
               <span>Debug Code</span>
             </button>
             <button
               disabled={loading}
               onClick={() => sendMessage('COMPLEXITY')}
-              className="px-2.5 py-1.5 rounded-lg text-xs font-medium bg-purple-500/10 text-purple-300 hover:bg-purple-500/20 border border-purple-500/20 flex items-center gap-1.5 transition disabled:opacity-50"
+              className="px-2.5 py-1.5 rounded-lg text-xs font-mono font-medium bg-sandwich-900 text-sandwich-200 hover:bg-sandwich-800 border border-sandwich-700 flex items-center gap-1.5 transition disabled:opacity-50"
             >
-              <Clock className="w-3.5 h-3.5" />
+              <Clock className="w-3.5 h-3.5 text-sandwich-300" />
               <span>Complexity</span>
             </button>
             <button
               disabled={loading}
               onClick={() => sendMessage('EXPLAIN')}
-              className="px-2.5 py-1.5 rounded-lg text-xs font-medium bg-blue-500/10 text-blue-300 hover:bg-blue-500/20 border border-blue-500/20 flex items-center gap-1.5 transition disabled:opacity-50"
+              className="px-2.5 py-1.5 rounded-lg text-xs font-mono font-medium bg-sandwich-900 text-sandwich-200 hover:bg-sandwich-800 border border-sandwich-700 flex items-center gap-1.5 transition disabled:opacity-50"
             >
-              <HelpCircle className="w-3.5 h-3.5" />
+              <HelpCircle className="w-3.5 h-3.5 text-sandwich-300" />
               <span>Explain</span>
             </button>
           </div>
@@ -218,14 +218,14 @@ export const AiCoachPanel: React.FC<AiCoachPanelProps> = ({
                 <div
                   className={`max-w-[88%] rounded-2xl p-3.5 text-xs leading-relaxed ${
                     msg.sender === 'user'
-                      ? 'bg-cyan-600 text-white shadow-md shadow-cyan-600/20'
-                      : 'bg-slate-800/90 text-slate-200 border border-slate-700/60 shadow-md'
+                      ? 'bg-sandwich-100 text-sandwich-950 font-medium shadow-glow-white'
+                      : 'bg-sandwich-900 text-sandwich-200 border border-sandwich-800 shadow-luxury'
                   }`}
                 >
                   <div className="whitespace-pre-wrap font-sans">{msg.text}</div>
                 </div>
 
-                <span className="text-[10px] text-slate-500 mt-1 px-1">{msg.timestamp}</span>
+                <span className="text-[10px] font-mono text-sandwich-500 mt-1 px-1">{msg.timestamp}</span>
 
                 {/* Suggested follow-up prompt chips */}
                 {msg.suggestedFollowUps && msg.suggestedFollowUps.length > 0 && (
@@ -235,7 +235,7 @@ export const AiCoachPanel: React.FC<AiCoachPanelProps> = ({
                         key={idx}
                         disabled={loading}
                         onClick={() => sendMessage('EXPLAIN', chip)}
-                        className="text-[11px] px-2.5 py-1 rounded-full bg-slate-800 hover:bg-slate-700 text-cyan-300 border border-slate-700 transition"
+                        className="text-[11px] font-mono px-2.5 py-1 rounded-full bg-sandwich-850 hover:bg-sandwich-800 text-sandwich-200 border border-sandwich-700 transition"
                       >
                         {chip}
                       </button>
@@ -246,27 +246,27 @@ export const AiCoachPanel: React.FC<AiCoachPanelProps> = ({
             ))}
 
             {loading && (
-              <div className="flex items-center gap-2 text-xs text-slate-400 bg-slate-800/60 p-3 rounded-2xl w-fit border border-slate-700/40">
-                <RefreshCw className="w-3.5 h-3.5 animate-spin text-cyan-400" />
+              <div className="flex items-center gap-2 text-xs text-sandwich-300 bg-sandwich-900 p-3 rounded-2xl w-fit border border-sandwich-800">
+                <RefreshCw className="w-3.5 h-3.5 animate-spin text-sandwich-200" />
                 <span>AI Coach is analyzing...</span>
               </div>
             )}
           </div>
 
           {/* Message Input Footer */}
-          <form onSubmit={handleCustomSubmit} className="p-3 border-t border-slate-800 bg-slate-900/80 flex gap-2">
+          <form onSubmit={handleCustomSubmit} className="p-3 border-t border-sandwich-800 bg-sandwich-950/80 flex gap-2">
             <input
               type="text"
               value={inputMessage}
               onChange={(e) => setInputMessage(e.target.value)}
               placeholder="Ask a question about the problem..."
               disabled={loading}
-              className="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500 transition disabled:opacity-50"
+              className="flex-1 bg-sandwich-900 border border-sandwich-700 rounded-xl px-3.5 py-2 text-xs text-sandwich-100 placeholder-sandwich-500 focus:outline-none focus:border-sandwich-400 transition disabled:opacity-50"
             />
             <button
               type="submit"
               disabled={loading || !inputMessage.trim()}
-              className="px-3.5 py-2 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white transition disabled:opacity-40 flex items-center justify-center"
+              className="px-3.5 py-2 rounded-xl bg-sandwich-50 hover:bg-white text-sandwich-950 font-bold transition disabled:opacity-40 flex items-center justify-center shadow-glow-white"
               aria-label="Send message"
             >
               <Send className="w-4 h-4" />

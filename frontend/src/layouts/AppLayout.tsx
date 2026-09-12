@@ -64,30 +64,30 @@ export const AppLayout: React.FC = () => {
   const xpPct = Math.min(100, Math.round((currentXp / Math.max(1, xpToNext)) * 100));
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col md:flex-row">
+    <div className="min-h-screen bg-[#0B0C0E] text-[#F0F1F3] flex flex-col md:flex-row selection:bg-[#3E4148] selection:text-white">
       {/* ========================================================= */}
       {/* MOBILE TOP HEADER (md:hidden)                             */}
       {/* ========================================================= */}
-      <header className="md:hidden sticky top-0 z-40 bg-white/95 backdrop-blur border-b border-slate-200 px-4 h-14 flex items-center justify-between">
+      <header className="md:hidden sticky top-0 z-40 bg-[#111215]/95 backdrop-blur-xl border-b border-[#212328] px-4 h-14 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-cyan-600 to-violet-600 text-white flex items-center justify-center shadow-sm">
+          <div className="w-8 h-8 rounded-xl bg-white text-[#0B0C0E] flex items-center justify-center shadow-glow-white font-bold">
             <Swords className="w-4 h-4" />
           </div>
-          <span className="font-extrabold text-slate-900 tracking-tight">
+          <span className="font-black text-white tracking-tight">
             {APP_NAME}
           </span>
         </div>
 
         <div className="flex items-center gap-2">
           <NotificationDropdown />
-          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-cyan-50 border border-cyan-200 text-cyan-800 text-xs font-mono font-bold">
-            <Flame className="w-3 h-3 text-cyan-600" />
+          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#1A1B1F] border border-[#27292F] text-[#D4D7DC] text-xs font-mono font-bold">
+            <Flame className="w-3 h-3 text-white" />
             {rating} MMR
           </div>
 
           <button
             onClick={() => setMobileDrawerOpen(!mobileDrawerOpen)}
-            className="p-2 rounded-lg text-slate-600 hover:bg-slate-100"
+            className="p-2 rounded-xl text-[#B2B6BD] hover:text-white hover:bg-[#1A1B1F]"
             aria-label="Toggle Menu"
           >
             {mobileDrawerOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -99,25 +99,25 @@ export const AppLayout: React.FC = () => {
       {/* MOBILE DRAWER OVERLAY                                     */}
       {/* ========================================================= */}
       {mobileDrawerOpen && (
-        <div className="md:hidden fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm flex">
-          <div className="w-72 bg-white h-full shadow-2xl flex flex-col p-4">
-            <div className="flex items-center justify-between pb-4 border-b border-slate-100">
+        <div className="md:hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex">
+          <div className="w-72 bg-[#111215] border-r border-[#212328] h-full shadow-2xl flex flex-col p-4">
+            <div className="flex items-center justify-between pb-4 border-b border-[#212328]">
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-lg bg-cyan-600 text-white flex items-center justify-center">
+                <div className="w-8 h-8 rounded-xl bg-white text-[#0B0C0E] flex items-center justify-center font-bold">
                   <Swords className="w-4 h-4" />
                 </div>
-                <span className="font-bold text-slate-900">{APP_NAME}</span>
+                <span className="font-black text-white">{APP_NAME}</span>
               </div>
               <button
                 onClick={() => setMobileDrawerOpen(false)}
-                className="p-1.5 rounded-lg text-slate-500 hover:bg-slate-100"
+                className="p-1.5 rounded-lg text-[#868A94] hover:text-white hover:bg-[#1A1B1F]"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             {/* Mobile Nav items */}
-            <nav className="flex-1 py-4 space-y-1">
+            <nav className="flex-1 py-4 space-y-1 overflow-y-auto">
               {navItems.map((item) => {
                 const IconComponent = item.icon;
                 return (
@@ -128,8 +128,8 @@ export const AppLayout: React.FC = () => {
                     className={({ isActive }) =>
                       `flex items-center justify-between px-3.5 py-2.5 rounded-xl font-medium text-sm transition-colors ${
                         isActive
-                          ? 'bg-cyan-50 text-cyan-700 font-bold'
-                          : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                          ? 'bg-[#1E2025] text-white font-bold border border-[#3E4148] shadow-xs'
+                          : 'text-[#868A94] hover:bg-[#17181C] hover:text-[#F0F1F3]'
                       }`
                     }
                   >
@@ -138,7 +138,7 @@ export const AppLayout: React.FC = () => {
                       <span>{item.name}</span>
                     </div>
                     {item.badge && (
-                      <span className="text-[10px] font-mono font-bold bg-cyan-100 text-cyan-800 px-1.5 py-0.5 rounded">
+                      <span className="text-[10px] font-mono font-bold bg-[#27292F] text-[#D4D7DC] px-1.5 py-0.5 rounded">
                         {item.badge}
                       </span>
                     )}
@@ -148,22 +148,22 @@ export const AppLayout: React.FC = () => {
             </nav>
 
             {/* Mobile Bottom Profile */}
-            <div className="pt-4 border-t border-slate-100">
+            <div className="pt-4 border-t border-[#212328]">
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center gap-2.5">
-                  <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-cyan-600 to-violet-600 text-white flex items-center justify-center font-bold text-xs shadow-sm">
+                  <div className="w-9 h-9 rounded-xl bg-[#27292F] border border-[#3E4148] text-white flex items-center justify-center font-bold text-xs shadow-sm">
                     {displayName.slice(0, 2).toUpperCase()}
                   </div>
                   <div>
-                    <p className="text-xs font-bold text-slate-900 leading-tight">
+                    <p className="text-xs font-bold text-white leading-tight">
                       {displayName}
                     </p>
-                    <p className="text-[10px] font-mono text-cyan-600">Lvl {level} Novice</p>
+                    <p className="text-[10px] font-mono text-[#A3A7AF]">Lvl {level} Novice</p>
                   </div>
                 </div>
                 <button
                   onClick={handleLogout}
-                  className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors"
+                  className="p-2 text-[#868A94] hover:text-rose-400 hover:bg-[#2A1215] rounded-xl transition-colors"
                   title="Sign Out"
                 >
                   <LogOut className="w-4 h-4" />
@@ -178,18 +178,18 @@ export const AppLayout: React.FC = () => {
       {/* ========================================================= */}
       {/* DESKTOP SIDEBAR (hidden on mobile, fixed width on md+)    */}
       {/* ========================================================= */}
-      <aside className="hidden md:flex flex-col w-64 bg-white border-r border-slate-200/90 h-screen sticky top-0 shrink-0">
+      <aside className="hidden md:flex flex-col w-64 bg-[#101114] border-r border-[#212328] h-screen sticky top-0 shrink-0">
         {/* Brand */}
-        <div className="p-4 border-b border-slate-100 flex items-center justify-between">
+        <div className="p-4 border-b border-[#212328] flex items-center justify-between">
           <div className="flex items-center gap-3 min-w-0">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-cyan-600 to-violet-600 text-white flex items-center justify-center shadow-md shrink-0">
+            <div className="w-9 h-9 rounded-xl bg-white text-[#0B0C0E] flex items-center justify-center shadow-glow-white shrink-0 font-bold">
               <Swords className="w-5 h-5" />
             </div>
             <div className="min-w-0">
-              <span className="text-lg font-black tracking-tight text-slate-900 block leading-tight truncate">
+              <span className="text-lg font-black tracking-tight text-white block leading-tight truncate">
                 {APP_NAME}
               </span>
-              <span className="text-[10px] font-mono text-cyan-600 uppercase font-semibold tracking-wider block">
+              <span className="text-[10px] font-mono text-[#868A94] uppercase font-semibold tracking-wider block">
                 Battle Engine v1.0
               </span>
             </div>
@@ -208,8 +208,8 @@ export const AppLayout: React.FC = () => {
                 className={({ isActive }) =>
                   `flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold tracking-wide transition-all ${
                     isActive
-                      ? 'bg-gradient-to-r from-cyan-50 to-blue-50/50 text-cyan-700 font-bold border border-cyan-200/60 shadow-xs'
-                      : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                      ? 'bg-[#1E2025] text-white font-bold border border-[#3E4148] shadow-xs'
+                      : 'text-[#868A94] hover:bg-[#16171B] hover:text-[#F0F1F3]'
                   }`
                 }
               >
@@ -218,7 +218,7 @@ export const AppLayout: React.FC = () => {
                   <span>{item.name}</span>
                 </div>
                 {item.badge && (
-                  <span className="text-[9px] font-mono font-bold bg-cyan-100 text-cyan-800 px-1.5 py-0.5 rounded-full">
+                  <span className="text-[9px] font-mono font-bold bg-[#27292F] text-[#D4D7DC] px-2 py-0.5 rounded-full border border-[#3E4148]/60">
                     {item.badge}
                   </span>
                 )}
@@ -228,19 +228,19 @@ export const AppLayout: React.FC = () => {
         </nav>
 
         {/* Mini Player Profile at Bottom */}
-        <div className="p-3 border-t border-slate-100 bg-slate-50/60">
-          <div className="p-3 rounded-xl bg-white border border-slate-200/80 shadow-xs">
+        <div className="p-3 border-t border-[#212328] bg-[#0E0F12]">
+          <div className="p-3 rounded-2xl bg-[#16171B] border border-[#27292F] shadow-luxury-card">
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-2.5 min-w-0">
-                <div className="w-9 h-9 shrink-0 rounded-xl bg-gradient-to-tr from-cyan-600 to-violet-600 text-white flex items-center justify-center font-bold text-xs shadow-sm">
+                <div className="w-9 h-9 shrink-0 rounded-xl bg-[#27292F] border border-[#3E4148] text-white flex items-center justify-center font-bold text-xs shadow-sm">
                   {displayName.slice(0, 2).toUpperCase()}
                 </div>
                 <div className="min-w-0">
-                  <p className="text-xs font-bold text-slate-900 truncate">
+                  <p className="text-xs font-bold text-white truncate">
                     {displayName}
                   </p>
-                  <p className="text-[10px] font-mono text-cyan-600 font-semibold flex items-center gap-1">
-                    <Sparkles className="w-2.5 h-2.5" />
+                  <p className="text-[10px] font-mono text-[#B2B6BD] font-medium flex items-center gap-1">
+                    <Sparkles className="w-2.5 h-2.5 text-white" />
                     Lvl {level} • {rating} MMR
                   </p>
                 </div>
@@ -248,7 +248,7 @@ export const AppLayout: React.FC = () => {
 
               <button
                 onClick={handleLogout}
-                className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors shrink-0"
+                className="p-1.5 text-[#6C717B] hover:text-rose-400 hover:bg-[#2A1215] rounded-lg transition-colors shrink-0"
                 title="Log Out"
                 aria-label="Log Out"
               >
@@ -258,13 +258,13 @@ export const AppLayout: React.FC = () => {
 
             {/* XP progress bar */}
             <div className="space-y-1">
-              <div className="flex justify-between text-[9px] font-mono text-slate-500">
+              <div className="flex justify-between text-[9px] font-mono text-[#868A94]">
                 <span>XP Progress</span>
-                <span>{xpPct}%</span>
+                <span className="text-[#D4D7DC] font-semibold">{xpPct}%</span>
               </div>
-              <div className="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
+              <div className="h-1.5 w-full bg-[#27292F] rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full"
+                  className="h-full bg-gradient-to-r from-white via-[#D4D7DC] to-[#868A94] rounded-full transition-all duration-300"
                   style={{ width: `${Math.max(5, xpPct)}%` }}
                 />
               </div>
@@ -276,7 +276,7 @@ export const AppLayout: React.FC = () => {
       {/* ========================================================= */}
       {/* MAIN CONTENT WORKSPACE                                    */}
       {/* ========================================================= */}
-      <main className="flex-1 overflow-y-auto">
+      <main className="flex-1 overflow-y-auto bg-[#0B0C0E]">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <Outlet />
         </div>

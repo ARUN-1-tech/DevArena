@@ -53,34 +53,34 @@ export const LeaderboardPage: React.FC = () => {
       {/* Header & Tabs */}
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div>
-          <Badge variant="cyan" size="sm" className="mb-2">
-            <Trophy className="w-3.5 h-3.5 mr-1" />
+          <Badge variant="default" size="sm" className="mb-2 bg-sandwich-900 border-sandwich-700 text-sandwich-200">
+            <Trophy className="w-3.5 h-3.5 mr-1 text-sandwich-200" />
             SEASON 01 LEADERBOARD
           </Badge>
-          <h1 className="text-3xl font-black text-slate-900 tracking-tight">
+          <h1 className="text-3xl font-black text-sandwich-50 tracking-tight">
             GLOBAL CODING RANKINGS
           </h1>
-          <p className="text-sm text-slate-600 mt-1">
+          <p className="text-sm text-sandwich-300 mt-1">
             Real competitive ratings determined by verified 1v1 Arena Duels and Katas.
           </p>
         </div>
 
         {/* Tab Selector */}
-        <div className="flex items-center bg-slate-100 p-1.5 rounded-xl self-start sm:self-auto border border-slate-200/80">
+        <div className="flex items-center bg-sandwich-950 p-1.5 rounded-xl self-start sm:self-auto border border-sandwich-800">
           {(['global', 'weekly', 'monthly'] as TabType[]).map((tab) => (
             <button
               key={tab}
               onClick={() => handleTabChange(tab)}
               className={`relative px-4 py-1.5 text-xs font-bold uppercase tracking-wider rounded-lg transition-all ${
                 activeTab === tab
-                  ? 'text-slate-900 shadow-sm'
-                  : 'text-slate-500 hover:text-slate-800'
+                  ? 'text-sandwich-50 shadow-sm'
+                  : 'text-sandwich-400 hover:text-sandwich-200'
               }`}
             >
               {activeTab === tab && (
                 <motion.div
                   layoutId="leaderboardTabPill"
-                  className="absolute inset-0 bg-white rounded-lg shadow-sm border border-slate-200/50"
+                  className="absolute inset-0 bg-sandwich-800 rounded-lg shadow-glow-silver border border-sandwich-600"
                   transition={{ type: 'spring', bounce: 0.2, duration: 0.4 }}
                 />
               )}
@@ -91,12 +91,12 @@ export const LeaderboardPage: React.FC = () => {
       </div>
 
       {loading && !data ? (
-        <div className="py-24 flex flex-col items-center justify-center text-slate-400 gap-3">
-          <Loader2 className="w-8 h-8 animate-spin text-cyan-600" />
+        <div className="py-24 flex flex-col items-center justify-center text-sandwich-400 gap-3">
+          <Loader2 className="w-8 h-8 animate-spin text-sandwich-300" />
           <span className="text-sm font-medium">Summoning arena rankings...</span>
         </div>
       ) : error ? (
-        <Card className="p-8 text-center text-rose-600 bg-rose-50/50 border-rose-200 rounded-2xl">
+        <Card className="p-8 text-center text-red-300 bg-red-950/40 border-red-800/80 rounded-2xl">
           <p className="text-sm font-medium">{error}</p>
           <Button variant="secondary" size="sm" onClick={() => fetchLeaderboard(activeTab, page)} className="mt-4">
             Retry
@@ -115,29 +115,29 @@ export const LeaderboardPage: React.FC = () => {
                   transition={{ delay: 0.1 }}
                   className="order-2 md:order-1"
                 >
-                  <Card className="p-6 bg-gradient-to-b from-slate-100/90 to-white border-slate-300 rounded-2xl text-center shadow-sm relative overflow-hidden">
+                  <Card className="p-6 bg-sandwich-900/90 border-sandwich-700 rounded-2xl text-center shadow-luxury-card relative overflow-hidden">
                     <div className="absolute top-3 left-3">
-                      <span className="w-7 h-7 rounded-lg bg-slate-200 text-slate-700 font-mono font-black text-xs flex items-center justify-center">
+                      <span className="w-7 h-7 rounded-lg bg-sandwich-800 text-sandwich-200 font-mono font-black text-xs flex items-center justify-center border border-sandwich-700">
                         #2
                       </span>
                     </div>
-                    <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-slate-400 to-slate-200 text-slate-800 mx-auto flex items-center justify-center font-black text-xl shadow-inner border border-slate-300">
+                    <div className="w-16 h-16 rounded-2xl bg-sandwich-800 text-sandwich-200 mx-auto flex items-center justify-center font-black text-xl shadow-inner border border-sandwich-600">
                       {p2.username.slice(0, 2).toUpperCase()}
                     </div>
-                    <h3 className="text-base font-black text-slate-900 mt-3 truncate">{p2.displayName || p2.username}</h3>
-                    <p className="text-xs font-mono text-slate-500">@{p2.username}</p>
-                    <div className="mt-3 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-200/60 text-slate-800 text-xs font-mono font-bold">
-                      <Trophy className="w-3.5 h-3.5 text-slate-600" />
+                    <h3 className="text-base font-black text-sandwich-100 mt-3 truncate">{p2.displayName || p2.username}</h3>
+                    <p className="text-xs font-mono text-sandwich-400">@{p2.username}</p>
+                    <div className="mt-3 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-sandwich-800 text-sandwich-200 text-xs font-mono font-bold border border-sandwich-700">
+                      <Trophy className="w-3.5 h-3.5 text-sandwich-300" />
                       {p2.rating} MMR
                     </div>
-                    <div className="grid grid-cols-2 gap-2 mt-4 pt-4 border-t border-slate-100 text-center">
+                    <div className="grid grid-cols-2 gap-2 mt-4 pt-4 border-t border-sandwich-800 text-center">
                       <div>
-                        <span className="text-[10px] text-slate-400 uppercase font-mono block">Win Rate</span>
-                        <span className="text-xs font-bold font-mono text-slate-700">{p2.winRate}%</span>
+                        <span className="text-[10px] text-sandwich-400 uppercase font-mono block">Win Rate</span>
+                        <span className="text-xs font-bold font-mono text-sandwich-200">{p2.winRate}%</span>
                       </div>
                       <div>
-                        <span className="text-[10px] text-slate-400 uppercase font-mono block">Solved</span>
-                        <span className="text-xs font-bold font-mono text-slate-700">{p2.solvedChallenges}</span>
+                        <span className="text-[10px] text-sandwich-400 uppercase font-mono block">Solved</span>
+                        <span className="text-xs font-bold font-mono text-sandwich-200">{p2.solvedChallenges}</span>
                       </div>
                     </div>
                   </Card>
@@ -152,33 +152,33 @@ export const LeaderboardPage: React.FC = () => {
                   transition={{ delay: 0.05 }}
                   className="order-1 md:order-2"
                 >
-                  <Card className="p-7 bg-gradient-to-b from-amber-500/10 via-amber-50/50 to-white border-2 border-amber-400 rounded-3xl text-center shadow-lg shadow-amber-500/10 relative overflow-hidden">
+                  <Card className="p-7 bg-sandwich-900/95 border-2 border-sandwich-400 rounded-3xl text-center shadow-glow-silver relative overflow-hidden">
                     <div className="absolute top-3 left-3">
-                      <span className="w-8 h-8 rounded-lg bg-gradient-to-tr from-amber-500 to-yellow-400 text-slate-950 font-mono font-black text-xs flex items-center justify-center shadow-sm">
+                      <span className="w-8 h-8 rounded-lg bg-sandwich-50 text-sandwich-950 font-mono font-black text-xs flex items-center justify-center shadow-glow-white">
                         #1
                       </span>
                     </div>
-                    <div className="w-20 h-20 rounded-2xl bg-gradient-to-tr from-amber-400 to-yellow-300 text-slate-950 mx-auto flex items-center justify-center font-black text-2xl shadow-md border-2 border-amber-300">
+                    <div className="w-20 h-20 rounded-2xl bg-sandwich-800 text-sandwich-50 mx-auto flex items-center justify-center font-black text-2xl shadow-md border-2 border-sandwich-500">
                       {p1.username.slice(0, 2).toUpperCase()}
                     </div>
-                    <div className="inline-flex items-center gap-1 mt-2 text-[11px] font-mono font-bold text-amber-700 uppercase">
-                      <Medal className="w-3.5 h-3.5 text-amber-500" />
+                    <div className="inline-flex items-center gap-1 mt-2 text-[11px] font-mono font-bold text-sandwich-200 uppercase">
+                      <Medal className="w-3.5 h-3.5 text-sandwich-300" />
                       Grandmaster
                     </div>
-                    <h3 className="text-lg font-black text-slate-900 mt-0.5 truncate">{p1.displayName || p1.username}</h3>
-                    <p className="text-xs font-mono text-slate-500">@{p1.username}</p>
-                    <div className="mt-3 inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-amber-400 text-slate-950 text-sm font-mono font-black shadow-sm">
-                      <Trophy className="w-4 h-4" />
+                    <h3 className="text-lg font-black text-sandwich-50 mt-0.5 truncate">{p1.displayName || p1.username}</h3>
+                    <p className="text-xs font-mono text-sandwich-400">@{p1.username}</p>
+                    <div className="mt-3 inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-sandwich-50 text-sandwich-950 text-sm font-mono font-black shadow-glow-white">
+                      <Trophy className="w-4 h-4 text-sandwich-950" />
                       {p1.rating} MMR
                     </div>
-                    <div className="grid grid-cols-2 gap-2 mt-4 pt-4 border-t border-amber-100 text-center">
+                    <div className="grid grid-cols-2 gap-2 mt-4 pt-4 border-t border-sandwich-800 text-center">
                       <div>
-                        <span className="text-[10px] text-slate-500 uppercase font-mono block">Win Rate</span>
-                        <span className="text-xs font-black font-mono text-slate-900">{p1.winRate}%</span>
+                        <span className="text-[10px] text-sandwich-400 uppercase font-mono block">Win Rate</span>
+                        <span className="text-xs font-black font-mono text-sandwich-100">{p1.winRate}%</span>
                       </div>
                       <div>
-                        <span className="text-[10px] text-slate-500 uppercase font-mono block">Solved</span>
-                        <span className="text-xs font-black font-mono text-slate-900">{p1.solvedChallenges} katas</span>
+                        <span className="text-[10px] text-sandwich-400 uppercase font-mono block">Solved</span>
+                        <span className="text-xs font-black font-mono text-sandwich-100">{p1.solvedChallenges} katas</span>
                       </div>
                     </div>
                   </Card>
@@ -193,29 +193,29 @@ export const LeaderboardPage: React.FC = () => {
                   transition={{ delay: 0.15 }}
                   className="order-3 md:order-3"
                 >
-                  <Card className="p-6 bg-gradient-to-b from-amber-900/5 to-white border-amber-200/90 rounded-2xl text-center shadow-sm relative overflow-hidden">
+                  <Card className="p-6 bg-sandwich-900/90 border-sandwich-700/80 rounded-2xl text-center shadow-luxury-card relative overflow-hidden">
                     <div className="absolute top-3 left-3">
-                      <span className="w-7 h-7 rounded-lg bg-amber-100 text-amber-800 font-mono font-black text-xs flex items-center justify-center">
+                      <span className="w-7 h-7 rounded-lg bg-sandwich-800 text-sandwich-300 font-mono font-black text-xs flex items-center justify-center border border-sandwich-750">
                         #3
                       </span>
                     </div>
-                    <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-amber-600 to-amber-400 text-white mx-auto flex items-center justify-center font-black text-xl shadow-inner">
+                    <div className="w-16 h-16 rounded-2xl bg-sandwich-800 text-sandwich-200 mx-auto flex items-center justify-center font-black text-xl shadow-inner border border-sandwich-700">
                       {p3.username.slice(0, 2).toUpperCase()}
                     </div>
-                    <h3 className="text-base font-black text-slate-900 mt-3 truncate">{p3.displayName || p3.username}</h3>
-                    <p className="text-xs font-mono text-slate-500">@{p3.username}</p>
-                    <div className="mt-3 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-100 text-amber-900 text-xs font-mono font-bold">
-                      <Trophy className="w-3.5 h-3.5 text-amber-700" />
+                    <h3 className="text-base font-black text-sandwich-100 mt-3 truncate">{p3.displayName || p3.username}</h3>
+                    <p className="text-xs font-mono text-sandwich-400">@{p3.username}</p>
+                    <div className="mt-3 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-sandwich-800 text-sandwich-300 text-xs font-mono font-bold border border-sandwich-700">
+                      <Trophy className="w-3.5 h-3.5 text-sandwich-400" />
                       {p3.rating} MMR
                     </div>
-                    <div className="grid grid-cols-2 gap-2 mt-4 pt-4 border-t border-slate-100 text-center">
+                    <div className="grid grid-cols-2 gap-2 mt-4 pt-4 border-t border-sandwich-800 text-center">
                       <div>
-                        <span className="text-[10px] text-slate-400 uppercase font-mono block">Win Rate</span>
-                        <span className="text-xs font-bold font-mono text-slate-700">{p3.winRate}%</span>
+                        <span className="text-[10px] text-sandwich-400 uppercase font-mono block">Win Rate</span>
+                        <span className="text-xs font-bold font-mono text-sandwich-200">{p3.winRate}%</span>
                       </div>
                       <div>
-                        <span className="text-[10px] text-slate-400 uppercase font-mono block">Solved</span>
-                        <span className="text-xs font-bold font-mono text-slate-700">{p3.solvedChallenges}</span>
+                        <span className="text-[10px] text-sandwich-400 uppercase font-mono block">Solved</span>
+                        <span className="text-xs font-bold font-mono text-sandwich-200">{p3.solvedChallenges}</span>
                       </div>
                     </div>
                   </Card>
@@ -226,34 +226,34 @@ export const LeaderboardPage: React.FC = () => {
 
           {/* AUTHENTICATED USER'S PINNED RANK BANNER */}
           {data?.myRank && (
-            <Card className="p-4 bg-gradient-to-r from-cyan-900/10 via-cyan-500/10 to-slate-900/5 border-2 border-cyan-400/80 rounded-2xl shadow-sm flex items-center justify-between">
+            <Card className="p-4 bg-sandwich-900/95 border-2 border-sandwich-400 rounded-2xl shadow-luxury-card flex items-center justify-between">
               <div className="flex items-center gap-4">
-                <span className="w-10 h-10 rounded-xl bg-cyan-600 text-white font-mono font-black text-sm flex items-center justify-center shadow-sm">
+                <span className="w-10 h-10 rounded-xl bg-sandwich-800 border border-sandwich-600 text-sandwich-50 font-mono font-black text-sm flex items-center justify-center shadow-glow-silver">
                   #{data.myRank.rank}
                 </span>
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="text-sm font-black text-slate-900">{data.myRank.displayName}</span>
-                    <Badge variant="cyan" size="sm">YOU</Badge>
+                    <span className="text-sm font-black text-sandwich-50">{data.myRank.displayName}</span>
+                    <Badge variant="default" size="sm" className="bg-sandwich-800 border border-sandwich-600 text-sandwich-200">YOU</Badge>
                   </div>
-                  <p className="text-xs font-mono text-slate-500">
+                  <p className="text-xs font-mono text-sandwich-400">
                     Level {data.myRank.level} • {data.myRank.solvedChallenges} Solved • {data.myRank.wins}W / {data.myRank.losses}L
                   </p>
                 </div>
               </div>
               <div className="text-right">
-                <span className="text-lg font-black font-mono text-cyan-700">{data.myRank.rating} MMR</span>
-                <span className="text-[11px] font-mono text-slate-500 block">{data.myRank.winRate}% win rate</span>
+                <span className="text-lg font-black font-mono text-sandwich-100">{data.myRank.rating} MMR</span>
+                <span className="text-[11px] font-mono text-sandwich-400 block">{data.myRank.winRate}% win rate</span>
               </div>
             </Card>
           )}
 
           {/* MAIN RANKED TABLE */}
-          <Card className="p-0 border-slate-200/90 shadow-sm overflow-hidden bg-white rounded-2xl">
+          <Card className="p-0 border-sandwich-800 shadow-luxury overflow-hidden bg-sandwich-900/90 rounded-2xl backdrop-blur-xl">
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse">
                 <thead>
-                  <tr className="border-b border-slate-100 bg-slate-50/70 text-[11px] font-mono font-bold uppercase tracking-wider text-slate-400">
+                  <tr className="border-b border-sandwich-800 bg-sandwich-950/80 text-[11px] font-mono font-bold uppercase tracking-wider text-sandwich-400">
                     <th className="py-3.5 px-5">Rank</th>
                     <th className="py-3.5 px-4">Player</th>
                     <th className="py-3.5 px-4 text-center">Level</th>
@@ -262,7 +262,7 @@ export const LeaderboardPage: React.FC = () => {
                     <th className="py-3.5 px-5 text-right">Solved Katas</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100 text-sm">
+                <tbody className="divide-y divide-sandwich-800/80 text-sm">
                   {data?.rankings.map((p) => {
                     const isCurrentUser = user?.id === p.userId;
                     return (
@@ -270,20 +270,20 @@ export const LeaderboardPage: React.FC = () => {
                         key={p.userId}
                         className={`transition-colors ${
                           isCurrentUser
-                            ? 'bg-cyan-50/60 font-semibold text-slate-900'
-                            : 'hover:bg-slate-50/80 text-slate-700'
+                            ? 'bg-sandwich-800/70 font-semibold text-sandwich-50'
+                            : 'hover:bg-sandwich-800/40 text-sandwich-200'
                         }`}
                       >
                         <td className="py-4 px-5 font-mono">
                           <span
                             className={`w-7 h-7 rounded-lg inline-flex items-center justify-center text-xs font-black ${
                               p.rank === 1
-                                ? 'bg-amber-100 text-amber-800'
+                                ? 'bg-sandwich-100 text-sandwich-950 shadow-glow-white font-black'
                                 : p.rank === 2
-                                ? 'bg-slate-200 text-slate-700'
+                                ? 'bg-sandwich-700 text-sandwich-100 border border-sandwich-600'
                                 : p.rank === 3
-                                ? 'bg-amber-50 text-amber-700'
-                                : 'text-slate-500'
+                                ? 'bg-sandwich-800 text-sandwich-200 border border-sandwich-700'
+                                : 'text-sandwich-400'
                             }`}
                           >
                             #{p.rank}
@@ -291,39 +291,39 @@ export const LeaderboardPage: React.FC = () => {
                         </td>
                         <td className="py-4 px-4">
                           <div className="flex items-center gap-3">
-                            <div className="w-9 h-9 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center font-bold text-xs text-slate-700 shrink-0">
+                            <div className="w-9 h-9 rounded-xl bg-sandwich-800 border border-sandwich-700 flex items-center justify-center font-bold text-xs text-sandwich-200 shrink-0">
                               {p.username.slice(0, 2).toUpperCase()}
                             </div>
                             <div>
                               <div className="flex items-center gap-2">
-                                <span className="font-bold text-slate-900 truncate max-w-[150px] sm:max-w-none">
+                                <span className="font-bold text-sandwich-100 truncate max-w-[150px] sm:max-w-none">
                                   {p.displayName || p.username}
                                 </span>
                                 {isCurrentUser && (
-                                  <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-cyan-100 text-cyan-800 font-bold">
+                                  <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-sandwich-50 text-sandwich-950 font-black">
                                     YOU
                                   </span>
                                 )}
                               </div>
-                              <span className="text-xs font-mono text-slate-400">@{p.username}</span>
+                              <span className="text-xs font-mono text-sandwich-400">@{p.username}</span>
                             </div>
                           </div>
                         </td>
                         <td className="py-4 px-4 text-center font-mono">
-                          <Badge variant="purple" size="sm">Lvl {p.level}</Badge>
+                          <Badge variant="neutral" size="sm">Lvl {p.level}</Badge>
                         </td>
-                        <td className="py-4 px-4 text-right font-mono font-black text-slate-900">
+                        <td className="py-4 px-4 text-right font-mono font-black text-sandwich-100">
                           {p.rating}
                         </td>
                         <td className="py-4 px-4 text-center font-mono text-xs">
-                          <span className={p.winRate >= 50 ? 'text-emerald-600 font-bold' : 'text-slate-500'}>
+                          <span className={p.winRate >= 50 ? 'text-sandwich-100 font-bold' : 'text-sandwich-400'}>
                             {p.winRate}%
                           </span>
-                          <span className="text-[10px] text-slate-400 block font-normal">
+                          <span className="text-[10px] text-sandwich-500 block font-normal">
                             ({p.wins}W / {p.losses}L)
                           </span>
                         </td>
-                        <td className="py-4 px-5 text-right font-mono font-bold text-slate-700">
+                        <td className="py-4 px-5 text-right font-mono font-bold text-sandwich-300">
                           {p.solvedChallenges}
                         </td>
                       </tr>
@@ -335,8 +335,8 @@ export const LeaderboardPage: React.FC = () => {
 
             {/* Pagination Controls */}
             {data && data.totalPages > 1 && (
-              <div className="p-4 border-t border-slate-100 flex items-center justify-between bg-slate-50/50">
-                <span className="text-xs font-mono text-slate-500">
+              <div className="p-4 border-t border-sandwich-800 flex items-center justify-between bg-sandwich-950/70">
+                <span className="text-xs font-mono text-sandwich-400">
                   Page {data.page + 1} of {data.totalPages} ({data.totalElements} contenders)
                 </span>
                 <div className="flex items-center gap-2">

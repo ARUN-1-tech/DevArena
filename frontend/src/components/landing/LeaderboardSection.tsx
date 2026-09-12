@@ -17,10 +17,10 @@ export const LeaderboardSection: React.FC = () => {
     <section id="leaderboard" className="py-20 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
       {/* Section Header */}
       <div className="text-center max-w-xl mx-auto mb-14 space-y-2">
-        <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900">
+        <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-sandwich-50">
           ARENA LEADERBOARD
         </h2>
-        <p className="text-sm sm:text-base text-slate-600">
+        <p className="text-sm sm:text-base text-sandwich-300">
           The top developers climbing the ranks this season.
         </p>
       </div>
@@ -40,10 +40,10 @@ export const LeaderboardSection: React.FC = () => {
               whileHover={{ y: -4 }}
             >
               <Card
-                className={`p-6 bg-white border-slate-200/90 text-center flex flex-col justify-between ${
+                className={`p-6 bg-sandwich-900/90 border-sandwich-700/80 text-center flex flex-col justify-between transition-all ${
                   isFirst
-                    ? 'border-amber-400 ring-2 ring-amber-400/20 shadow-lg md:-translate-y-4'
-                    : 'shadow-sm'
+                    ? 'border-sandwich-400 ring-2 ring-sandwich-400/20 shadow-glow-silver md:-translate-y-4'
+                    : 'shadow-luxury-card hover:border-sandwich-600'
                 }`}
               >
                 <div>
@@ -52,27 +52,27 @@ export const LeaderboardSection: React.FC = () => {
                     <div
                       className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm shadow-sm ${
                         isFirst
-                          ? 'bg-amber-400 text-slate-950 ring-4 ring-amber-100'
+                          ? 'bg-sandwich-50 text-sandwich-950 ring-4 ring-sandwich-700 shadow-glow-white'
                           : player.rank === 2
-                          ? 'bg-slate-200 text-slate-800'
-                          : 'bg-amber-100 text-amber-800'
+                          ? 'bg-sandwich-800 text-sandwich-100 border border-sandwich-600'
+                          : 'bg-sandwich-800 text-sandwich-300 border border-sandwich-700'
                       }`}
                     >
-                      {isFirst ? <Trophy className="w-5 h-5" /> : `#${player.rank}`}
+                      {isFirst ? <Trophy className="w-5 h-5 text-sandwich-950" /> : `#${player.rank}`}
                     </div>
                   </div>
 
-                  <h3 className="text-lg font-bold text-slate-900">{player.name}</h3>
-                  <p className="text-xs font-mono text-slate-500 font-semibold mb-4">
+                  <h3 className="text-lg font-bold text-sandwich-100">{player.name}</h3>
+                  <p className="text-xs font-mono text-sandwich-400 font-semibold mb-4">
                     {player.badge}
                   </p>
                 </div>
 
-                <div className="pt-4 border-t border-slate-100">
-                  <span className="text-[11px] font-mono text-slate-400 block uppercase tracking-wider">
+                <div className="pt-4 border-t border-sandwich-800">
+                  <span className="text-[11px] font-mono text-sandwich-400 block uppercase tracking-wider">
                     Rating
                   </span>
-                  <span className="text-xl font-extrabold font-mono text-slate-900">
+                  <span className="text-xl font-extrabold font-mono text-sandwich-100">
                     {player.rating} MMR
                   </span>
                 </div>
@@ -87,8 +87,10 @@ export const LeaderboardSection: React.FC = () => {
         <Button
           variant="outline"
           size="md"
-          rightIcon={<ArrowRight className="w-4 h-4" />}
-          onClick={() => alert('Full global leaderboards will open in Module 08!')}
+          rightIcon={<ArrowRight className="w-4 h-4 text-sandwich-300" />}
+          onClick={() => {
+            window.location.href = '/leaderboard';
+          }}
         >
           VIEW FULL LEADERBOARD
         </Button>

@@ -38,8 +38,8 @@ export const AdminDashboardPage: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="py-24 flex flex-col items-center justify-center text-slate-400 gap-3">
-        <RefreshCw className="w-8 h-8 animate-spin text-indigo-400" />
+      <div className="py-24 flex flex-col items-center justify-center text-sandwich-400 gap-3">
+        <RefreshCw className="w-8 h-8 animate-spin text-sandwich-200" />
         <span className="text-xs font-mono">Aggregating platform telemetry...</span>
       </div>
     );
@@ -47,7 +47,7 @@ export const AdminDashboardPage: React.FC = () => {
 
   if (error || !overview) {
     return (
-      <div className="p-6 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-300 text-sm flex items-center justify-between">
+      <div className="p-6 rounded-2xl bg-rose-950/20 border border-rose-900/50 text-rose-300 text-sm flex items-center justify-between">
         <span>{error || 'Failed to load data'}</span>
         <button
           onClick={fetchOverview}
@@ -65,7 +65,7 @@ export const AdminDashboardPage: React.FC = () => {
       value: overview.totalUsers,
       sub: `${overview.activeUsers} active`,
       icon: Users,
-      color: 'from-blue-500/20 to-cyan-500/20 text-blue-400 border-blue-500/30',
+      color: 'border-sandwich-700 bg-sandwich-900/90 text-sandwich-100',
       link: '/admin/players',
     },
     {
@@ -73,7 +73,7 @@ export const AdminDashboardPage: React.FC = () => {
       value: overview.totalChallenges,
       sub: 'Algorithmic katas',
       icon: Code2,
-      color: 'from-emerald-500/20 to-teal-500/20 text-emerald-400 border-emerald-500/30',
+      color: 'border-sandwich-700 bg-sandwich-900/90 text-sandwich-100',
       link: '/admin/challenges',
     },
     {
@@ -81,14 +81,14 @@ export const AdminDashboardPage: React.FC = () => {
       value: overview.totalSubmissions,
       sub: 'Tested & evaluated',
       icon: CheckCircle,
-      color: 'from-indigo-500/20 to-violet-500/20 text-indigo-400 border-indigo-500/30',
+      color: 'border-sandwich-800 bg-sandwich-900/90 text-sandwich-100',
     },
     {
       title: '1v1 Battles',
       value: overview.totalBattles,
       sub: 'Multiplayer duels',
       icon: Swords,
-      color: 'from-amber-500/20 to-orange-500/20 text-amber-400 border-amber-500/30',
+      color: 'border-sandwich-800 bg-sandwich-900/90 text-sandwich-100',
     },
     {
       title: 'Open Reports',
@@ -96,8 +96,8 @@ export const AdminDashboardPage: React.FC = () => {
       sub: overview.openReports > 0 ? 'Requires attention' : 'Queue clear',
       icon: Flag,
       color: overview.openReports > 0
-        ? 'from-rose-500/30 to-red-500/30 text-rose-400 border-rose-500/40'
-        : 'from-slate-800 to-slate-800 text-slate-400 border-slate-700',
+        ? 'border-rose-900/60 bg-sandwich-900/90 text-rose-400'
+        : 'border-sandwich-800 bg-sandwich-900/90 text-sandwich-400',
       link: '/admin/reports',
     },
     {
@@ -106,8 +106,8 @@ export const AdminDashboardPage: React.FC = () => {
       sub: 'Anti-cheat triggers',
       icon: ShieldAlert,
       color: overview.highRiskIntegrityAlerts > 0
-        ? 'from-orange-500/30 to-rose-500/30 text-orange-400 border-orange-500/40'
-        : 'from-slate-800 to-slate-800 text-slate-400 border-slate-700',
+        ? 'border-rose-900/60 bg-sandwich-900/90 text-rose-400'
+        : 'border-sandwich-800 bg-sandwich-900/90 text-sandwich-400',
       link: '/admin/integrity',
     },
     {
@@ -115,7 +115,7 @@ export const AdminDashboardPage: React.FC = () => {
       value: overview.totalAiQueriesToday,
       sub: 'Queries today',
       icon: Bot,
-      color: 'from-cyan-500/20 to-sky-500/20 text-cyan-400 border-cyan-500/30',
+      color: 'border-sandwich-800 bg-sandwich-900/90 text-sandwich-100',
     },
   ];
 
@@ -124,14 +124,14 @@ export const AdminDashboardPage: React.FC = () => {
       {/* Welcome Bar */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-xl font-bold text-white tracking-tight">Platform Telemetry & Governance</h2>
-          <p className="text-xs text-slate-400 mt-1">
+          <h2 className="text-xl font-bold text-sandwich-100 tracking-tight">Platform Telemetry & Governance</h2>
+          <p className="text-xs text-sandwich-400 mt-1">
             Real-time platform metrics, security integrity, moderation reports, and game health.
           </p>
         </div>
         <button
           onClick={fetchOverview}
-          className="flex items-center gap-2 px-3 py-1.5 rounded-xl border border-slate-800 bg-slate-900 hover:bg-slate-800 text-slate-300 text-xs font-medium transition self-start sm:self-auto"
+          className="flex items-center gap-2 px-3 py-1.5 rounded-xl border border-sandwich-700 bg-sandwich-900 hover:bg-sandwich-800 text-sandwich-200 text-xs font-medium transition self-start sm:self-auto shadow-sm"
         >
           <RefreshCw className="w-3.5 h-3.5" />
           <span>Refresh Telemetry</span>
@@ -145,20 +145,20 @@ export const AdminDashboardPage: React.FC = () => {
           return (
             <div
               key={idx}
-              className={`p-5 rounded-2xl bg-gradient-to-br bg-slate-900 border ${kpi.color} shadow-sm relative flex flex-col justify-between`}
+              className={`p-5 rounded-2xl border ${kpi.color} shadow-luxury backdrop-blur-xl relative flex flex-col justify-between`}
             >
               <div className="flex items-center justify-between mb-3">
-                <span className="text-xs font-medium text-slate-400">{kpi.title}</span>
-                <Icon className="w-5 h-5" />
+                <span className="text-xs font-medium text-sandwich-400 font-mono">{kpi.title}</span>
+                <Icon className="w-5 h-5 text-sandwich-300" />
               </div>
               <div>
-                <div className="text-2xl font-bold tracking-tight text-white">{kpi.value.toLocaleString()}</div>
-                <div className="text-[11px] text-slate-400 mt-1">{kpi.sub}</div>
+                <div className="text-2xl font-bold font-mono tracking-tight text-sandwich-50">{kpi.value.toLocaleString()}</div>
+                <div className="text-[11px] text-sandwich-400 mt-1 font-mono">{kpi.sub}</div>
               </div>
               {kpi.link && (
                 <Link
                   to={kpi.link}
-                  className="mt-4 pt-3 border-t border-slate-800 flex items-center justify-between text-xs text-slate-300 hover:text-white transition font-medium"
+                  className="mt-4 pt-3 border-t border-sandwich-800 flex items-center justify-between text-xs text-sandwich-300 hover:text-white transition font-medium"
                 >
                   <span>Manage</span>
                   <ArrowRight className="w-3.5 h-3.5" />
@@ -171,34 +171,34 @@ export const AdminDashboardPage: React.FC = () => {
 
       {/* Quick Governance Panels */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
-        <div className="p-6 rounded-2xl bg-slate-900/60 border border-slate-800 space-y-3">
+        <div className="p-6 rounded-2xl bg-sandwich-900/90 border border-sandwich-800 shadow-luxury space-y-3">
           <div className="flex items-center gap-2 text-rose-400">
             <Flag className="w-5 h-5" />
-            <h3 className="text-sm font-semibold text-white">Community Moderation</h3>
+            <h3 className="text-sm font-semibold text-sandwich-100">Community Moderation</h3>
           </div>
-          <p className="text-xs text-slate-400 leading-relaxed">
+          <p className="text-xs text-sandwich-400 leading-relaxed">
             Review user reports on harassing behavior, cheating exploits, offensive handles, or match irregularities. Take decisive actions with resolution logs.
           </p>
           <Link
             to="/admin/reports"
-            className="inline-flex items-center gap-2 text-xs font-semibold text-indigo-400 hover:text-indigo-300 transition mt-2"
+            className="inline-flex items-center gap-2 text-xs font-semibold text-sandwich-200 hover:text-white transition mt-2"
           >
             <span>Go to Moderation Queue ({overview.openReports} open)</span>
             <ArrowRight className="w-3.5 h-3.5" />
           </Link>
         </div>
 
-        <div className="p-6 rounded-2xl bg-slate-900/60 border border-slate-800 space-y-3">
-          <div className="flex items-center gap-2 text-orange-400">
+        <div className="p-6 rounded-2xl bg-sandwich-900/90 border border-sandwich-800 shadow-luxury space-y-3">
+          <div className="flex items-center gap-2 text-sandwich-200">
             <ShieldAlert className="w-5 h-5" />
-            <h3 className="text-sm font-semibold text-white">Anti-Cheat & Integrity Engine</h3>
+            <h3 className="text-sm font-semibold text-sandwich-100">Anti-Cheat & Integrity Engine</h3>
           </div>
-          <p className="text-xs text-slate-400 leading-relaxed">
+          <p className="text-xs text-sandwich-400 leading-relaxed">
             Inspect automated heuristics detecting impossible solve timing, rapid code execution bursts, code plagiarism patterns, and abnormal battle anomalies.
           </p>
           <Link
             to="/admin/integrity"
-            className="inline-flex items-center gap-2 text-xs font-semibold text-indigo-400 hover:text-indigo-300 transition mt-2"
+            className="inline-flex items-center gap-2 text-xs font-semibold text-sandwich-200 hover:text-white transition mt-2"
           >
             <span>Review Integrity Events ({overview.highRiskIntegrityAlerts} critical)</span>
             <ArrowRight className="w-3.5 h-3.5" />

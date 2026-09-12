@@ -115,16 +115,16 @@ export const MatchmakingPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center p-4 relative overflow-hidden">
+    <div className="min-h-screen bg-sandwich-950 flex flex-col items-center justify-center p-4 relative overflow-hidden">
       {/* Background Animated Atmosphere */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(59,130,246,0.08)_0,transparent_70%)] pointer-events-none" />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-indigo-500/5 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.03)_0,transparent_70%)] pointer-events-none" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-sandwich-800/10 rounded-full blur-3xl pointer-events-none" />
 
       {/* Main Card */}
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="w-full max-w-lg bg-slate-900/90 border border-slate-800 rounded-3xl p-8 shadow-2xl backdrop-blur-xl relative z-10 flex flex-col items-center text-center"
+        className="w-full max-w-lg bg-sandwich-900/90 border border-sandwich-700/80 rounded-3xl p-8 shadow-luxury-card backdrop-blur-xl relative z-10 flex flex-col items-center text-center"
       >
         <AnimatePresence mode="wait">
           {!matchFound ? (
@@ -140,55 +140,55 @@ export const MatchmakingPage: React.FC = () => {
                 <motion.div
                   animate={{ scale: [1, 1.4, 1.8], opacity: [0.6, 0.3, 0] }}
                   transition={{ duration: 2.5, repeat: Infinity, ease: 'easeOut' }}
-                  className="absolute inset-0 rounded-full border-2 border-indigo-500/50"
+                  className="absolute inset-0 rounded-full border-2 border-sandwich-500/50"
                 />
                 <motion.div
                   animate={{ scale: [1, 1.25, 1.5], opacity: [0.8, 0.4, 0] }}
                   transition={{ duration: 2.5, delay: 0.6, repeat: Infinity, ease: 'easeOut' }}
-                  className="absolute inset-0 rounded-full border-2 border-blue-400/40"
+                  className="absolute inset-0 rounded-full border-2 border-sandwich-300/40"
                 />
-                <div className="w-24 h-24 rounded-full bg-gradient-to-tr from-indigo-600 to-blue-500 p-0.5 shadow-lg shadow-indigo-500/30 flex items-center justify-center">
-                  <div className="w-full h-full rounded-full bg-slate-900 flex items-center justify-center">
-                    <Swords className="w-10 h-10 text-indigo-400 animate-pulse" />
+                <div className="w-24 h-24 rounded-full bg-sandwich-800 p-0.5 shadow-glow-silver border border-sandwich-600 flex items-center justify-center">
+                  <div className="w-full h-full rounded-full bg-sandwich-950 flex items-center justify-center">
+                    <Swords className="w-10 h-10 text-sandwich-100 animate-pulse" />
                   </div>
                 </div>
               </div>
 
               {/* Status Headings */}
-              <h2 className="text-2xl font-black tracking-tight text-white mb-1">
+              <h2 className="text-2xl font-black tracking-tight text-sandwich-50 mb-1">
                 FINDING OPPONENT
               </h2>
-              <p className="text-slate-400 text-sm mb-6">
+              <p className="text-sandwich-300 text-sm mb-6">
                 Searching for a competitor near your skill bracket...
               </p>
 
               {/* Stats Strip */}
               <div className="w-full grid grid-cols-3 gap-3 mb-8">
-                <div className="bg-slate-800/60 border border-slate-750 rounded-2xl p-3 flex flex-col items-center">
-                  <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Your Rating</span>
-                  <div className="flex items-center gap-1.5 text-amber-400 font-bold text-lg">
-                    <Trophy className="w-4 h-4" />
+                <div className="bg-sandwich-950/80 border border-sandwich-800 rounded-2xl p-3 flex flex-col items-center">
+                  <span className="text-xs font-semibold text-sandwich-400 uppercase tracking-wider mb-1">Your Rating</span>
+                  <div className="flex items-center gap-1.5 text-sandwich-100 font-bold text-lg">
+                    <Trophy className="w-4 h-4 text-sandwich-300" />
                     <span>{playerRating}</span>
                   </div>
                 </div>
 
-                <div className="bg-slate-800/60 border border-slate-750 rounded-2xl p-3 flex flex-col items-center">
-                  <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Queue Time</span>
-                  <span className="text-indigo-400 font-mono font-bold text-lg">
+                <div className="bg-sandwich-950/80 border border-sandwich-800 rounded-2xl p-3 flex flex-col items-center">
+                  <span className="text-xs font-semibold text-sandwich-400 uppercase tracking-wider mb-1">Queue Time</span>
+                  <span className="text-sandwich-100 font-mono font-bold text-lg">
                     {formatTime(elapsedSeconds)}
                   </span>
                 </div>
 
-                <div className="bg-slate-800/60 border border-slate-750 rounded-2xl p-3 flex flex-col items-center">
-                  <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Range</span>
-                  <span className="text-emerald-400 font-bold text-lg">
+                <div className="bg-sandwich-950/80 border border-sandwich-800 rounded-2xl p-3 flex flex-col items-center">
+                  <span className="text-xs font-semibold text-sandwich-400 uppercase tracking-wider mb-1">Range</span>
+                  <span className="text-sandwich-100 font-bold text-lg">
                     ±{searchRadius}
                   </span>
                 </div>
               </div>
 
               {error && (
-                <div className="w-full mb-4 p-3 bg-rose-500/10 border border-rose-500/20 rounded-xl text-rose-400 text-sm">
+                <div className="w-full mb-4 p-3 bg-red-950/40 border border-red-800/80 rounded-xl text-red-300 text-sm">
                   {error}
                 </div>
               )}
@@ -197,7 +197,7 @@ export const MatchmakingPage: React.FC = () => {
               <Button
                 variant="outline"
                 onClick={handleCancel}
-                className="w-full py-3 border-slate-700 hover:bg-slate-800 text-slate-300 rounded-xl flex items-center justify-center gap-2"
+                className="w-full py-3 border-sandwich-700 hover:bg-sandwich-800 text-sandwich-300 rounded-xl flex items-center justify-center gap-2"
               >
                 <XCircle className="w-4 h-4" />
                 <span>CANCEL SEARCH</span>
@@ -211,38 +211,38 @@ export const MatchmakingPage: React.FC = () => {
               animate={{ scale: 1, opacity: 1 }}
               className="w-full flex flex-col items-center py-4"
             >
-              <div className="w-20 h-20 rounded-2xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center mb-4 text-emerald-400 shadow-xl shadow-emerald-500/20">
-                <Zap className="w-10 h-10 animate-bounce" />
+              <div className="w-20 h-20 rounded-2xl bg-sandwich-800 border border-sandwich-500 flex items-center justify-center mb-4 text-sandwich-50 shadow-glow-white">
+                <Zap className="w-10 h-10 animate-bounce text-sandwich-100" />
               </div>
 
-              <h2 className="text-3xl font-black text-white tracking-tight mb-2">
+              <h2 className="text-3xl font-black text-sandwich-50 tracking-tight mb-2">
                 MATCH FOUND!
               </h2>
-              <p className="text-slate-300 text-sm mb-6">
-                Challenge: <strong className="text-indigo-400 font-semibold">{matchFound.challengeTitle}</strong> ({matchFound.difficulty})
+              <p className="text-sandwich-300 text-sm mb-6">
+                Challenge: <strong className="text-sandwich-100 font-semibold">{matchFound.challengeTitle}</strong> ({matchFound.difficulty})
               </p>
 
-              <div className="w-full bg-slate-800/80 rounded-2xl p-4 border border-slate-700/80 flex items-center justify-around mb-6">
+              <div className="w-full bg-sandwich-950/80 rounded-2xl p-4 border border-sandwich-800 flex items-center justify-around mb-6">
                 <div className="flex flex-col items-center">
-                  <div className="w-12 h-12 rounded-xl bg-indigo-600 flex items-center justify-center text-white font-bold text-lg mb-1">
+                  <div className="w-12 h-12 rounded-xl bg-sandwich-800 border border-sandwich-600 flex items-center justify-center text-sandwich-50 font-bold text-lg mb-1">
                     {matchFound.player1.username[0]?.toUpperCase()}
                   </div>
-                  <span className="text-white font-medium text-sm">{matchFound.player1.username}</span>
-                  <span className="text-xs text-amber-400 font-semibold">{matchFound.player1.rating} MMR</span>
+                  <span className="text-sandwich-100 font-medium text-sm">{matchFound.player1.username}</span>
+                  <span className="text-xs text-sandwich-400 font-semibold">{matchFound.player1.rating} MMR</span>
                 </div>
 
-                <span className="text-slate-500 font-black text-xl italic">VS</span>
+                <span className="text-sandwich-500 font-black text-xl italic">VS</span>
 
                 <div className="flex flex-col items-center">
-                  <div className="w-12 h-12 rounded-xl bg-rose-600 flex items-center justify-center text-white font-bold text-lg mb-1">
+                  <div className="w-12 h-12 rounded-xl bg-sandwich-800 border border-sandwich-600 flex items-center justify-center text-sandwich-50 font-bold text-lg mb-1">
                     {matchFound.player2.username[0]?.toUpperCase()}
                   </div>
-                  <span className="text-white font-medium text-sm">{matchFound.player2.username}</span>
-                  <span className="text-xs text-amber-400 font-semibold">{matchFound.player2.rating} MMR</span>
+                  <span className="text-sandwich-100 font-medium text-sm">{matchFound.player2.username}</span>
+                  <span className="text-xs text-sandwich-400 font-semibold">{matchFound.player2.rating} MMR</span>
                 </div>
               </div>
 
-              <div className="text-slate-400 text-xs animate-pulse">
+              <div className="text-sandwich-400 text-xs animate-pulse font-mono">
                 Entering battle arena lobby...
               </div>
             </motion.div>

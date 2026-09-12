@@ -83,34 +83,34 @@ export const SkillsPage: React.FC = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div>
-          <Badge variant="cyan" size="sm" className="mb-2">
-            <Zap className="w-3.5 h-3.5 mr-1" />
+          <Badge variant="neutral" size="sm" className="mb-2 bg-sandwich-800 text-sandwich-200 border-sandwich-700">
+            <Zap className="w-3.5 h-3.5 mr-1 text-sandwich-100" />
             MASTERY MATRIX
           </Badge>
-          <h1 className="text-3xl font-black text-slate-900 tracking-tight">
+          <h1 className="text-3xl font-black text-sandwich-100 tracking-tight">
             DEVELOPER SKILL TREE
           </h1>
-          <p className="text-sm text-slate-600 mt-1">
+          <p className="text-sm text-sandwich-400 mt-1">
             Advance node levels and increase mastery percentages by solving challenges and winning duels.
           </p>
         </div>
 
         {/* Global Mastery Card */}
-        <div className="bg-white p-4 px-6 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-5">
+        <div className="bg-sandwich-900/90 backdrop-blur-xl p-4 px-6 rounded-2xl border border-sandwich-800 shadow-luxury flex items-center gap-5">
           <div className="text-center">
-            <span className="text-[10px] font-mono uppercase text-slate-400 font-bold block">
+            <span className="text-[10px] font-mono uppercase text-sandwich-500 font-bold block">
               Discipline Mastery
             </span>
-            <span className="text-2xl font-black font-mono text-cyan-600">
+            <span className="text-2xl font-black font-mono text-sandwich-100">
               {overallMastery}%
             </span>
           </div>
-          <div className="h-9 w-px bg-slate-200" />
+          <div className="h-9 w-px bg-sandwich-800" />
           <div className="text-center">
-            <span className="text-[10px] font-mono uppercase text-slate-400 font-bold block">
+            <span className="text-[10px] font-mono uppercase text-sandwich-500 font-bold block">
               Active Nodes
             </span>
-            <span className="text-2xl font-black font-mono text-slate-900">
+            <span className="text-2xl font-black font-mono text-sandwich-100">
               {skills.filter((s) => s.unlocked).length} / {skills.length}
             </span>
           </div>
@@ -125,8 +125,8 @@ export const SkillsPage: React.FC = () => {
             onClick={() => setActiveCategory(c.value)}
             className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all ${
               activeCategory === c.value
-                ? 'bg-slate-900 text-white shadow-sm'
-                : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50'
+                ? 'bg-sandwich-50 text-sandwich-950 shadow-glow-white'
+                : 'bg-sandwich-900/90 border border-sandwich-800 text-sandwich-400 hover:text-sandwich-200 hover:border-sandwich-700'
             }`}
           >
             {c.label}
@@ -135,12 +135,12 @@ export const SkillsPage: React.FC = () => {
       </div>
 
       {loading ? (
-        <div className="py-24 flex flex-col items-center justify-center text-slate-400 gap-3">
-          <Loader2 className="w-8 h-8 animate-spin text-cyan-600" />
+        <div className="py-24 flex flex-col items-center justify-center text-sandwich-400 gap-3">
+          <Loader2 className="w-8 h-8 animate-spin text-sandwich-200" />
           <span className="text-sm font-medium">Constructing skill hierarchy...</span>
         </div>
       ) : error ? (
-        <Card className="p-8 text-center text-rose-600 bg-rose-50/50 border-rose-200 rounded-2xl">
+        <Card className="p-8 text-center text-rose-400 bg-rose-950/20 border-rose-900/50 rounded-2xl">
           <p className="text-sm font-medium">{error}</p>
           <Button variant="secondary" size="sm" onClick={loadSkills} className="mt-4">
             Retry
@@ -164,58 +164,58 @@ export const SkillsPage: React.FC = () => {
                     onClick={() => setSelectedSkill(s)}
                     className={`p-5 rounded-2xl border cursor-pointer transition-all ${
                       isSelected
-                        ? 'border-cyan-500 bg-cyan-50/20 shadow-md ring-2 ring-cyan-400/30'
+                        ? 'border-sandwich-200 bg-sandwich-850 shadow-glow-silver ring-1 ring-sandwich-200/50'
                         : s.unlocked
-                        ? 'border-slate-200 hover:border-slate-300 bg-white shadow-sm'
-                        : 'border-slate-200/70 bg-slate-50/60 opacity-65'
+                        ? 'border-sandwich-800 hover:border-sandwich-700 bg-sandwich-900/90 shadow-luxury'
+                        : 'border-sandwich-900 bg-sandwich-950/60 opacity-50'
                     }`}
                   >
                     <div className="flex items-center justify-between mb-3">
                       <div
-                        className={`w-11 h-11 rounded-xl flex items-center justify-center ${
+                        className={`w-11 h-11 rounded-xl flex items-center justify-center border ${
                           s.unlocked
-                            ? 'bg-gradient-to-tr from-cyan-600 to-blue-500 text-white shadow-sm'
-                            : 'bg-slate-200 text-slate-400'
+                            ? 'bg-sandwich-800 border-sandwich-700 text-sandwich-100 shadow-sm'
+                            : 'bg-sandwich-950 border-sandwich-900 text-sandwich-600'
                         }`}
                       >
                         <IconComp className="w-5 h-5" />
                       </div>
 
                       {s.unlocked ? (
-                        <Badge variant="cyan" size="sm">
+                        <Badge variant="neutral" size="sm" className="bg-sandwich-800 text-sandwich-200 border-sandwich-700">
                           Lvl {s.currentLevel}/{s.maxLevel}
                         </Badge>
                       ) : (
-                        <span className="inline-flex items-center gap-1 text-[11px] font-mono text-slate-400 font-medium">
+                        <span className="inline-flex items-center gap-1 text-[11px] font-mono text-sandwich-500 font-medium">
                           <Lock className="w-3 h-3" /> Locked
                         </span>
                       )}
                     </div>
 
-                    <h3 className="text-sm font-black text-slate-900 truncate">
+                    <h3 className="text-sm font-black text-sandwich-100 truncate">
                       {s.name}
                     </h3>
-                    <p className="text-xs text-slate-500 mt-1 line-clamp-2">
+                    <p className="text-xs text-sandwich-400 mt-1 line-clamp-2">
                       {s.description}
                     </p>
 
                     {/* Prerequisite Tag or Mastery Bar */}
-                    <div className="mt-4 pt-3 border-t border-slate-100">
+                    <div className="mt-4 pt-3 border-t border-sandwich-800/80">
                       {s.unlocked ? (
                         <div>
-                          <div className="flex justify-between text-[10px] font-mono text-slate-500 mb-1">
+                          <div className="flex justify-between text-[10px] font-mono text-sandwich-400 mb-1">
                             <span>Mastery</span>
-                            <span className="font-bold">{s.masteryPercentage}%</span>
+                            <span className="font-bold text-sandwich-200">{s.masteryPercentage}%</span>
                           </div>
-                          <div className="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+                          <div className="w-full bg-sandwich-950 rounded-full h-1.5 overflow-hidden border border-sandwich-800/50">
                             <div
-                              className="bg-gradient-to-r from-cyan-500 to-blue-500 h-1.5 rounded-full"
+                              className="bg-gradient-to-r from-sandwich-400 to-sandwich-100 h-1.5 rounded-full"
                               style={{ width: `${s.masteryPercentage}%` }}
                             />
                           </div>
                         </div>
                       ) : (
-                        <span className="text-[10px] font-mono text-amber-600 flex items-center gap-1 truncate">
+                        <span className="text-[10px] font-mono text-sandwich-400 flex items-center gap-1 truncate">
                           Requires: {s.prerequisiteName || 'Prior Node'}
                         </span>
                       )}
@@ -229,50 +229,50 @@ export const SkillsPage: React.FC = () => {
           {/* INSPECTOR PANEL (1 COLUMN ON LG) */}
           {selectedSkill && (
             <div className="lg:col-span-1 sticky top-6">
-              <Card className="p-6 bg-white border-2 border-cyan-400/80 rounded-2xl shadow-md">
+              <Card className="p-6 bg-sandwich-900/95 border border-sandwich-700 rounded-2xl shadow-luxury backdrop-blur-xl">
                 <div className="flex items-start justify-between">
-                  <Badge variant="purple" size="sm">
+                  <Badge variant="neutral" size="sm" className="bg-sandwich-800 text-sandwich-200 border-sandwich-700">
                     {selectedSkill.category.replace('_', ' ')}
                   </Badge>
                   {selectedSkill.unlocked ? (
-                    <span className="text-xs font-mono font-bold text-emerald-600 flex items-center gap-1">
+                    <span className="text-xs font-mono font-bold text-emerald-400 flex items-center gap-1">
                       <CheckCircle2 className="w-3.5 h-3.5" /> Unlocked
                     </span>
                   ) : (
-                    <span className="text-xs font-mono font-bold text-slate-400 flex items-center gap-1">
+                    <span className="text-xs font-mono font-bold text-sandwich-500 flex items-center gap-1">
                       <Lock className="w-3.5 h-3.5" /> Locked
                     </span>
                   )}
                 </div>
 
                 <div className="mt-4">
-                  <h3 className="text-xl font-black text-slate-900">
+                  <h3 className="text-xl font-black text-sandwich-100">
                     {selectedSkill.name}
                   </h3>
-                  <p className="text-xs text-slate-600 mt-2 leading-relaxed">
+                  <p className="text-xs text-sandwich-300 mt-2 leading-relaxed">
                     {selectedSkill.description}
                   </p>
                 </div>
 
                 {/* Level & XP Progression */}
-                <div className="mt-5 p-4 rounded-xl bg-slate-50 border border-slate-100 space-y-3">
+                <div className="mt-5 p-4 rounded-xl bg-sandwich-950/80 border border-sandwich-800 space-y-3">
                   <div className="flex items-center justify-between text-xs font-mono">
-                    <span className="text-slate-500 font-medium">Rank Level</span>
-                    <span className="font-black text-slate-900 text-sm">
+                    <span className="text-sandwich-400 font-medium">Rank Level</span>
+                    <span className="font-black text-sandwich-100 text-sm">
                       Level {selectedSkill.currentLevel} of {selectedSkill.maxLevel}
                     </span>
                   </div>
 
                   <div className="space-y-1">
-                    <div className="flex justify-between text-[11px] font-mono text-slate-500">
+                    <div className="flex justify-between text-[11px] font-mono text-sandwich-400">
                       <span>XP to Next Level</span>
-                      <span className="font-bold">
+                      <span className="font-bold text-sandwich-200">
                         {selectedSkill.currentXp} / {selectedSkill.xpToNextLevel} XP
                       </span>
                     </div>
-                    <div className="w-full bg-slate-200 rounded-full h-2 overflow-hidden">
+                    <div className="w-full bg-sandwich-800 rounded-full h-2 overflow-hidden">
                       <div
-                        className="bg-cyan-600 h-2 rounded-full transition-all"
+                        className="bg-sandwich-100 h-2 rounded-full transition-all shadow-glow-white"
                         style={{
                           width: `${Math.min(
                             100,
@@ -284,8 +284,8 @@ export const SkillsPage: React.FC = () => {
                   </div>
 
                   <div className="flex items-center justify-between text-xs font-mono pt-1">
-                    <span className="text-slate-500 font-medium">Mastery Quotient</span>
-                    <span className="font-black text-cyan-700 text-sm">
+                    <span className="text-sandwich-400 font-medium">Mastery Quotient</span>
+                    <span className="font-black text-sandwich-100 text-sm">
                       {selectedSkill.masteryPercentage}%
                     </span>
                   </div>
@@ -293,18 +293,18 @@ export const SkillsPage: React.FC = () => {
 
                 {/* Prerequisite Information */}
                 {selectedSkill.prerequisiteName && (
-                  <div className="mt-4 p-3 rounded-xl bg-amber-50/60 border border-amber-200 text-xs">
-                    <span className="font-bold text-amber-900 block mb-1">
+                  <div className="mt-4 p-3 rounded-xl bg-sandwich-800/60 border border-sandwich-700 text-xs">
+                    <span className="font-bold text-sandwich-200 block mb-1">
                       Dependency Constraint
                     </span>
-                    <p className="text-[11px] text-amber-800 flex items-center gap-1.5">
-                      <ArrowRight className="w-3.5 h-3.5 shrink-0" />
-                      Must unlock & level up <strong>{selectedSkill.prerequisiteName}</strong> to proceed.
+                    <p className="text-[11px] text-sandwich-400 flex items-center gap-1.5">
+                      <ArrowRight className="w-3.5 h-3.5 shrink-0 text-sandwich-300" />
+                      Must unlock & level up <strong className="text-sandwich-200">{selectedSkill.prerequisiteName}</strong> to proceed.
                     </p>
                   </div>
                 )}
 
-                <div className="mt-5 text-[11px] text-slate-400 text-center font-mono">
+                <div className="mt-5 text-[11px] text-sandwich-500 text-center font-mono">
                   Solve katas categorized under this archetype to raise skill XP automatically.
                 </div>
               </Card>
