@@ -21,6 +21,7 @@ import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * WebSocket STOMP messaging configuration for DevArena real-time interactions
@@ -55,19 +56,30 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        String[] origins = Arrays.stream(allowedOrigins.split(","))
-                .map(String::trim)
-                .filter(origin -> !origin.isEmpty())
-                .toArray(String[]::new);
+        List<String> originsList = CorsConfig.parseOrigins(allowedOrigins);
+        if (!originsList.contains("https://dev-arena-kappa.vercel.app")) {
+            originsList.add("https://dev-arena-kappa.vercel.app");
+        }
+        if (!originsList.contains("http://localhost:5173")) {
+            originsList.add("http://localhost:5173");
+        }
+        if (!originsList.contains("http://localhost:3000")) {
+            originsList.add("http://localhost:3000");
+        }
+        originsList.add("https://*.vercel.app");
+        originsList.add("http://localhost:*");
+        originsList.add("https://localhost:*");
+
+        String[] originPatterns = originsList.toArray(String[]::new);
 
         // Native WebSocket endpoint
         registry.addEndpoint("/ws")
-                .setAllowedOriginPatterns(origins)
+                .setAllowedOriginPatterns(originPatterns)
                 .withSockJS();
 
         // Direct WebSocket endpoint without SockJS fallback
         registry.addEndpoint("/ws-direct")
-                .setAllowedOriginPatterns(origins);
+                .setAllowedOriginPatterns(originPatterns);
     }
 
     @Override

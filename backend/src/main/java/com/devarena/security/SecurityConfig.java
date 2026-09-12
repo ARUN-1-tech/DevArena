@@ -2,6 +2,7 @@ package com.devarena.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -13,6 +14,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
 /**
@@ -26,15 +28,15 @@ public class SecurityConfig {
 
     private final JwtAuthenticationEntryPoint authenticationEntryPoint;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
-    private final CorsFilter corsFilter;
+    private final CorsConfigurationSource corsConfigurationSource;
 
     public SecurityConfig(
             JwtAuthenticationEntryPoint authenticationEntryPoint,
             JwtAuthenticationFilter jwtAuthenticationFilter,
-            CorsFilter corsFilter) {
+            CorsConfigurationSource corsConfigurationSource) {
         this.authenticationEntryPoint = authenticationEntryPoint;
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
-        this.corsFilter = corsFilter;
+        this.corsConfigurationSource = corsConfigurationSource;
     }
 
     @Bean
@@ -51,7 +53,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
-                .cors(cors -> {})
+                .cors(cors -> cors.configurationSource(corsConfigurationSource))
                 .exceptionHandling(exceptions -> exceptions
                         .authenticationEntryPoint(authenticationEntryPoint)
                 )
@@ -64,8 +66,14 @@ public class SecurityConfig {
                         .referrerPolicy(referrer -> referrer.policy(org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter.ReferrerPolicy.STRICT_ORIGIN_WHEN_CROSS_ORIGIN))
                 )
                 .authorizeHttpRequests(auth -> auth
-                        // Public discovery, health & real-time socket handshake
+                        // Preflight CORS requests are always permitted
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+
+                        // Public discovery, health & root status endpoints
                         .requestMatchers(
+                                "/",
+                                "/health",
+                                "/status",
                                 "/api/v1/health",
                                 "/api/v1/status",
                                 "/api/v1/test-validation",
@@ -77,6 +85,9 @@ public class SecurityConfig {
 
                         // Public Auth Endpoints
                         .requestMatchers(
+                                "/auth/register",
+                                "/auth/login",
+                                "/auth/refresh",
                                 "/api/v1/auth/register",
                                 "/api/v1/auth/login",
                                 "/api/v1/auth/refresh"
@@ -99,6 +110,8 @@ public class SecurityConfig {
                         .anyRequest().permitAll()
                 );
 
+        // Position CORS filter and JWT filter before username/password authentication filter
+        http.addFilterBefore(new CorsFilter(corsConfigurationSource), UsernamePasswordAuthenticationFilter.class);
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();

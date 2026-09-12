@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
  * Controller exposing authentication and player profile endpoints.
  */
 @RestController
-@RequestMapping("/api/v1/auth")
+@RequestMapping({"/api/v1/auth", "/auth"})
 public class AuthController {
 
     private final AuthService authService;

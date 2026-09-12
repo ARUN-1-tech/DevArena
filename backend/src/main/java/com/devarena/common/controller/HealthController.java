@@ -17,10 +17,9 @@ import java.util.Map;
  * and endpoint discovery for DevArena Module 01.
  */
 @RestController
-@RequestMapping("/api/v1")
 public class HealthController {
 
-    @GetMapping("/health")
+    @GetMapping({"/health", "/api/v1/health"})
     public ResponseEntity<ApiResponse<Map<String, Object>>> checkHealth() {
         Map<String, Object> health = new LinkedHashMap<>();
         health.put("status", "UP");
@@ -32,7 +31,7 @@ public class HealthController {
         return ResponseEntity.ok(ApiResponse.success("DevArena foundation is operational", health));
     }
 
-    @GetMapping("/status")
+    @GetMapping({"/status", "/api/v1/status"})
     public ResponseEntity<ApiResponse<Map<String, Object>>> getStatus() {
         Map<String, Object> status = new LinkedHashMap<>();
         status.put("version", "1.0.0-SNAPSHOT");
@@ -56,7 +55,7 @@ public class HealthController {
     /**
      * Diagnostic endpoint for automated test verification of validation handling.
      */
-    @PostMapping("/test-validation")
+    @PostMapping({"/test-validation", "/api/v1/test-validation"})
     public ResponseEntity<ApiResponse<String>> testValidation(@Valid @RequestBody ValidationSampleRequest request) {
         return ResponseEntity.ok(ApiResponse.success("Validated successfully: " + request.name()));
     }
