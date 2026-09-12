@@ -109,7 +109,7 @@ export const PublicProfilePage: React.FC = () => {
       <div>
         <button
           onClick={() => navigate(-1)}
-          className="inline-flex items-center gap-1.5 text-xs font-semibold text-sandwich-400 hover:text-sandwich-100 transition-colors"
+          className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-slate-900 transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
           <span>Back</span>
@@ -118,23 +118,23 @@ export const PublicProfilePage: React.FC = () => {
 
       {/* Action Notification */}
       {actionMessage && (
-        <div className="p-3 bg-sandwich-800 border border-sandwich-700 text-sandwich-100 text-xs font-semibold rounded-xl flex items-center gap-2 shadow-luxury">
-          <Sparkles className="w-4 h-4 text-sandwich-200 shrink-0" />
+        <div className="p-3 bg-cyan-50 border border-cyan-200 text-cyan-800 text-xs font-semibold rounded-xl flex items-center gap-2 shadow-xs">
+          <Sparkles className="w-4 h-4 text-cyan-600 shrink-0" />
           <span>{actionMessage}</span>
         </div>
       )}
 
       {/* HERO BANNER */}
-      <Card className="p-8 bg-sandwich-900/95 border-sandwich-700 shadow-luxury rounded-3xl relative overflow-hidden backdrop-blur-xl">
+      <Card className="p-8 bg-gradient-to-br from-white via-slate-50/60 to-cyan-50/30 border-slate-200 shadow-sm rounded-3xl relative overflow-hidden">
         <div className="flex flex-col md:flex-row items-center md:items-start gap-6 relative z-10 text-center md:text-left">
           {/* Avatar with presence */}
           <div className="relative">
-            <div className="w-24 h-24 rounded-3xl bg-sandwich-800 border-2 border-sandwich-600 text-sandwich-100 font-black text-3xl flex items-center justify-center shadow-glow-silver">
+            <div className="w-24 h-24 rounded-3xl bg-gradient-to-tr from-cyan-600 to-violet-600 text-white font-black text-3xl flex items-center justify-center shadow-lg border-4 border-white">
               {profile.displayName ? profile.displayName.slice(0, 2).toUpperCase() : profile.username.slice(0, 2).toUpperCase()}
             </div>
             {profile.online && (
               <span
-                className="absolute bottom-1 right-1 w-5 h-5 rounded-full bg-emerald-500 border-3 border-sandwich-950 ring-2 ring-emerald-400/50"
+                className="absolute bottom-1 right-1 w-5 h-5 rounded-full bg-emerald-500 border-3 border-white ring-2 ring-emerald-400/50"
                 title="Online"
               />
             )}
@@ -143,34 +143,34 @@ export const PublicProfilePage: React.FC = () => {
           {/* Details */}
           <div className="flex-1 min-w-0">
             <div className="flex flex-wrap items-center justify-center md:justify-start gap-2 mb-1">
-              <h1 className="text-2xl font-black text-sandwich-100 tracking-tight">
+              <h1 className="text-2xl font-black text-slate-900 tracking-tight">
                 {profile.displayName || profile.username}
               </h1>
-              <span className="text-sm font-mono text-sandwich-400">@{profile.username}</span>
-              <Badge variant="neutral" size="sm" className="bg-sandwich-800 text-sandwich-200 border-sandwich-700">
+              <span className="text-sm font-mono text-slate-400">@{profile.username}</span>
+              <Badge variant="cyan" size="sm">
                 Rank #{profile.rank}
               </Badge>
             </div>
 
             {profile.bio && (
-              <p className="text-xs text-sandwich-300 max-w-xl mb-3 leading-relaxed">
+              <p className="text-xs text-slate-600 max-w-xl mb-3 leading-relaxed">
                 {profile.bio}
               </p>
             )}
 
             {/* Quick Metrics */}
-            <div className="flex flex-wrap items-center justify-center md:justify-start gap-4 text-xs font-mono text-sandwich-300 pt-1">
-              <div className="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-sandwich-800 border border-sandwich-700">
-                <Sparkles className="w-3.5 h-3.5 text-sandwich-200" />
-                <span className="font-bold text-sandwich-100">Level {profile.level}</span>
+            <div className="flex flex-wrap items-center justify-center md:justify-start gap-4 text-xs font-mono text-slate-600 pt-1">
+              <div className="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-slate-100 border border-slate-200">
+                <Sparkles className="w-3.5 h-3.5 text-cyan-600" />
+                <span className="font-bold text-slate-900">Level {profile.level}</span>
               </div>
-              <div className="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-sandwich-800 border border-sandwich-700 text-sandwich-100">
-                <Flame className="w-3.5 h-3.5 text-sandwich-200" />
+              <div className="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-cyan-50 border border-cyan-200 text-cyan-800">
+                <Flame className="w-3.5 h-3.5 text-cyan-600" />
                 <span className="font-bold">{profile.rating} MMR</span>
               </div>
-              <div className="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-sandwich-800 border border-sandwich-700">
-                <Trophy className="w-3.5 h-3.5 text-sandwich-200" />
-                <span className="font-bold text-sandwich-100">{profile.totalXp.toLocaleString()} XP</span>
+              <div className="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-slate-100 border border-slate-200">
+                <Trophy className="w-3.5 h-3.5 text-amber-500" />
+                <span className="font-bold">{profile.totalXp.toLocaleString()} XP</span>
               </div>
             </div>
           </div>
@@ -178,7 +178,7 @@ export const PublicProfilePage: React.FC = () => {
           {/* Actions */}
           <div className="flex flex-col gap-2 shrink-0 w-full sm:w-auto">
             <Button
-              variant="primary"
+              variant="glow"
               onClick={handleChallenge}
               isLoading={actionLoading}
               leftIcon={<Swords className="w-4 h-4" />}
@@ -187,16 +187,16 @@ export const PublicProfilePage: React.FC = () => {
             </Button>
 
             {profile.isFriend ? (
-              <Button variant="secondary" disabled leftIcon={<UserCheck className="w-4 h-4 text-emerald-400" />}>
+              <Button variant="outline" disabled leftIcon={<UserCheck className="w-4 h-4 text-emerald-600" />}>
                 Friends
               </Button>
             ) : profile.hasPendingRequest ? (
-              <Button variant="secondary" disabled leftIcon={<Clock className="w-4 h-4 text-sandwich-500" />}>
+              <Button variant="outline" disabled leftIcon={<Clock className="w-4 h-4 text-slate-400" />}>
                 Request Sent
               </Button>
             ) : (
               <Button
-                variant="secondary"
+                variant="outline"
                 onClick={handleSendFriendRequest}
                 isLoading={actionLoading}
                 leftIcon={<UserPlus className="w-4 h-4" />}
@@ -210,42 +210,42 @@ export const PublicProfilePage: React.FC = () => {
 
       {/* STATS OVERVIEW GRID */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <Card className="p-4 bg-sandwich-900/90 border-sandwich-800 rounded-2xl shadow-luxury">
-          <span className="text-[10px] font-mono text-sandwich-500 font-bold block mb-1">
+        <Card className="p-4 bg-white border-slate-200 rounded-2xl">
+          <span className="text-[10px] font-mono text-slate-400 font-bold block mb-1">
             KATAS SOLVED
           </span>
           <div className="flex items-baseline gap-2">
-            <span className="text-2xl font-black text-sandwich-100">{profile.solvedChallenges}</span>
-            <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+            <span className="text-2xl font-black text-slate-900">{profile.solvedChallenges}</span>
+            <CheckCircle2 className="w-4 h-4 text-emerald-500" />
           </div>
         </Card>
 
-        <Card className="p-4 bg-sandwich-900/90 border-sandwich-800 rounded-2xl shadow-luxury">
-          <span className="text-[10px] font-mono text-sandwich-500 font-bold block mb-1">
+        <Card className="p-4 bg-white border-slate-200 rounded-2xl">
+          <span className="text-[10px] font-mono text-slate-400 font-bold block mb-1">
             BATTLES WON
           </span>
           <div className="flex items-baseline gap-2">
-            <span className="text-2xl font-black text-emerald-400">{profile.battleWins}</span>
-            <span className="text-xs text-sandwich-500 font-mono">/ {profile.battleWins + profile.battleLosses}</span>
+            <span className="text-2xl font-black text-emerald-600">{profile.battleWins}</span>
+            <span className="text-xs text-slate-400 font-mono">/ {profile.battleWins + profile.battleLosses}</span>
           </div>
         </Card>
 
-        <Card className="p-4 bg-sandwich-900/90 border-sandwich-800 rounded-2xl shadow-luxury">
-          <span className="text-[10px] font-mono text-sandwich-500 font-bold block mb-1">
+        <Card className="p-4 bg-white border-slate-200 rounded-2xl">
+          <span className="text-[10px] font-mono text-slate-400 font-bold block mb-1">
             WIN RATE
           </span>
           <div className="flex items-baseline gap-2">
-            <span className="text-2xl font-black text-sandwich-100">{profile.battleWinRate}%</span>
+            <span className="text-2xl font-black text-cyan-700">{profile.battleWinRate}%</span>
           </div>
         </Card>
 
-        <Card className="p-4 bg-sandwich-900/90 border-sandwich-800 rounded-2xl shadow-luxury">
-          <span className="text-[10px] font-mono text-sandwich-500 font-bold block mb-1">
+        <Card className="p-4 bg-white border-slate-200 rounded-2xl">
+          <span className="text-[10px] font-mono text-slate-400 font-bold block mb-1">
             WIN STREAK
           </span>
           <div className="flex items-baseline gap-2">
-            <span className="text-2xl font-black text-sandwich-100">{profile.winStreak}</span>
-            <Flame className="w-4 h-4 text-sandwich-200" />
+            <span className="text-2xl font-black text-amber-500">{profile.winStreak}</span>
+            <Flame className="w-4 h-4 text-amber-500" />
           </div>
         </Card>
       </div>
@@ -253,27 +253,27 @@ export const PublicProfilePage: React.FC = () => {
       {/* SKILLS & ACHIEVEMENTS TABS */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Top Skills */}
-        <Card className="p-6 bg-sandwich-900/90 border-sandwich-800 rounded-2xl space-y-4 shadow-luxury">
+        <Card className="p-6 bg-white border-slate-200 rounded-2xl space-y-4">
           <div className="flex items-center gap-2">
-            <Zap className="w-4 h-4 text-sandwich-200" />
-            <h3 className="text-sm font-bold text-sandwich-100 uppercase tracking-wider font-mono">
+            <Zap className="w-4 h-4 text-cyan-600" />
+            <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider font-mono">
               Top Technical Disciplines
             </h3>
           </div>
 
           {profile.topSkills.length === 0 ? (
-            <p className="text-xs text-sandwich-500 py-6 text-center">No skill progression unlocked yet.</p>
+            <p className="text-xs text-slate-400 py-6 text-center">No skill progression unlocked yet.</p>
           ) : (
             <div className="space-y-3">
               {profile.topSkills.map((s) => (
                 <div key={s.code} className="space-y-1.5">
                   <div className="flex justify-between text-xs font-mono">
-                    <span className="font-bold text-sandwich-200">{s.name}</span>
-                    <span className="text-sandwich-100 font-bold">Lvl {s.level} ({s.masteryPercentage}%)</span>
+                    <span className="font-bold text-slate-800">{s.name}</span>
+                    <span className="text-cyan-700 font-bold">Lvl {s.level} ({s.masteryPercentage}%)</span>
                   </div>
-                  <div className="w-full bg-sandwich-950 rounded-full h-2 border border-sandwich-800/50">
+                  <div className="w-full bg-slate-100 rounded-full h-2">
                     <div
-                      className="bg-sandwich-100 h-2 rounded-full transition-all shadow-glow-white"
+                      className="bg-cyan-600 h-2 rounded-full transition-all"
                       style={{ width: `${s.masteryPercentage}%` }}
                     />
                   </div>
@@ -284,29 +284,29 @@ export const PublicProfilePage: React.FC = () => {
         </Card>
 
         {/* Unlocked Achievements */}
-        <Card className="p-6 bg-sandwich-900/90 border-sandwich-800 rounded-2xl space-y-4 shadow-luxury">
+        <Card className="p-6 bg-white border-slate-200 rounded-2xl space-y-4">
           <div className="flex items-center gap-2">
-            <Award className="w-4 h-4 text-sandwich-200" />
-            <h3 className="text-sm font-bold text-sandwich-100 uppercase tracking-wider font-mono">
+            <Award className="w-4 h-4 text-amber-500" />
+            <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider font-mono">
               Achievements ({profile.achievements.length})
             </h3>
           </div>
 
           {profile.achievements.length === 0 ? (
-            <p className="text-xs text-sandwich-500 py-6 text-center">No achievements unlocked yet.</p>
+            <p className="text-xs text-slate-400 py-6 text-center">No achievements unlocked yet.</p>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
               {profile.achievements.map((a) => (
                 <div
                   key={a.code}
-                  className="p-2.5 rounded-xl border border-sandwich-800 bg-sandwich-950/80 flex items-center gap-2.5"
+                  className="p-2.5 rounded-xl border border-slate-200 bg-slate-50/50 flex items-center gap-2.5"
                 >
-                  <div className="w-8 h-8 rounded-lg bg-sandwich-800 border border-sandwich-700 text-sandwich-100 flex items-center justify-center shrink-0">
+                  <div className="w-8 h-8 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center shrink-0">
                     <Award className="w-4 h-4" />
                   </div>
                   <div className="min-w-0">
-                    <p className="text-xs font-bold text-sandwich-100 truncate">{a.name}</p>
-                    <span className="text-[9px] font-mono text-sandwich-500 uppercase font-bold">{a.rarity}</span>
+                    <p className="text-xs font-bold text-slate-900 truncate">{a.name}</p>
+                    <span className="text-[9px] font-mono text-slate-400 uppercase font-bold">{a.rarity}</span>
                   </div>
                 </div>
               ))}
@@ -317,18 +317,18 @@ export const PublicProfilePage: React.FC = () => {
 
       {/* RECENT PUBLIC ACTIVITY */}
       {profile.recentActivities.length > 0 && (
-        <Card className="p-6 bg-sandwich-900/90 border-sandwich-800 rounded-2xl space-y-3 shadow-luxury">
-          <h3 className="text-sm font-bold text-sandwich-100 uppercase tracking-wider font-mono">
+        <Card className="p-6 bg-white border-slate-200 rounded-2xl space-y-3">
+          <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider font-mono">
             Recent Public Feats
           </h3>
-          <div className="divide-y divide-sandwich-800/80">
+          <div className="divide-y divide-slate-100">
             {profile.recentActivities.map((act, idx) => (
               <div key={idx} className="py-2.5 flex items-center justify-between gap-2 text-xs">
-                <div className="flex items-center gap-2 text-sandwich-300">
-                  <span className="w-1.5 h-1.5 rounded-full bg-sandwich-100" />
+                <div className="flex items-center gap-2 text-slate-700">
+                  <span className="w-1.5 h-1.5 rounded-full bg-cyan-500" />
                   <span>{act.description}</span>
                 </div>
-                <span className="text-[10px] font-mono text-sandwich-500 shrink-0">
+                <span className="text-[10px] font-mono text-slate-400 shrink-0">
                   {new Date(act.timestamp).toLocaleDateString()}
                 </span>
               </div>

@@ -87,3 +87,19 @@ export interface BattleEvent<T = any> {
   payload: T;
   timestamp: string;
 }
+
+export interface MatchFoundPayload {
+  battleId: string;
+  challengeTitle: string;
+  difficulty: string;
+  player1: {
+    username: string;
+    rating: number;
+    avatarUrl?: string;
+  };
+  player2: {
+    username: string;
+    rating: number;
+    avatarUrl?: string;
+  };
+}

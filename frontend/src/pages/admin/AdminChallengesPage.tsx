@@ -91,18 +91,18 @@ export const AdminChallengesPage: React.FC = () => {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-xl font-bold text-sandwich-100 tracking-tight flex items-center gap-2">
-            <Code2 className="w-5 h-5 text-sandwich-200" />
+          <h2 className="text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
+            <Code2 className="w-5 h-5 text-emerald-600" />
             <span>Challenge Catalog Lifecycle</span>
           </h2>
-          <p className="text-xs text-sandwich-400 mt-1">
+          <p className="text-xs text-slate-500 mt-1">
             Author, edit, publish, and archive competitive programming katas and test suites.
           </p>
         </div>
 
         <button
           onClick={() => setIsModalOpen(true)}
-          className="flex items-center gap-2 px-4 py-2 rounded-xl bg-sandwich-50 hover:bg-white text-sandwich-950 text-xs font-bold shadow-glow-white transition self-start sm:self-auto"
+          className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white text-xs font-bold shadow-sm shadow-emerald-500/25 transition self-start sm:self-auto"
         >
           <Plus className="w-4 h-4" />
           <span>Create Challenge</span>
@@ -110,66 +110,72 @@ export const AdminChallengesPage: React.FC = () => {
       </div>
 
       {error && (
-        <div className="p-4 rounded-xl bg-rose-950/20 border border-rose-900/50 text-rose-400 text-xs flex items-center gap-2">
+        <div className="p-4 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs flex items-center gap-2">
           <AlertTriangle className="w-4 h-4" />
           <span>{error}</span>
         </div>
       )}
 
       {/* Challenges Table */}
-      <div className="border border-sandwich-800 rounded-2xl bg-sandwich-900/90 overflow-hidden shadow-luxury backdrop-blur-xl">
+      <div className="border border-slate-200/90 rounded-2xl bg-white overflow-hidden shadow-2xs">
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs text-sandwich-200">
-            <thead className="bg-sandwich-950/80 text-sandwich-400 uppercase text-[10px] tracking-wider border-b border-sandwich-800 font-mono">
+          <table className="w-full text-left text-xs text-slate-700">
+            <thead className="bg-slate-50/90 text-slate-500 uppercase text-[10px] tracking-wider border-b border-slate-200/80 font-mono">
               <tr>
-                <th className="px-5 py-3.5 font-semibold">Title</th>
-                <th className="px-5 py-3.5 font-semibold">Difficulty</th>
-                <th className="px-5 py-3.5 font-semibold">Category</th>
-                <th className="px-5 py-3.5 font-semibold">Reward</th>
-                <th className="px-5 py-3.5 font-semibold">Test Cases</th>
-                <th className="px-5 py-3.5 font-semibold">Status</th>
-                <th className="px-5 py-3.5 font-semibold text-right">Lifecycle</th>
+                <th className="px-5 py-3.5 font-bold">Title</th>
+                <th className="px-5 py-3.5 font-bold">Difficulty</th>
+                <th className="px-5 py-3.5 font-bold">Category</th>
+                <th className="px-5 py-3.5 font-bold">Reward</th>
+                <th className="px-5 py-3.5 font-bold">Test Cases</th>
+                <th className="px-5 py-3.5 font-bold">Status</th>
+                <th className="px-5 py-3.5 font-bold text-right">Lifecycle</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-sandwich-800/60">
+            <tbody className="divide-y divide-slate-100">
               {loading ? (
                 <tr>
-                  <td colSpan={7} className="px-5 py-12 text-center text-sandwich-500 font-mono">
-                    <RefreshCw className="w-5 h-5 animate-spin mx-auto mb-2 text-sandwich-200" />
+                  <td colSpan={7} className="px-5 py-12 text-center text-slate-500">
+                    <RefreshCw className="w-5 h-5 animate-spin mx-auto mb-2 text-emerald-600" />
                     <span>Loading catalog...</span>
                   </td>
                 </tr>
               ) : challenges.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="px-5 py-12 text-center text-sandwich-500 font-mono">
+                  <td colSpan={7} className="px-5 py-12 text-center text-slate-400">
                     No challenges registered.
                   </td>
                 </tr>
               ) : (
                 challenges.map((c) => (
-                  <tr key={c.id} className="hover:bg-sandwich-800/40 transition">
+                  <tr key={c.id} className="hover:bg-slate-50/80 transition">
                     <td className="px-5 py-3.5">
-                      <div className="font-semibold text-sandwich-50">{c.title}</div>
-                      <div className="text-[11px] text-sandwich-500 font-mono">{c.slug}</div>
+                      <div className="font-bold text-slate-900">{c.title}</div>
+                      <div className="text-[11px] text-slate-400 font-mono">{c.slug}</div>
                     </td>
-                    <td className="px-5 py-3.5 font-mono">
+                    <td className="px-5 py-3.5">
                       <span
-                        className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-sandwich-800 text-sandwich-200 border border-sandwich-700"
+                        className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold ${
+                          c.difficulty === 'EASY'
+                            ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
+                            : c.difficulty === 'MEDIUM'
+                            ? 'bg-amber-50 text-amber-800 border border-amber-200'
+                            : 'bg-rose-50 text-rose-800 border border-rose-200'
+                        }`}
                       >
                         {c.difficulty}
                       </span>
                     </td>
-                    <td className="px-5 py-3.5 text-sandwich-400 font-mono">{c.category}</td>
-                    <td className="px-5 py-3.5 text-sandwich-100 font-mono font-bold">+{c.xpReward} XP</td>
-                    <td className="px-5 py-3.5 text-sandwich-400 font-mono">{c.testCaseCount} tests</td>
-                    <td className="px-5 py-3.5 font-mono">
+                    <td className="px-5 py-3.5 text-slate-500">{c.category}</td>
+                    <td className="px-5 py-3.5 text-amber-600 font-bold font-mono">+{c.xpReward} XP</td>
+                    <td className="px-5 py-3.5 text-slate-700 font-mono">{c.testCaseCount} tests</td>
+                    <td className="px-5 py-3.5">
                       <span
-                        className={`px-2 py-0.5 rounded-full text-[10px] font-semibold ${
+                        className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold ${
                           c.status === 'PUBLISHED'
-                            ? 'bg-sandwich-800 text-emerald-400 border border-sandwich-700'
+                            ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
                             : c.status === 'DRAFT'
-                            ? 'bg-sandwich-800 text-sandwich-300 border border-sandwich-700'
-                            : 'bg-sandwich-950 text-sandwich-500 border border-sandwich-800'
+                            ? 'bg-amber-50 text-amber-800 border border-amber-200'
+                            : 'bg-slate-100 text-slate-600 border border-slate-200'
                         }`}
                       >
                         {c.status}
@@ -179,7 +185,7 @@ export const AdminChallengesPage: React.FC = () => {
                       {c.status === 'PUBLISHED' ? (
                         <button
                           onClick={() => handleStatusToggle(c)}
-                          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-sandwich-800 hover:bg-sandwich-700 text-sandwich-300 hover:text-sandwich-100 text-xs font-medium transition border border-sandwich-700"
+                          className="inline-flex items-center gap-1 px-3 py-1 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition shadow-2xs"
                         >
                           <Archive className="w-3.5 h-3.5" />
                           <span>Archive</span>
@@ -187,7 +193,7 @@ export const AdminChallengesPage: React.FC = () => {
                       ) : (
                         <button
                           onClick={() => handleStatusToggle(c)}
-                          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-sandwich-800 hover:bg-sandwich-700 text-emerald-400 border border-sandwich-700 text-xs font-medium transition"
+                          className="inline-flex items-center gap-1 px-3 py-1 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 text-xs font-bold transition shadow-2xs"
                         >
                           <CheckCircle className="w-3.5 h-3.5" />
                           <span>Publish</span>
@@ -204,21 +210,21 @@ export const AdminChallengesPage: React.FC = () => {
 
       {/* Create Challenge Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-sandwich-950/80 backdrop-blur-md overflow-y-auto">
-          <div className="w-full max-w-xl bg-sandwich-900 border border-sandwich-700 rounded-2xl p-6 shadow-luxury relative my-8 text-sandwich-100">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm overflow-y-auto">
+          <div className="w-full max-w-xl bg-white border border-slate-200 rounded-3xl p-6 shadow-premium-hover relative my-8">
             <button
               onClick={() => setIsModalOpen(false)}
-              className="absolute top-4 right-4 p-1.5 rounded-lg text-sandwich-400 hover:text-sandwich-100 hover:bg-sandwich-800 transition"
+              className="absolute top-4 right-4 p-1.5 rounded-xl text-slate-400 hover:text-slate-800 hover:bg-slate-100 transition"
             >
               <X className="w-5 h-5" />
             </button>
 
-            <h3 className="text-base font-bold text-sandwich-100 mb-4">Create New Coding Challenge</h3>
+            <h3 className="text-lg font-black text-slate-900 mb-4">Create New Coding Challenge</h3>
 
             <form onSubmit={handleCreateSubmit} className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-medium text-sandwich-300 mb-1 font-mono">Title</label>
+                  <label className="block text-xs font-semibold text-slate-700 mb-1">Title</label>
                   <input
                     type="text"
                     required
@@ -229,41 +235,41 @@ export const AdminChallengesPage: React.FC = () => {
                       setFormData({ ...formData, title, slug });
                     }}
                     placeholder="e.g. Invert Binary Tree"
-                    className="w-full bg-sandwich-950 border border-sandwich-700 rounded-xl px-3 py-2 text-xs text-sandwich-100 placeholder-sandwich-500 focus:outline-none focus:border-sandwich-400"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-emerald-600"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-sandwich-300 mb-1 font-mono">Slug</label>
+                  <label className="block text-xs font-semibold text-slate-700 mb-1">Slug</label>
                   <input
                     type="text"
                     required
                     value={formData.slug}
                     onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
                     placeholder="invert-binary-tree"
-                    className="w-full bg-sandwich-950 border border-sandwich-700 rounded-xl px-3 py-2 text-xs text-sandwich-100 placeholder-sandwich-500 focus:outline-none focus:border-sandwich-400"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-emerald-600 font-mono"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-sandwich-300 mb-1 font-mono">Problem Description</label>
+                <label className="block text-xs font-semibold text-slate-700 mb-1">Problem Description</label>
                 <textarea
                   required
                   rows={4}
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                   placeholder="Describe problem, inputs, outputs, constraints, and sample cases..."
-                  className="w-full bg-sandwich-950 border border-sandwich-700 rounded-xl p-3 text-xs text-sandwich-100 placeholder-sandwich-500 focus:outline-none focus:border-sandwich-400 resize-none font-mono"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-800 focus:outline-none focus:border-emerald-600 resize-none font-mono"
                 />
               </div>
 
               <div className="grid grid-cols-3 gap-3">
                 <div>
-                  <label className="block text-xs font-medium text-sandwich-300 mb-1 font-mono">Difficulty</label>
+                  <label className="block text-xs font-semibold text-slate-700 mb-1">Difficulty</label>
                   <select
                     value={formData.difficulty}
                     onChange={(e) => setFormData({ ...formData, difficulty: e.target.value })}
-                    className="w-full bg-sandwich-950 border border-sandwich-700 rounded-xl px-3 py-2 text-xs text-sandwich-100 focus:outline-none focus:border-sandwich-400 font-mono"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-emerald-600"
                   >
                     <option value="EASY">EASY</option>
                     <option value="MEDIUM">MEDIUM</option>
@@ -272,11 +278,11 @@ export const AdminChallengesPage: React.FC = () => {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-sandwich-300 mb-1 font-mono">Category</label>
+                  <label className="block text-xs font-semibold text-slate-700 mb-1">Category</label>
                   <select
                     value={formData.category}
                     onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                    className="w-full bg-sandwich-950 border border-sandwich-700 rounded-xl px-3 py-2 text-xs text-sandwich-100 focus:outline-none focus:border-sandwich-400 font-mono"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-emerald-600"
                   >
                     <option value="ARRAYS">ARRAYS</option>
                     <option value="STRINGS">STRINGS</option>
@@ -289,12 +295,12 @@ export const AdminChallengesPage: React.FC = () => {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-sandwich-300 mb-1 font-mono">XP Reward</label>
+                  <label className="block text-xs font-semibold text-slate-700 mb-1">XP Reward</label>
                   <input
                     type="number"
                     value={formData.xpReward}
                     onChange={(e) => setFormData({ ...formData, xpReward: parseInt(e.target.value) || 100 })}
-                    className="w-full bg-sandwich-950 border border-sandwich-700 rounded-xl px-3 py-2 text-xs text-sandwich-100 focus:outline-none focus:border-sandwich-400 font-mono"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-emerald-600 font-mono"
                   />
                 </div>
               </div>
@@ -303,14 +309,14 @@ export const AdminChallengesPage: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="flex-1 px-4 py-2.5 rounded-xl border border-sandwich-700 text-sandwich-300 hover:bg-sandwich-800 text-xs font-medium transition"
+                  className="flex-1 px-4 py-2.5 rounded-xl border border-slate-200 text-slate-700 hover:bg-slate-50 text-xs font-bold transition shadow-2xs"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={saving}
-                  className="flex-1 px-4 py-2.5 rounded-xl bg-sandwich-50 hover:bg-white text-sandwich-950 text-xs font-bold transition disabled:opacity-50 shadow-glow-white"
+                  className="flex-1 px-4 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white text-xs font-bold transition disabled:opacity-50 shadow-sm"
                 >
                   {saving ? 'Creating...' : 'Create & Publish'}
                 </button>

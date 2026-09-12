@@ -8,17 +8,17 @@ export const LiveArenaSection: React.FC = () => {
     <section id="arena" className="py-20 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
       {/* Section Header */}
       <div className="text-center max-w-xl mx-auto mb-12 space-y-2">
-        <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-sandwich-50">
+        <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900">
           THE ARENA IS LIVE
         </h2>
-        <p className="text-sm sm:text-base text-sandwich-300">
-          Developers are battling in real-time right now.
+        <p className="text-sm sm:text-base text-slate-600">
+          Developers are battling right now.
         </p>
 
         {/* Friendly Single Counter */}
         <div className="pt-2">
-          <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-sandwich-900 border border-sandwich-700 text-xs font-mono font-semibold text-sandwich-200 shadow-sm">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)] animate-pulse" />
+          <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-xs font-mono font-semibold text-emerald-800">
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
             1,248 developers are battling right now
           </span>
         </div>
@@ -35,18 +35,18 @@ export const LiveArenaSection: React.FC = () => {
             transition={{ duration: 0.3, delay: index * 0.1 }}
             whileHover={{ y: -4 }}
           >
-            <Card className="p-6 bg-sandwich-900/90 border-sandwich-700/80 shadow-luxury-card hover:border-sandwich-500 transition-all text-center flex flex-col items-center justify-between h-full space-y-3">
-              <div className="w-12 h-12 rounded-2xl bg-sandwich-800 border border-sandwich-700 flex items-center justify-center text-2xl shadow-sm">
+            <Card className="p-6 bg-white border-slate-200/90 shadow-sm hover:shadow-md text-center flex flex-col items-center justify-between h-full space-y-3">
+              <div className="w-12 h-12 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-center text-2xl shadow-sm">
                 {activity.icon}
               </div>
 
               <div>
-                <h3 className="text-base font-bold text-sandwich-100 leading-snug">
+                <h3 className="text-base font-bold text-slate-900 leading-snug">
                   {activity.title}
                 </h3>
               </div>
 
-              <span className="text-xs font-mono font-bold text-sandwich-200 bg-sandwich-800/90 px-3 py-1 rounded-full border border-sandwich-700">
+              <span className="text-xs font-mono font-bold text-cyan-700 bg-cyan-50 px-2.5 py-1 rounded-full border border-cyan-200">
                 {activity.tag}
               </span>
             </Card>

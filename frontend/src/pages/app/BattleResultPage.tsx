@@ -51,19 +51,19 @@ export const BattleResultPage: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center text-white">
-        <Loader2 className="w-10 h-10 text-indigo-500 animate-spin mb-4" />
-        <p className="text-slate-400 font-medium">Calculating Battle Rewards...</p>
+      <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center text-slate-800">
+        <Loader2 className="w-10 h-10 text-indigo-600 animate-spin mb-4" />
+        <p className="text-slate-600 font-semibold font-mono text-sm">Calculating Battle Rewards...</p>
       </div>
     );
   }
 
   if (error || !result) {
     return (
-      <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center p-4">
-        <div className="bg-slate-900 border border-slate-800 rounded-3xl p-8 max-w-md w-full text-center">
-          <h2 className="text-xl font-bold text-white mb-2">Notice</h2>
-          <p className="text-slate-400 text-sm mb-6">{error || 'Result not found.'}</p>
+      <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-4">
+        <div className="bg-white border border-slate-200 rounded-3xl p-8 max-w-md w-full text-center shadow-premium-hover">
+          <h2 className="text-xl font-bold text-slate-900 mb-2">Notice</h2>
+          <p className="text-slate-500 text-sm mb-6">{error || 'Result not found.'}</p>
           <Button onClick={() => navigate('/home')} className="w-full">
             Back to Arena HQ
           </Button>
@@ -77,15 +77,15 @@ export const BattleResultPage: React.FC = () => {
   const isDraw = result.outcome === 'DRAW';
 
   return (
-    <div className="min-h-screen bg-sandwich-950 flex flex-col items-center justify-center p-4 relative overflow-hidden">
-      {/* Dynamic Background Glow */}
+    <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-4 relative overflow-hidden">
+      {/* Dynamic Ambient Background Glow */}
       <div
         className={`absolute inset-0 pointer-events-none ${
           isWin
-            ? 'bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.05)_0,transparent_70%)]'
+            ? 'bg-[radial-gradient(circle_at_center,rgba(245,158,11,0.12)_0,transparent_70%)]'
             : isLoss
-            ? 'bg-[radial-gradient(circle_at_center,rgba(239,68,68,0.06)_0,transparent_70%)]'
-            : 'bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.03)_0,transparent_70%)]'
+            ? 'bg-[radial-gradient(circle_at_center,rgba(239,68,68,0.08)_0,transparent_70%)]'
+            : 'bg-[radial-gradient(circle_at_center,rgba(99,102,241,0.09)_0,transparent_70%)]'
         }`}
       />
 
@@ -93,7 +93,7 @@ export const BattleResultPage: React.FC = () => {
         initial={{ opacity: 0, y: 20, scale: 0.96 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ duration: 0.5, ease: 'easeOut' }}
-        className="w-full max-w-xl bg-sandwich-900/90 border border-sandwich-700/80 rounded-3xl p-8 shadow-luxury-card backdrop-blur-xl relative z-10 flex flex-col items-center text-center"
+        className="w-full max-w-xl bg-white/95 border border-slate-200/90 rounded-3xl p-8 shadow-premium-hover backdrop-blur-2xl relative z-10 flex flex-col items-center text-center"
       >
         {/* Outcome Header Banner */}
         <motion.div
@@ -104,13 +104,13 @@ export const BattleResultPage: React.FC = () => {
         >
           {isWin && (
             <div className="inline-flex flex-col items-center">
-              <div className="w-20 h-20 rounded-3xl bg-sandwich-800 border border-sandwich-500 p-0.5 shadow-glow-white mb-3 flex items-center justify-center">
-                <div className="w-full h-full bg-sandwich-950 rounded-3xl flex items-center justify-center">
-                  <Trophy className="w-10 h-10 text-sandwich-50 animate-bounce" />
+              <div className="w-20 h-20 rounded-3xl bg-gradient-to-tr from-amber-400 to-yellow-300 p-0.5 shadow-xl shadow-amber-500/20 mb-3 flex items-center justify-center">
+                <div className="w-full h-full bg-white rounded-3xl flex items-center justify-center">
+                  <Trophy className="w-10 h-10 text-amber-500 animate-bounce" />
                 </div>
               </div>
-              <h1 className="text-4xl font-black tracking-tight text-sandwich-50">VICTORY</h1>
-              <span className="text-sandwich-300 font-semibold text-xs mt-1 uppercase tracking-widest">
+              <h1 className="text-4xl font-black tracking-tight text-slate-900">VICTORY</h1>
+              <span className="text-amber-600 font-bold text-xs mt-1 uppercase tracking-widest">
                 Winner of the Arena
               </span>
             </div>
@@ -118,11 +118,11 @@ export const BattleResultPage: React.FC = () => {
 
           {isLoss && (
             <div className="inline-flex flex-col items-center">
-              <div className="w-20 h-20 rounded-3xl bg-sandwich-800 border border-sandwich-700 p-0.5 mb-3 flex items-center justify-center">
-                <Shield className="w-10 h-10 text-sandwich-400" />
+              <div className="w-20 h-20 rounded-3xl bg-rose-50 border border-rose-200 p-0.5 mb-3 flex items-center justify-center shadow-sm">
+                <Shield className="w-10 h-10 text-rose-500" />
               </div>
-              <h1 className="text-4xl font-black tracking-tight text-sandwich-200">DEFEAT</h1>
-              <span className="text-sandwich-400 font-semibold text-xs mt-1 uppercase tracking-widest">
+              <h1 className="text-4xl font-black tracking-tight text-slate-900">DEFEAT</h1>
+              <span className="text-slate-500 font-semibold text-xs mt-1 uppercase tracking-widest">
                 Good effort, warrior
               </span>
             </div>
@@ -130,11 +130,11 @@ export const BattleResultPage: React.FC = () => {
 
           {isDraw && (
             <div className="inline-flex flex-col items-center">
-              <div className="w-20 h-20 rounded-3xl bg-sandwich-800 border border-sandwich-600 mb-3 flex items-center justify-center">
-                <Swords className="w-10 h-10 text-sandwich-200" />
+              <div className="w-20 h-20 rounded-3xl bg-indigo-50 border border-indigo-200 p-0.5 mb-3 flex items-center justify-center shadow-sm">
+                <Swords className="w-10 h-10 text-indigo-600" />
               </div>
-              <h1 className="text-4xl font-black tracking-tight text-sandwich-100">DRAW</h1>
-              <span className="text-sandwich-400 font-semibold text-xs mt-1 uppercase tracking-widest">
+              <h1 className="text-4xl font-black tracking-tight text-slate-900">DRAW</h1>
+              <span className="text-indigo-600 font-semibold text-xs mt-1 uppercase tracking-widest">
                 Evenly matched
               </span>
             </div>
@@ -142,8 +142,8 @@ export const BattleResultPage: React.FC = () => {
         </motion.div>
 
         {/* Challenge details */}
-        <div className="text-sandwich-400 text-xs mb-6 flex items-center gap-2">
-          <span>Kata: <strong className="text-white">{result.challengeTitle}</strong></span>
+        <div className="text-slate-500 text-xs mb-6 flex items-center gap-2">
+          <span>Kata: <strong className="text-slate-800">{result.challengeTitle}</strong></span>
           <span>•</span>
           <span className="flex items-center gap-1">
             <Clock className="w-3.5 h-3.5" />
@@ -152,25 +152,25 @@ export const BattleResultPage: React.FC = () => {
           {result.finishReason && (
             <>
               <span>•</span>
-              <span className="text-sandwich-300 font-mono">[{result.finishReason}]</span>
+              <span className="text-slate-600 font-mono">[{result.finishReason}]</span>
             </>
           )}
         </div>
 
         {/* Rewards Box */}
-        <div className="w-full grid grid-cols-2 gap-4 mb-8">
+        <div className="w-full grid grid-cols-2 gap-4 mb-6">
           {/* MMR Change */}
-          <div className="bg-sandwich-950/80 border border-sandwich-800 rounded-2xl p-4 flex flex-col items-center">
-            <span className="text-xs font-semibold text-sandwich-400 uppercase tracking-wider mb-1">
+          <div className="bg-slate-50/80 border border-slate-200/80 rounded-2xl p-4 flex flex-col items-center shadow-2xs">
+            <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">
               Rating Change
             </span>
             <div
               className={`flex items-center gap-1.5 text-2xl font-black ${
                 result.ratingDelta > 0
-                  ? 'text-emerald-400'
+                  ? 'text-emerald-600'
                   : result.ratingDelta < 0
-                  ? 'text-rose-400'
-                  : 'text-sandwich-300'
+                  ? 'text-rose-600'
+                  : 'text-slate-700'
               }`}
             >
               {result.ratingDelta > 0 ? (
@@ -182,35 +182,35 @@ export const BattleResultPage: React.FC = () => {
               )}
               <span>{result.ratingDelta > 0 ? `+${result.ratingDelta}` : result.ratingDelta}</span>
             </div>
-            <span className="text-[11px] text-sandwich-400 mt-1">
-              New MMR: <strong className="text-white font-mono">{result.newRating}</strong>
+            <span className="text-[11px] text-slate-500 mt-1">
+              New MMR: <strong className="text-slate-800 font-mono">{result.newRating}</strong>
             </span>
           </div>
 
           {/* XP Earned */}
-          <div className="bg-sandwich-950/80 border border-sandwich-800 rounded-2xl p-4 flex flex-col items-center">
-            <span className="text-xs font-semibold text-sandwich-400 uppercase tracking-wider mb-1">
+          <div className="bg-slate-50/80 border border-slate-200/80 rounded-2xl p-4 flex flex-col items-center shadow-2xs">
+            <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">
               XP Earned
             </span>
-            <div className="flex items-center gap-1 text-2xl font-black text-sandwich-100">
-              <Sparkles className="w-5 h-5 text-sandwich-200" />
+            <div className="flex items-center gap-1 text-2xl font-black text-amber-500">
+              <Sparkles className="w-5 h-5" />
               <span>+{result.xpEarned} XP</span>
             </div>
-            <span className="text-[11px] text-sandwich-400 mt-1">
+            <span className="text-[11px] text-slate-500 mt-1">
               {isWin ? 'Victory Bounty' : isDraw ? 'Draw Honorarium' : 'Participation Reward'}
             </span>
           </div>
         </div>
 
         {/* Opponent Card Summary */}
-        <div className="w-full bg-sandwich-950/80 border border-sandwich-800 rounded-xl p-3 flex items-center justify-between text-xs mb-8">
-          <span className="text-sandwich-400">Opponent:</span>
+        <div className="w-full bg-slate-50 border border-slate-200/80 rounded-2xl p-3 flex items-center justify-between text-xs mb-8">
+          <span className="text-slate-500">Opponent:</span>
           <div className="flex items-center gap-2">
-            <span className="font-bold text-white">{result.opponentUsername}</span>
-            <span className="text-sandwich-400 font-mono">({result.opponentRating} MMR)</span>
+            <span className="font-bold text-slate-900">{result.opponentUsername}</span>
+            <span className="text-slate-500 font-mono">({result.opponentRating} MMR)</span>
             <span
               className={`font-semibold ${
-                result.opponentRatingDelta > 0 ? 'text-emerald-400' : 'text-rose-400'
+                result.opponentRatingDelta > 0 ? 'text-emerald-600' : 'text-rose-600'
               }`}
             >
               {result.opponentRatingDelta > 0 ? `+${result.opponentRatingDelta}` : result.opponentRatingDelta}
@@ -223,19 +223,19 @@ export const BattleResultPage: React.FC = () => {
           <Button
             variant="outline"
             onClick={() => navigate('/home')}
-            className="w-full py-3 border-sandwich-700 hover:bg-sandwich-800 text-sandwich-200 rounded-xl flex items-center justify-center gap-2"
+            className="w-full py-3 border-slate-200 hover:bg-slate-50 text-slate-700 rounded-2xl flex items-center justify-center gap-2 shadow-2xs"
           >
             <Home className="w-4 h-4" />
             <span>Return to HQ</span>
           </Button>
 
           <Button
-            variant="primary"
+            variant="premium"
             onClick={() => navigate('/matchmaking')}
-            className="w-full py-3 font-bold rounded-xl flex items-center justify-center gap-2"
+            className="w-full py-3 text-white font-bold rounded-2xl flex items-center justify-center gap-2"
           >
             <span>Play Again</span>
-            <ArrowRight className="w-4 h-4 text-sandwich-950" />
+            <ArrowRight className="w-4 h-4" />
           </Button>
         </div>
       </motion.div>

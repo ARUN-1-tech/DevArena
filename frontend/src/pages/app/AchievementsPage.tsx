@@ -65,13 +65,22 @@ export const AchievementsPage: React.FC = () => {
     return true;
   });
 
-  const getRarityBorder = (rarity: AchievementRarity, unlocked: boolean) => {
-    if (!unlocked) return 'border-sandwich-900 bg-sandwich-950/60 opacity-55';
+  const getRarityBadgeVariant = (rarity: AchievementRarity): "default" | "cyan" | "purple" | "warning" | "success" => {
     switch (rarity) {
-      case 'LEGENDARY': return 'border-sandwich-100/90 bg-gradient-to-b from-sandwich-800/80 via-sandwich-900/90 to-sandwich-950 shadow-glow-silver';
-      case 'EPIC': return 'border-sandwich-500 bg-gradient-to-b from-sandwich-800/50 to-sandwich-900/90 shadow-luxury';
-      case 'RARE': return 'border-sandwich-700 bg-sandwich-900/90 shadow-luxury';
-      default: return 'border-sandwich-800 bg-sandwich-900/80 shadow-sm';
+      case 'LEGENDARY': return 'warning';
+      case 'EPIC': return 'purple';
+      case 'RARE': return 'cyan';
+      default: return 'default';
+    }
+  };
+
+  const getRarityBorder = (rarity: AchievementRarity, unlocked: boolean) => {
+    if (!unlocked) return 'border-slate-200/80 bg-slate-50/50 opacity-75';
+    switch (rarity) {
+      case 'LEGENDARY': return 'border-amber-400 bg-gradient-to-b from-amber-500/10 via-amber-50/30 to-white shadow-md shadow-amber-500/10';
+      case 'EPIC': return 'border-purple-400 bg-gradient-to-b from-purple-500/10 via-purple-50/30 to-white shadow-sm';
+      case 'RARE': return 'border-cyan-400 bg-gradient-to-b from-cyan-500/10 via-cyan-50/30 to-white shadow-sm';
+      default: return 'border-emerald-300 bg-white shadow-sm';
     }
   };
 
@@ -80,30 +89,30 @@ export const AchievementsPage: React.FC = () => {
       {/* Header & Stats Bar */}
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div>
-          <Badge variant="neutral" size="sm" className="mb-2 bg-sandwich-800 text-sandwich-200 border-sandwich-700">
-            <Award className="w-3.5 h-3.5 mr-1 text-sandwich-100" />
+          <Badge variant="cyan" size="sm" className="mb-2">
+            <Award className="w-3.5 h-3.5 mr-1" />
             HONOR HALL
           </Badge>
-          <h1 className="text-3xl font-black text-sandwich-100 tracking-tight">
+          <h1 className="text-3xl font-black text-slate-900 tracking-tight">
             ARENA ACHIEVEMENTS
           </h1>
-          <p className="text-sm text-sandwich-400 mt-1">
+          <p className="text-sm text-slate-600 mt-1">
             Collect trophies of coding mastery, speed feats, and competitive duel triumphs.
           </p>
         </div>
 
         {/* Global Progress Summary Card */}
-        <div className="flex items-center gap-4 bg-sandwich-900/90 backdrop-blur-xl p-3.5 px-5 rounded-2xl border border-sandwich-800 shadow-luxury">
+        <div className="flex items-center gap-4 bg-white p-3.5 px-5 rounded-2xl border border-slate-200 shadow-sm">
           <div className="text-center">
-            <span className="text-[10px] uppercase font-mono text-sandwich-500 block font-bold">Unlocked</span>
-            <span className="text-lg font-black font-mono text-sandwich-100">
+            <span className="text-[10px] uppercase font-mono text-slate-400 block font-bold">Unlocked</span>
+            <span className="text-lg font-black font-mono text-slate-900">
               {unlockedCount} / {totalCount}
             </span>
           </div>
-          <div className="h-8 w-px bg-sandwich-800" />
+          <div className="h-8 w-px bg-slate-200" />
           <div className="text-center">
-            <span className="text-[10px] uppercase font-mono text-sandwich-500 block font-bold">Bonus XP</span>
-            <span className="text-lg font-black font-mono text-sandwich-100">
+            <span className="text-[10px] uppercase font-mono text-slate-400 block font-bold">Bonus XP</span>
+            <span className="text-lg font-black font-mono text-amber-600">
               +{totalXpEarned} XP
             </span>
           </div>
@@ -112,15 +121,15 @@ export const AchievementsPage: React.FC = () => {
 
       {/* Filter Tabs */}
       <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
-        <div className="flex items-center gap-1.5 bg-sandwich-900 p-1 rounded-xl border border-sandwich-800">
+        <div className="flex items-center gap-1.5 bg-slate-100 p-1 rounded-xl border border-slate-200/80">
           {(['ALL', 'UNLOCKED', 'LOCKED'] as const).map((f) => (
             <button
               key={f}
               onClick={() => setFilter(f)}
               className={`px-3 py-1.5 text-xs font-bold font-mono uppercase tracking-wider rounded-lg transition-all ${
                 filter === f
-                  ? 'bg-sandwich-50 text-sandwich-950 shadow-glow-white'
-                  : 'text-sandwich-400 hover:text-sandwich-200'
+                  ? 'bg-white text-slate-900 shadow-sm'
+                  : 'text-slate-500 hover:text-slate-800'
               }`}
             >
               {f}
@@ -135,8 +144,8 @@ export const AchievementsPage: React.FC = () => {
               onClick={() => setCategoryFilter(cat)}
               className={`px-2.5 py-1 text-xs font-bold rounded-lg transition-colors ${
                 categoryFilter === cat
-                  ? 'bg-sandwich-50 text-sandwich-950'
-                  : 'bg-sandwich-900/90 border border-sandwich-800 text-sandwich-400 hover:text-sandwich-200 hover:border-sandwich-700'
+                  ? 'bg-slate-900 text-white'
+                  : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50'
               }`}
             >
               {cat}
@@ -146,12 +155,12 @@ export const AchievementsPage: React.FC = () => {
       </div>
 
       {loading ? (
-        <div className="py-24 flex flex-col items-center justify-center text-sandwich-400 gap-3">
-          <Loader2 className="w-8 h-8 animate-spin text-sandwich-200" />
+        <div className="py-24 flex flex-col items-center justify-center text-slate-400 gap-3">
+          <Loader2 className="w-8 h-8 animate-spin text-cyan-600" />
           <span className="text-sm font-medium">Loading honor trophies...</span>
         </div>
       ) : error ? (
-        <Card className="p-8 text-center text-rose-400 bg-rose-950/20 border-rose-900/50 rounded-2xl">
+        <Card className="p-8 text-center text-rose-600 bg-rose-50/50 border-rose-200 rounded-2xl">
           <p className="text-sm font-medium">{error}</p>
           <Button variant="secondary" size="sm" onClick={loadAchievements} className="mt-4">
             Retry
@@ -180,16 +189,16 @@ export const AchievementsPage: React.FC = () => {
                     <div className="flex items-start gap-4">
                       {/* Badge Icon */}
                       <div
-                        className={`w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 shadow-sm border ${
+                        className={`w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 shadow-sm ${
                           a.unlocked
                             ? a.rarity === 'LEGENDARY'
-                              ? 'bg-sandwich-100 text-sandwich-950 border-white shadow-glow-white'
+                              ? 'bg-gradient-to-tr from-amber-500 to-yellow-400 text-slate-950 shadow-amber-500/20'
                               : a.rarity === 'EPIC'
-                              ? 'bg-sandwich-700 text-sandwich-100 border-sandwich-500'
+                              ? 'bg-gradient-to-tr from-purple-600 to-violet-500 text-white shadow-purple-500/20'
                               : a.rarity === 'RARE'
-                              ? 'bg-sandwich-800 text-sandwich-200 border-sandwich-600'
-                              : 'bg-sandwich-800 text-sandwich-200 border-sandwich-700'
-                            : 'bg-sandwich-950 border-sandwich-900 text-sandwich-600'
+                              ? 'bg-gradient-to-tr from-cyan-600 to-blue-500 text-white shadow-cyan-500/20'
+                              : 'bg-emerald-500 text-white'
+                            : 'bg-slate-200 text-slate-400'
                         }`}
                       >
                         <IconComp className="w-7 h-7" />
@@ -198,22 +207,22 @@ export const AchievementsPage: React.FC = () => {
                       {/* Content */}
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between gap-2">
-                          <h4 className="text-base font-black text-sandwich-100 truncate">
+                          <h4 className="text-base font-black text-slate-900 truncate">
                             {a.name}
                           </h4>
-                          <span className="text-xs font-mono font-black text-sandwich-100 shrink-0">
+                          <span className="text-xs font-mono font-black text-amber-600 shrink-0">
                             +{a.xpReward} XP
                           </span>
                         </div>
-                        <p className="text-xs text-sandwich-400 mt-1 leading-relaxed">
+                        <p className="text-xs text-slate-600 mt-1 leading-relaxed">
                           {a.description}
                         </p>
 
                         <div className="flex items-center gap-2 mt-3">
-                          <Badge variant="neutral" size="sm" className="bg-sandwich-800 text-sandwich-300 border-sandwich-700">
+                          <Badge variant={getRarityBadgeVariant(a.rarity)} size="sm">
                             {a.rarity}
                           </Badge>
-                          <span className="text-[10px] font-mono text-sandwich-500 uppercase font-semibold">
+                          <span className="text-[10px] font-mono text-slate-400 uppercase font-semibold">
                             {a.category}
                           </span>
                         </div>
@@ -221,31 +230,31 @@ export const AchievementsPage: React.FC = () => {
                     </div>
 
                     {/* Footer: Progress Bar or Unlock Timestamp */}
-                    <div className="mt-5 pt-4 border-t border-sandwich-800/80">
+                    <div className="mt-5 pt-4 border-t border-slate-100">
                       {a.unlocked ? (
                         <div className="flex items-center justify-between text-xs font-mono">
-                          <span className="inline-flex items-center gap-1.5 text-emerald-400 font-bold">
+                          <span className="inline-flex items-center gap-1.5 text-emerald-600 font-bold">
                             <CheckCircle2 className="w-4 h-4" /> Unlocked
                           </span>
                           {a.unlockedAt && (
-                            <span className="text-sandwich-500 text-[11px]">
+                            <span className="text-slate-400 text-[11px]">
                               {new Date(a.unlockedAt).toLocaleDateString()}
                             </span>
                           )}
                         </div>
                       ) : (
                         <div>
-                          <div className="flex items-center justify-between text-[11px] font-mono text-sandwich-400 mb-1.5">
+                          <div className="flex items-center justify-between text-[11px] font-mono text-slate-500 mb-1.5">
                             <span className="flex items-center gap-1">
-                              <Lock className="w-3.5 h-3.5 text-sandwich-500" /> Progress
+                              <Lock className="w-3.5 h-3.5 text-slate-400" /> Progress
                             </span>
-                            <span className="font-bold text-sandwich-200">
+                            <span className="font-bold">
                               {a.currentProgress} / {a.targetProgress} ({a.progressPercentage}%)
                             </span>
                           </div>
-                          <div className="w-full bg-sandwich-950 rounded-full h-1.5 overflow-hidden border border-sandwich-800/50">
+                          <div className="w-full bg-slate-200 rounded-full h-1.5 overflow-hidden">
                             <div
-                              className="bg-sandwich-200 h-1.5 rounded-full transition-all duration-500"
+                              className="bg-cyan-600 h-1.5 rounded-full transition-all duration-500"
                               style={{ width: `${a.progressPercentage}%` }}
                             />
                           </div>

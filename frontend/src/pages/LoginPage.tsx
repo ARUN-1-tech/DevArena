@@ -51,17 +51,17 @@ export const LoginPage: React.FC = () => {
         transition={{ duration: 0.4 }}
         className="max-w-md w-full"
       >
-        <Card className="p-8 sm:p-10 bg-sandwich-900/90 border-sandwich-700/80 shadow-luxury-card rounded-2xl backdrop-blur-md">
+        <Card className="p-8 sm:p-10 bg-white border-slate-200/90 shadow-xl rounded-2xl">
           {/* Header */}
           <div className="text-center space-y-3 mb-8">
-            <div className="w-14 h-14 rounded-2xl bg-sandwich-800 border border-sandwich-600 text-sandwich-50 flex items-center justify-center mx-auto shadow-glow-silver">
-              <Swords className="w-7 h-7 text-sandwich-100" />
+            <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-cyan-600 to-violet-600 text-white flex items-center justify-center mx-auto shadow-md">
+              <Swords className="w-7 h-7" />
             </div>
             <div>
-              <h2 className="text-2xl font-extrabold tracking-tight text-sandwich-50">
+              <h2 className="text-2xl font-extrabold tracking-tight text-slate-900">
                 WELCOME BACK, PLAYER
               </h2>
-              <p className="text-sm text-sandwich-300 mt-1">
+              <p className="text-sm text-slate-600 mt-1">
                 Enter your credentials to step back into the battle arena.
               </p>
             </div>
@@ -69,8 +69,8 @@ export const LoginPage: React.FC = () => {
 
           {/* Error notice */}
           {error && (
-            <div className="mb-6 p-3.5 rounded-xl bg-red-950/40 border border-red-800/80 flex items-center gap-2.5 text-xs text-red-200 font-medium">
-              <AlertCircle className="w-4 h-4 shrink-0 text-red-400" />
+            <div className="mb-6 p-3.5 rounded-xl bg-rose-50 border border-rose-200 flex items-center gap-2.5 text-xs text-rose-700 font-medium">
+              <AlertCircle className="w-4 h-4 shrink-0 text-rose-500" />
               <span>{error}</span>
             </div>
           )}
@@ -83,7 +83,7 @@ export const LoginPage: React.FC = () => {
               placeholder="player@devarena.io"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              leftIcon={<Mail className="w-4 h-4 text-sandwich-400" />}
+              leftIcon={<Mail className="w-4 h-4" />}
               autoComplete="username"
               required
             />
@@ -94,16 +94,16 @@ export const LoginPage: React.FC = () => {
               placeholder="••••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              leftIcon={<Lock className="w-4 h-4 text-sandwich-400" />}
+              leftIcon={<Lock className="w-4 h-4" />}
               autoComplete="current-password"
               required
             />
 
-            <div className="flex items-center justify-end text-xs font-medium text-sandwich-400">
+            <div className="flex items-center justify-end text-xs font-medium text-slate-500">
               <button
                 type="button"
                 onClick={() => alert('Password reset will be available soon.')}
-                className="hover:text-sandwich-200 transition-colors"
+                className="hover:text-cyan-700 transition-colors"
               >
                 Forgot password?
               </button>
@@ -111,20 +111,20 @@ export const LoginPage: React.FC = () => {
 
             <Button
               type="submit"
-              variant="primary"
+              variant="glow"
               size="lg"
               className="w-full mt-2"
               isLoading={isLoading}
-              leftIcon={<Swords className="w-4 h-4 text-sandwich-950" />}
+              leftIcon={<Swords className="w-4 h-4" />}
             >
               ENTER THE ARENA
             </Button>
           </form>
 
           {/* Switch to Register */}
-          <div className="mt-8 pt-6 border-t border-sandwich-800 text-center text-xs text-sandwich-400 font-mono">
+          <div className="mt-8 pt-6 border-t border-slate-100 text-center text-xs text-slate-500 font-mono">
             <span>New challenger? </span>
-            <Link to="/register" className="font-bold text-sandwich-100 hover:text-white underline underline-offset-2">
+            <Link to="/register" className="font-bold text-cyan-600 hover:text-cyan-700 underline underline-offset-2">
               Create an account
             </Link>
           </div>
