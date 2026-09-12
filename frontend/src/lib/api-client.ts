@@ -1,14 +1,36 @@
 import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios';
 import { ApiErrorResponse } from '../types/api';
 
-const BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api/v1';
+/**
+ * Resolves the API base URL from the environment or falls back to local Vite proxy.
+ * Supports:
+ * - 'https://devarenadevarena-backend.onrender.com' -> 'https://devarenadevarena-backend.onrender.com/api/v1'
+ * - 'https://devarenadevarena-backend.onrender.com/api/v1' -> 'https://devarenadevarena-backend.onrender.com/api/v1'
+ * - undefined / '' -> '/api/v1' (Vite dev server proxy to localhost:8080)
+ */
+export const getApiBaseUrl = (): string => {
+  const envUrl = import.meta.env.VITE_API_BASE_URL;
+  if (!envUrl || envUrl.trim() === '') {
+    return '/api/v1';
+  }
+  const trimmed = envUrl.trim().replace(/\/+$/, '');
+  if (trimmed.endsWith('/api/v1')) {
+    return trimmed;
+  }
+  if (trimmed.endsWith('/api')) {
+    return `${trimmed}/v1`;
+  }
+  return `${trimmed}/api/v1`;
+};
+
+const BASE_URL = getApiBaseUrl();
 
 export const apiClient = axios.create({
   baseURL: BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },
-  timeout: 10000,
+  timeout: 15000,
 });
 
 // Single-flight token refresh state

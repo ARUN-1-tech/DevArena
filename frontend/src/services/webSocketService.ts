@@ -1,6 +1,39 @@
 import { Client, IMessage } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 
+/**
+ * Resolves WebSocket and SockJS connection URLs based on VITE_API_BASE_URL or browser origin.
+ */
+export const getWebSocketEndpoints = (): { sockJsUrl: string; nativeWsUrl: string } => {
+  const envUrl = import.meta.env.VITE_API_BASE_URL;
+
+  if (envUrl && (envUrl.startsWith('http://') || envUrl.startsWith('https://'))) {
+    try {
+      const url = new URL(envUrl);
+      const isHttps = url.protocol === 'https:';
+      const wsProto = isHttps ? 'wss:' : 'ws:';
+      const host = url.host;
+
+      return {
+        sockJsUrl: `${url.protocol}//${host}/ws`,
+        nativeWsUrl: `${wsProto}//${host}/ws-direct`,
+      };
+    } catch (e) {
+      console.warn('Failed to parse VITE_API_BASE_URL for WebSocket:', e);
+    }
+  }
+
+  // Local development / same-origin fallback
+  const isHttps = typeof window !== 'undefined' && window.location.protocol === 'https:';
+  const proto = isHttps ? 'wss:' : 'ws:';
+  const host = typeof window !== 'undefined' ? window.location.host : 'localhost:5173';
+
+  return {
+    sockJsUrl: '/ws',
+    nativeWsUrl: `${proto}//${host}/ws-direct`,
+  };
+};
+
 class WebSocketService {
   private client: Client | null = null;
   private isConnected = false;
@@ -17,15 +50,15 @@ class WebSocketService {
 
     this.connectionPromise = new Promise((resolve, reject) => {
       const token = localStorage.getItem('devarena_token') || '';
+      const { sockJsUrl, nativeWsUrl } = getWebSocketEndpoints();
 
       this.client = new Client({
         webSocketFactory: () => {
           try {
-            return new SockJS('/ws');
+            return new SockJS(sockJsUrl);
           } catch (e) {
             console.warn('SockJS fallback, using native WebSocket:', e);
-            const proto = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-            return new WebSocket(`${proto}//${window.location.host}/ws-direct`);
+            return new WebSocket(nativeWsUrl);
           }
         },
         connectHeaders: {
