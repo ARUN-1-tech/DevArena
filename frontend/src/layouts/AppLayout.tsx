@@ -16,6 +16,7 @@ import {
   Sparkles,
   Flame,
   Shield,
+  ShieldAlert,
 } from 'lucide-react';
 import { APP_NAME } from '../data/constants';
 import { NotificationDropdown } from '../components/notification/NotificationDropdown';
@@ -43,6 +44,12 @@ export const AppLayout: React.FC = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
+
+  const isAdmin = user?.roles?.includes('ROLE_ADMIN');
+  const navItems = [
+    ...NAV_ITEMS,
+    ...(isAdmin ? [{ name: 'Admin HQ', href: '/admin', icon: ShieldAlert, badge: 'Staff' }] : []),
+  ];
 
   const handleLogout = async () => {
     await logout();
@@ -111,7 +118,7 @@ export const AppLayout: React.FC = () => {
 
             {/* Mobile Nav items */}
             <nav className="flex-1 py-4 space-y-1">
-              {NAV_ITEMS.map((item) => {
+              {navItems.map((item) => {
                 const IconComponent = item.icon;
                 return (
                   <NavLink
@@ -192,7 +199,7 @@ export const AppLayout: React.FC = () => {
 
         {/* Navigation list */}
         <nav className="flex-1 p-3 space-y-1 overflow-y-auto">
-          {NAV_ITEMS.map((item) => {
+          {navItems.map((item) => {
             const IconComponent = item.icon;
             return (
               <NavLink
