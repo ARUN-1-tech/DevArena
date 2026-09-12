@@ -22,6 +22,8 @@ import { webSocketService } from '../../services/webSocketService';
 import { useAuth } from '../../contexts/AuthContext';
 import { NotificationItem, NotificationType } from '../../types/social';
 
+import { friendService } from '../../services/friendService';
+
 const TYPE_CONFIG: Record<
   NotificationType,
   {
@@ -95,7 +97,9 @@ export const NotificationDropdown: React.FC = () => {
   const [unreadCount, setUnreadCount] = useState<number>(0);
   const [notifications, setNotifications] = useState<NotificationItem[]>([]);
   const [loading, setLoading] = useState(false);
+  const [actionLoadingId, setActionLoadingId] = useState<string | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const processedNotifIds = useRef<Set<string>>(new Set());
 
   const fetchUnreadCount = async () => {
     try {
@@ -109,8 +113,12 @@ export const NotificationDropdown: React.FC = () => {
   const fetchNotifications = async () => {
     try {
       setLoading(true);
-      const res = await notificationService.getNotifications(0, 20);
+      const [res, count] = await Promise.all([
+        notificationService.getNotifications(0, 20),
+        notificationService.getUnreadCount(),
+      ]);
       setNotifications(res.content);
+      setUnreadCount(count);
     } catch (e) {
       console.debug('Failed to fetch notifications', e);
     } finally {
@@ -121,22 +129,29 @@ export const NotificationDropdown: React.FC = () => {
   useEffect(() => {
     fetchUnreadCount();
 
-    // WebSocket real-time subscription
+    const handleIncoming = (notif: NotificationItem) => {
+      if (processedNotifIds.current.has(notif.id)) return;
+      processedNotifIds.current.add(notif.id);
+
+      setNotifications((prev) => {
+        const filtered = prev.filter((n) => n.id !== notif.id);
+        return [notif, ...filtered];
+      });
+
+      if (!notif.read) {
+        setUnreadCount((c) => c + 1);
+      }
+    };
+
     let unsubscribeUser: (() => void) | undefined;
     let unsubscribeTopic: (() => void) | undefined;
 
     if (user?.username) {
-      unsubscribeUser = webSocketService.subscribe('/user/queue/notifications', (notif: NotificationItem) => {
-        setNotifications((prev) => [notif, ...prev.filter((n) => n.id !== notif.id)]);
-        setUnreadCount((c) => c + 1);
-      });
+      unsubscribeUser = webSocketService.subscribe('/user/queue/notifications', handleIncoming);
     }
 
     if (user?.id) {
-      unsubscribeTopic = webSocketService.subscribe(`/topic/notifications.${user.id}`, (notif: NotificationItem) => {
-        setNotifications((prev) => [notif, ...prev.filter((n) => n.id !== notif.id)]);
-        setUnreadCount((c) => c + 1);
-      });
+      unsubscribeTopic = webSocketService.subscribe(`/topic/notifications.${user.id}`, handleIncoming);
     }
 
     return () => {
@@ -199,6 +214,13 @@ export const NotificationDropdown: React.FC = () => {
       case 'BATTLE_INVITE':
         navigate('/friends');
         break;
+      case 'BATTLE_RESULT':
+        if (notif.referenceId) {
+          navigate(`/battle/${notif.referenceId}/result`);
+        } else {
+          navigate('/arena');
+        }
+        break;
       case 'TEAM_INVITE':
       case 'TEAM_JOINED':
         navigate('/teams');
@@ -209,8 +231,50 @@ export const NotificationDropdown: React.FC = () => {
       case 'LEVEL_UP':
         navigate('/profile');
         break;
+      case 'SYSTEM':
+        if (notif.referenceType === 'BATTLE' && notif.referenceId) {
+          navigate(`/battle/${notif.referenceId}`);
+        }
+        break;
       default:
         break;
+    }
+  };
+
+  const handleAcceptDuel = async (notif: NotificationItem) => {
+    if (!notif.referenceId) return;
+    try {
+      setActionLoadingId(notif.id);
+      await notificationService.markAsRead(notif.id);
+      setNotifications((prev) =>
+        prev.map((n) => (n.id === notif.id ? { ...n, read: true } : n))
+      );
+      setUnreadCount((c) => Math.max(0, c - 1));
+      const res = await friendService.acceptChallenge(notif.referenceId);
+      setIsOpen(false);
+      navigate(`/battle/${res.battleId}`);
+    } catch (err: any) {
+      console.error('Failed to accept duel', err);
+      navigate('/friends');
+    } finally {
+      setActionLoadingId(null);
+    }
+  };
+
+  const handleDeclineDuel = async (notif: NotificationItem) => {
+    if (!notif.referenceId) return;
+    try {
+      setActionLoadingId(notif.id);
+      await notificationService.markAsRead(notif.id);
+      await friendService.declineChallenge(notif.referenceId);
+      setNotifications((prev) =>
+        prev.map((n) => (n.id === notif.id ? { ...n, read: true } : n))
+      );
+      setUnreadCount((c) => Math.max(0, c - 1));
+    } catch (err) {
+      console.error('Failed to decline duel', err);
+    } finally {
+      setActionLoadingId(null);
     }
   };
 
@@ -326,13 +390,13 @@ export const NotificationDropdown: React.FC = () => {
                   }`}
                 >
                   <span>Unread</span>
-                  {unreadCount > 0 && (
+                  {notifications.filter((n) => !n.read).length > 0 && (
                     <span
                       className={`text-[10px] font-mono px-1.5 py-0.2 rounded-full font-bold ${
                         activeTab === 'unread' ? 'bg-white/25 text-white' : 'bg-indigo-100 text-indigo-700'
                       }`}
                     >
-                      {unreadCount}
+                      {notifications.filter((n) => !n.read).length}
                     </span>
                   )}
                 </button>
@@ -421,6 +485,34 @@ export const NotificationDropdown: React.FC = () => {
                         <p className="text-xs text-slate-600 line-clamp-2 leading-relaxed">
                           {notif.message}
                         </p>
+
+                        {/* Interactive Action for Duel Invites */}
+                        {notif.type === 'BATTLE_INVITE' && notif.referenceId && !notif.read && (
+                          <div
+                            className="flex items-center gap-2 mt-2.5 pt-2 border-t border-amber-200/60"
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            <button
+                              onClick={() => handleAcceptDuel(notif)}
+                              disabled={actionLoadingId === notif.id}
+                              className="px-3 py-1 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white text-[11px] font-bold rounded-lg shadow-xs shadow-amber-500/20 flex items-center gap-1.5 cursor-pointer disabled:opacity-50 transition-all hover:scale-105"
+                            >
+                              {actionLoadingId === notif.id ? (
+                                <Loader2 className="w-3 h-3 animate-spin" />
+                              ) : (
+                                <Swords className="w-3 h-3" />
+                              )}
+                              <span>ACCEPT DUEL</span>
+                            </button>
+                            <button
+                              onClick={() => handleDeclineDuel(notif)}
+                              disabled={actionLoadingId === notif.id}
+                              className="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-600 text-[11px] font-semibold rounded-lg cursor-pointer transition-colors"
+                            >
+                              Decline
+                            </button>
+                          </div>
+                        )}
                       </div>
 
                       {/* Unread Glow Indicator */}

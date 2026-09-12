@@ -601,17 +601,23 @@ public class BattleService {
 
     @Transactional
     public BattleEntity createDirectBattle(UserEntity user1, UserEntity user2, ChallengeEntity challenge) {
-        BattleEntity battle = new BattleEntity(user1, user2, challenge, 900);
+        return createDirectBattle(user1, user2, challenge, 900);
+    }
+
+    @Transactional
+    public BattleEntity createDirectBattle(UserEntity user1, UserEntity user2, ChallengeEntity challenge, int durationSeconds) {
+        BattleEntity battle = new BattleEntity(user1, user2, challenge, durationSeconds > 0 ? durationSeconds : 900);
         battle.setStatus(BattleStatus.WAITING);
         battle = battleRepository.save(battle);
 
-        log.info("Created Direct 1v1 Battle {} between {} and {} for challenge '{}'",
-                battle.getId(), user1.getUsername(), user2.getUsername(), challenge.getTitle());
+        log.info("Created Direct 1v1 Battle {} between {} and {} for challenge '{}' ({}s)",
+                battle.getId(), user1.getUsername(), user2.getUsername(), challenge.getTitle(), durationSeconds);
 
         Map<String, Object> eventPayload = Map.of(
                 "battleId", battle.getId().toString(),
                 "challengeTitle", challenge.getTitle(),
                 "difficulty", challenge.getDifficulty().name(),
+                "durationSeconds", battle.getDurationSeconds(),
                 "player1", Map.of("username", user1.getUsername(), "rating", getPlayerRating(user1), "level", getPlayerLevel(user1)),
                 "player2", Map.of("username", user2.getUsername(), "rating", getPlayerRating(user2), "level", getPlayerLevel(user2))
         );
@@ -620,8 +626,12 @@ public class BattleService {
         try {
             messagingTemplate.convertAndSendToUser(user1.getUsername(), "/queue/match", event);
             messagingTemplate.convertAndSendToUser(user2.getUsername(), "/queue/match", event);
+            messagingTemplate.convertAndSendToUser(user1.getUsername(), "/queue/matchmaking", event);
+            messagingTemplate.convertAndSendToUser(user2.getUsername(), "/queue/matchmaking", event);
             messagingTemplate.convertAndSend("/topic/match." + user1.getId(), event);
             messagingTemplate.convertAndSend("/topic/match." + user2.getId(), event);
+            messagingTemplate.convertAndSend("/topic/matchmaking." + user1.getId(), event);
+            messagingTemplate.convertAndSend("/topic/matchmaking." + user2.getId(), event);
         } catch (Exception e) {
             log.warn("Could not broadcast match event: {}", e.getMessage());
         }

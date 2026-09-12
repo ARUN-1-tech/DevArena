@@ -54,6 +54,7 @@ public class FriendService {
     private final SocialRateLimiter rateLimiter;
     private final BattleService battleService;
     private final ChallengeRepository challengeRepository;
+    private final org.springframework.messaging.simp.SimpMessagingTemplate messagingTemplate;
 
     public FriendService(
             FriendshipRepository friendshipRepository,
@@ -67,7 +68,8 @@ public class FriendService {
             PresenceService presenceService,
             SocialRateLimiter rateLimiter,
             BattleService battleService,
-            ChallengeRepository challengeRepository
+            ChallengeRepository challengeRepository,
+            org.springframework.messaging.simp.SimpMessagingTemplate messagingTemplate
     ) {
         this.friendshipRepository = friendshipRepository;
         this.friendRequestRepository = friendRequestRepository;
@@ -81,6 +83,7 @@ public class FriendService {
         this.rateLimiter = rateLimiter;
         this.battleService = battleService;
         this.challengeRepository = challengeRepository;
+        this.messagingTemplate = messagingTemplate;
     }
 
     @Transactional(readOnly = true)
@@ -319,7 +322,7 @@ public class FriendService {
         invite.setBattle(battle);
         battleInviteRepository.save(invite);
 
-        // Notify inviter
+        // Notify inviter via persistent notification
         notificationService.createNotification(
                 invite.getInviter(),
                 NotificationType.SYSTEM,
@@ -329,10 +332,97 @@ public class FriendService {
                 battle.getId().toString()
         );
 
+        // Broadcast real-time invite accepted event to topic
+        Map<String, Object> payload = Map.of(
+                "type", "INVITE_ACCEPTED",
+                "inviteId", invite.getId().toString(),
+                "battleId", battle.getId().toString(),
+                "status", "ACCEPTED",
+                "challengeTitle", invite.getChallenge().getTitle()
+        );
+        try {
+            messagingTemplate.convertAndSend("/topic/battle-invite." + invite.getId(), payload);
+        } catch (Exception e) {
+            log.warn("Failed to broadcast invite accepted event: {}", e.getMessage());
+        }
+
         return Map.of(
                 "battleId", battle.getId().toString(),
                 "status", "ACCEPTED",
                 "challengeTitle", invite.getChallenge().getTitle()
+        );
+    }
+
+    @Transactional(readOnly = true)
+    public List<FriendBattleInviteDto> getPendingBattleInvites(UUID userId) {
+        return battleInviteRepository.findByInviteeIdAndStatusOrderByCreatedAtDesc(userId, BattleInviteStatus.PENDING)
+                .stream()
+                .filter(i -> i.getExpiresAt() == null || i.getExpiresAt().isAfter(Instant.now()))
+                .map(this::toBattleInviteDto)
+                .toList();
+    }
+
+    @Transactional
+    public void declineBattleInvite(UUID inviteId, UUID inviteeId) {
+        FriendBattleInviteEntity invite = battleInviteRepository.findById(inviteId)
+                .orElseThrow(() -> new ResourceNotFoundException("Battle invitation not found: " + inviteId));
+
+        if (!invite.getInvitee().getId().equals(inviteeId)) {
+            throw new DevArenaException("Only the challenged player can decline this invite", HttpStatus.FORBIDDEN, "FORBIDDEN");
+        }
+
+        invite.setStatus(BattleInviteStatus.REJECTED);
+        battleInviteRepository.save(invite);
+
+        notificationService.createNotification(
+                invite.getInviter(),
+                NotificationType.SYSTEM,
+                "Duel Declined",
+                invite.getInvitee().getUsername() + " declined your 1v1 duel challenge.",
+                "FRIENDS",
+                invite.getId().toString()
+        );
+
+        try {
+            messagingTemplate.convertAndSend("/topic/battle-invite." + invite.getId(), Map.of(
+                    "type", "INVITE_DECLINED",
+                    "inviteId", invite.getId().toString(),
+                    "status", "REJECTED"
+            ));
+        } catch (Exception e) {
+            log.warn("Failed to broadcast invite decline: {}", e.getMessage());
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public Map<String, Object> getBattleInviteStatus(UUID inviteId, UUID userId) {
+        FriendBattleInviteEntity invite = battleInviteRepository.findById(inviteId)
+                .orElseThrow(() -> new ResourceNotFoundException("Battle invitation not found: " + inviteId));
+
+        return Map.of(
+                "inviteId", invite.getId().toString(),
+                "status", invite.getStatus().name(),
+                "battleId", invite.getBattle() != null ? invite.getBattle().getId().toString() : "",
+                "challengeTitle", invite.getChallenge() != null ? invite.getChallenge().getTitle() : ""
+        );
+    }
+
+    public FriendBattleInviteDto toBattleInviteDto(FriendBattleInviteEntity invite) {
+        ProfileEntity inviterProfile = profileRepository.findByUserId(invite.getInviter().getId()).orElse(null);
+        return new FriendBattleInviteDto(
+                invite.getId(),
+                invite.getInviter().getId(),
+                invite.getInviter().getUsername(),
+                inviterProfile != null ? inviterProfile.getDisplayName() : invite.getInviter().getUsername(),
+                inviterProfile != null ? inviterProfile.getAvatar() : "avatar-1",
+                invite.getInvitee().getId(),
+                invite.getInvitee().getUsername(),
+                invite.getChallenge() != null ? invite.getChallenge().getId() : null,
+                invite.getChallenge() != null ? invite.getChallenge().getTitle() : "Random Kata",
+                invite.getStatus(),
+                invite.getBattle() != null ? invite.getBattle().getId() : null,
+                invite.getCreatedAt(),
+                invite.getExpiresAt()
         );
     }
 

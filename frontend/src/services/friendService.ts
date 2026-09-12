@@ -45,4 +45,20 @@ export const friendService = {
     );
     return res.data.data;
   },
+
+  async getPendingChallenges(): Promise<FriendBattleInvite[]> {
+    const res = await apiClient.get<ApiResponse<FriendBattleInvite[]>>('/friends/challenge/pending');
+    return res.data.data || [];
+  },
+
+  async declineChallenge(inviteId: string): Promise<void> {
+    await apiClient.post<ApiResponse<void>>(`/friends/challenge/${inviteId}/decline`);
+  },
+
+  async getChallengeStatus(inviteId: string): Promise<{ inviteId: string; status: string; battleId: string; challengeTitle: string }> {
+    const res = await apiClient.get<ApiResponse<{ inviteId: string; status: string; battleId: string; challengeTitle: string }>>(
+      `/friends/challenge/${inviteId}/status`
+    );
+    return res.data.data;
+  },
 };

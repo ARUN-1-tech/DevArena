@@ -94,4 +94,30 @@ public class FriendController {
         Map<String, Object> result = friendService.acceptBattleInvite(inviteId, userDetails.getId());
         return ResponseEntity.ok(ApiResponse.success("Duel accepted, joining battle room", result));
     }
+
+    @GetMapping("/challenge/pending")
+    public ResponseEntity<ApiResponse<java.util.List<FriendBattleInviteDto>>> getPendingChallenges(
+            @AuthenticationPrincipal DevArenaUserDetails userDetails
+    ) {
+        java.util.List<FriendBattleInviteDto> invites = friendService.getPendingBattleInvites(userDetails.getId());
+        return ResponseEntity.ok(ApiResponse.ok(invites));
+    }
+
+    @PostMapping("/challenge/{inviteId}/decline")
+    public ResponseEntity<ApiResponse<Void>> declineChallenge(
+            @PathVariable UUID inviteId,
+            @AuthenticationPrincipal DevArenaUserDetails userDetails
+    ) {
+        friendService.declineBattleInvite(inviteId, userDetails.getId());
+        return ResponseEntity.ok(ApiResponse.success("Duel challenge declined", null));
+    }
+
+    @GetMapping("/challenge/{inviteId}/status")
+    public ResponseEntity<ApiResponse<Map<String, Object>>> getChallengeStatus(
+            @PathVariable UUID inviteId,
+            @AuthenticationPrincipal DevArenaUserDetails userDetails
+    ) {
+        Map<String, Object> status = friendService.getBattleInviteStatus(inviteId, userDetails.getId());
+        return ResponseEntity.ok(ApiResponse.ok(status));
+    }
 }

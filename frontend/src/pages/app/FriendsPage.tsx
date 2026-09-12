@@ -21,7 +21,7 @@ import { Input } from '../../components/ui/Input';
 import { friendService } from '../../services/friendService';
 import { playerService } from '../../services/playerService';
 import { webSocketService } from '../../services/webSocketService';
-import { Friend, FriendRequest, PlayerSearchResult } from '../../types/social';
+import { Friend, FriendBattleInvite, FriendRequest, PlayerSearchResult } from '../../types/social';
 
 export const FriendsPage: React.FC = () => {
   const navigate = useNavigate();
@@ -30,6 +30,9 @@ export const FriendsPage: React.FC = () => {
   const [friends, setFriends] = useState<Friend[]>([]);
   const [incomingRequests, setIncomingRequests] = useState<FriendRequest[]>([]);
   const [outgoingRequests, setOutgoingRequests] = useState<FriendRequest[]>([]);
+  const [pendingChallenges, setPendingChallenges] = useState<FriendBattleInvite[]>([]);
+  const [outgoingInvite, setOutgoingInvite] = useState<FriendBattleInvite | null>(null);
+  const [outgoingTimer, setOutgoingTimer] = useState<number>(60);
   const [loading, setLoading] = useState(true);
 
   // Search state
@@ -43,13 +46,15 @@ export const FriendsPage: React.FC = () => {
   const loadSocialData = useCallback(async () => {
     try {
       setLoading(true);
-      const [friendsData, requestsData] = await Promise.all([
+      const [friendsData, requestsData, challengesData] = await Promise.all([
         friendService.getFriends(),
         friendService.getFriendRequests(),
+        friendService.getPendingChallenges().catch(() => [] as FriendBattleInvite[]),
       ]);
       setFriends(friendsData);
       setIncomingRequests(requestsData.incoming);
       setOutgoingRequests(requestsData.outgoing);
+      setPendingChallenges(challengesData);
     } catch (e) {
       console.error('Failed to load friends/requests', e);
     } finally {
@@ -70,10 +75,73 @@ export const FriendsPage: React.FC = () => {
       );
     });
 
+    const unsubNotifs = webSocketService.subscribe('/user/queue/notifications', (notif: any) => {
+      if (notif.type === 'BATTLE_INVITE' || notif.type === 'FRIEND_REQUEST') {
+        loadSocialData();
+      }
+    });
+
     return () => {
       if (unsubPresence) unsubPresence();
+      if (unsubNotifs) unsubNotifs();
     };
   }, [loadSocialData]);
+
+  // Outgoing Challenge Polling & Countdown
+  useEffect(() => {
+    if (!outgoingInvite) return;
+    setOutgoingTimer(60);
+
+    const pollInterval = setInterval(async () => {
+      try {
+        const status = await friendService.getChallengeStatus(outgoingInvite.id);
+        if (status.status === 'ACCEPTED' && status.battleId) {
+          clearInterval(pollInterval);
+          setOutgoingInvite(null);
+          navigate(`/battle/${status.battleId}`);
+        } else if (status.status === 'REJECTED' || status.status === 'EXPIRED') {
+          clearInterval(pollInterval);
+          setStatusMessage(`Duel challenge was ${status.status.toLowerCase()}.`);
+          setOutgoingInvite(null);
+        }
+      } catch (err) {
+        console.debug('Failed to poll invite status', err);
+      }
+    }, 2000);
+
+    const countdown = setInterval(() => {
+      setOutgoingTimer((t) => {
+        if (t <= 1) {
+          clearInterval(countdown);
+          clearInterval(pollInterval);
+          setOutgoingInvite(null);
+          setStatusMessage('Duel challenge timed out.');
+          return 0;
+        }
+        return t - 1;
+      });
+    }, 1000);
+
+    const unsubTopic = webSocketService.subscribe(`/topic/battle-invite.${outgoingInvite.id}`, (event: any) => {
+      if (event.type === 'INVITE_ACCEPTED' && event.battleId) {
+        clearInterval(pollInterval);
+        clearInterval(countdown);
+        setOutgoingInvite(null);
+        navigate(`/battle/${event.battleId}`);
+      } else if (event.type === 'INVITE_DECLINED') {
+        clearInterval(pollInterval);
+        clearInterval(countdown);
+        setOutgoingInvite(null);
+        setStatusMessage('Duel challenge was declined.');
+      }
+    });
+
+    return () => {
+      clearInterval(pollInterval);
+      clearInterval(countdown);
+      if (unsubTopic) unsubTopic();
+    };
+  }, [outgoingInvite, navigate]);
 
   // Handle live search
   useEffect(() => {
@@ -167,13 +235,42 @@ export const FriendsPage: React.FC = () => {
   const handleChallengeFriend = async (friend: Friend) => {
     try {
       setActionLoadingId(friend.id);
-      await friendService.challengeFriend(friend.friendId);
-      setStatusMessage(`1v1 Duel challenge dispatched to ${friend.username}! Waiting for response...`);
+      const invite = await friendService.challengeFriend(friend.friendId);
+      setOutgoingInvite(invite);
+      setStatusMessage(`1v1 Duel challenge dispatched to ${friend.username}!`);
     } catch (e: any) {
       setStatusMessage(e.response?.data?.message || 'Failed to dispatch duel challenge');
     } finally {
       setActionLoadingId(null);
-      setTimeout(() => setStatusMessage(null), 5000);
+    }
+  };
+
+  // Accept incoming 1v1 Duel Challenge
+  const handleAcceptChallenge = async (invite: FriendBattleInvite) => {
+    try {
+      setActionLoadingId(invite.id);
+      const res = await friendService.acceptChallenge(invite.id);
+      setPendingChallenges((prev) => prev.filter((i) => i.id !== invite.id));
+      navigate(`/battle/${res.battleId}`);
+    } catch (e: any) {
+      setStatusMessage(e.response?.data?.message || 'Failed to accept duel challenge');
+    } finally {
+      setActionLoadingId(null);
+    }
+  };
+
+  // Decline incoming 1v1 Duel Challenge
+  const handleDeclineChallenge = async (invite: FriendBattleInvite) => {
+    try {
+      setActionLoadingId(invite.id);
+      await friendService.declineChallenge(invite.id);
+      setPendingChallenges((prev) => prev.filter((i) => i.id !== invite.id));
+      setStatusMessage('Declined duel challenge');
+    } catch (e: any) {
+      setStatusMessage(e.response?.data?.message || 'Failed to decline challenge');
+    } finally {
+      setActionLoadingId(null);
+      setTimeout(() => setStatusMessage(null), 3000);
     }
   };
 
@@ -207,6 +304,127 @@ export const FriendsPage: React.FC = () => {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Outgoing Duel Challenge Active Modal / Banner */}
+      <AnimatePresence>
+        {outgoingInvite && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.96 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.96 }}
+            className="p-5 rounded-2xl bg-gradient-to-r from-amber-50 via-orange-50/50 to-white border-2 border-amber-300 shadow-xl relative overflow-hidden"
+          >
+            <div className="absolute top-0 right-0 w-36 h-36 bg-amber-400/10 rounded-full blur-2xl pointer-events-none" />
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 relative z-10">
+              <div className="flex items-center gap-4">
+                <div className="relative">
+                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-amber-500 to-orange-600 text-white flex items-center justify-center shadow-md">
+                    <Swords className="w-6 h-6 animate-pulse" />
+                  </div>
+                  <span className="absolute -top-1 -right-1 flex h-3.5 w-3.5">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75" />
+                    <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-amber-500" />
+                  </span>
+                </div>
+
+                <div>
+                  <div className="flex items-center gap-2">
+                    <Badge variant="gold" size="sm">WAITING FOR OPPONENT</Badge>
+                    <span className="text-xs font-mono font-bold text-amber-800 flex items-center gap-1">
+                      <Clock className="w-3.5 h-3.5" />
+                      {outgoingTimer}s
+                    </span>
+                  </div>
+                  <h3 className="text-base font-extrabold text-slate-900 mt-1">
+                    Challenging {outgoingInvite.inviteeUsername}
+                  </h3>
+                  <p className="text-xs text-slate-600">
+                    Kata: <span className="font-semibold text-slate-900">{outgoingInvite.challengeTitle || 'Algorithmic Duel'}</span>. Waiting for gladiator to accept...
+                  </p>
+                </div>
+              </div>
+
+              <Button
+                variant="outline"
+                size="sm"
+                className="text-slate-600 border-slate-300 hover:bg-slate-100 shrink-0"
+                onClick={() => setOutgoingInvite(null)}
+              >
+                Cancel Challenge
+              </Button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* SECTION: INCOMING 1v1 DUEL INVITATIONS */}
+      {pendingChallenges.length > 0 && (
+        <Card className="p-5 bg-gradient-to-br from-amber-500/10 via-orange-500/5 to-white border-2 border-amber-300 shadow-md rounded-2xl space-y-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-amber-500 to-orange-600 text-white flex items-center justify-center shadow-xs">
+                <Swords className="w-4 h-4" />
+              </div>
+              <div>
+                <h2 className="text-base font-extrabold text-slate-900">
+                  Incoming 1v1 Duel Challenges ({pendingChallenges.length})
+                </h2>
+                <p className="text-xs text-slate-500">
+                  Gladiators have challenged you to direct battle. Accept to start immediately!
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
+            {pendingChallenges.map((invite) => (
+              <div
+                key={invite.id}
+                className="p-4 rounded-xl bg-white border border-amber-200/90 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-500 to-orange-600 text-white font-bold flex items-center justify-center text-sm shadow-xs">
+                    {invite.inviterDisplayName ? invite.inviterDisplayName.slice(0, 2).toUpperCase() : invite.inviterUsername.slice(0, 2).toUpperCase()}
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <span className="font-bold text-sm text-slate-900">
+                        {invite.inviterDisplayName || invite.inviterUsername}
+                      </span>
+                      <span className="text-[10px] font-mono text-slate-400">@{invite.inviterUsername}</span>
+                    </div>
+                    <p className="text-xs text-slate-600 mt-0.5">
+                      Challenge: <span className="font-semibold text-amber-700">{invite.challengeTitle || 'Algorithmic Kata'}</span>
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2 shrink-0">
+                  <Button
+                    size="sm"
+                    variant="glow"
+                    className="bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white font-bold text-xs shadow-xs"
+                    isLoading={actionLoadingId === invite.id}
+                    onClick={() => handleAcceptChallenge(invite)}
+                    leftIcon={<Swords className="w-3.5 h-3.5" />}
+                  >
+                    ACCEPT DUEL
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="text-xs text-slate-600 border-slate-200 hover:bg-slate-100"
+                    disabled={actionLoadingId === invite.id}
+                    onClick={() => handleDeclineChallenge(invite)}
+                  >
+                    Decline
+                  </Button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </Card>
+      )}
 
       {/* SECTION 1: FIND PLAYERS */}
       <Card className="p-6 bg-white border-slate-200/90 shadow-sm rounded-2xl space-y-4">

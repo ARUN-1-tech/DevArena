@@ -3,14 +3,17 @@ import { useNavigate } from 'react-router-dom';
 import { Card } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
-import { Swords, Zap, Trophy, ArrowRight, Shield } from 'lucide-react';
+import { Swords, Zap, Trophy, ArrowRight, Shield, KeyRound } from 'lucide-react';
 import { battleService } from '../../services/battleService';
 import { BattleHistoryItem } from '../../types/battle';
+import { CustomDuelModal } from '../../components/battle/CustomDuelModal';
 
 export const ArenaPage: React.FC = () => {
   const navigate = useNavigate();
   const [history, setHistory] = useState<BattleHistoryItem[]>([]);
   const [loadingHistory, setLoadingHistory] = useState(true);
+  const [isCustomDuelOpen, setIsCustomDuelOpen] = useState(false);
+  const [customDuelTab, setCustomDuelTab] = useState<'create' | 'join'>('create');
 
   useEffect(() => {
     const fetchHistory = async () => {
@@ -76,9 +79,32 @@ export const ArenaPage: React.FC = () => {
               Invite friends or teammates to a custom room with custom language choices, time limits, and test difficulty.
             </p>
           </div>
-          <Button variant="outline" size="md" disabled className="w-full">
-            CUSTOM DUELS (COMING SOON)
-          </Button>
+          <div className="flex flex-col sm:flex-row items-center gap-2.5 w-full pt-1">
+            <Button
+              variant="glow"
+              size="md"
+              onClick={() => {
+                setCustomDuelTab('create');
+                setIsCustomDuelOpen(true);
+              }}
+              leftIcon={<Swords className="w-4 h-4" />}
+              className="w-full sm:flex-1 font-bold bg-gradient-to-r from-violet-600 via-indigo-600 to-cyan-600 text-white shadow-xs"
+            >
+              CREATE ROOM
+            </Button>
+            <Button
+              variant="outline"
+              size="md"
+              onClick={() => {
+                setCustomDuelTab('join');
+                setIsCustomDuelOpen(true);
+              }}
+              leftIcon={<KeyRound className="w-4 h-4" />}
+              className="w-full sm:flex-1 font-bold text-slate-700 border-slate-200 hover:bg-slate-50"
+            >
+              JOIN VIA CODE
+            </Button>
+          </div>
         </Card>
       </div>
 
@@ -153,6 +179,13 @@ export const ArenaPage: React.FC = () => {
           </div>
         )}
       </div>
+
+      {/* Custom Duel Modal */}
+      <CustomDuelModal
+        isOpen={isCustomDuelOpen}
+        onClose={() => setIsCustomDuelOpen(false)}
+        initialTab={customDuelTab}
+      />
     </div>
   );
 };

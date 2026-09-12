@@ -112,6 +112,22 @@ export interface FriendBattleInvite {
   expiresAt: string;
 }
 
+export interface CustomDuelRoom {
+  roomCode: string;
+  hostId: string;
+  hostUsername: string;
+  hostDisplayName: string;
+  hostAvatar: string;
+  hostRating: number;
+  challengeId: string;
+  challengeTitle: string;
+  difficulty: string;
+  durationSeconds: number;
+  status: 'WAITING' | 'STARTED' | 'CANCELLED' | 'EXPIRED';
+  battleId?: string | null;
+  createdAt: string;
+}
+
 export type NotificationType =
   | 'FRIEND_REQUEST'
   | 'FRIEND_ACCEPTED'
