@@ -574,14 +574,18 @@ export const BattlePage: React.FC = () => {
 
         {/* RIGHT COLUMN: Monaco Editor & Interactive Console */}
         <div className="w-1/2 flex flex-col bg-white">
-          {/* Editor Action Header */}
-          <div className="h-12 bg-white/95 border-b border-slate-200/80 px-4 flex items-center justify-between shrink-0">
+          {/* Editor Action Header with high z-index */}
+          <div className="relative z-30 h-12 bg-white/95 border-b border-slate-200/80 px-4 flex items-center justify-between shrink-0">
             {/* Language Selector Dropdown */}
             <div className="relative" ref={langDropdownRef}>
               <button
                 type="button"
                 onClick={() => setIsLangDropdownOpen((prev) => !prev)}
-                className="flex items-center gap-2 px-3 py-1 rounded-xl border border-slate-200/90 bg-white hover:bg-slate-50 text-slate-800 font-semibold text-xs transition-all shadow-2xs cursor-pointer group"
+                className={`flex items-center gap-2 px-3 py-1 rounded-xl border text-xs font-semibold transition-all shadow-2xs cursor-pointer group ${
+                  isLangDropdownOpen
+                    ? 'border-indigo-400 ring-2 ring-indigo-200/60 bg-indigo-50/70 text-indigo-900'
+                    : 'border-slate-200/90 bg-white hover:bg-slate-50 text-slate-800'
+                }`}
                 title="Select Programming Language"
               >
                 <span className="text-sm leading-none">{currentLangConfig.icon}</span>
@@ -603,10 +607,11 @@ export const BattlePage: React.FC = () => {
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, y: -6, scale: 0.96 }}
                     transition={{ duration: 0.15 }}
-                    className="absolute left-0 mt-1.5 w-56 rounded-2xl bg-white/95 backdrop-blur-2xl border border-slate-200/90 shadow-xl ring-1 ring-slate-900/5 z-50 p-1.5 space-y-1"
+                    className="absolute left-0 mt-2 w-64 rounded-2xl bg-white border border-slate-200/90 shadow-2xl ring-1 ring-slate-900/10 z-[100] p-1.5 space-y-1"
                   >
-                    <div className="px-2.5 py-1 text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400 border-b border-slate-100">
-                      Select Language
+                    <div className="px-2.5 py-1.5 text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400 border-b border-slate-100 flex items-center justify-between">
+                      <span>Target Language</span>
+                      <span className="text-[9px] text-indigo-600 bg-indigo-50 px-1.5 py-0.2 rounded font-semibold">Active: {currentLangConfig.name}</span>
                     </div>
                     {LANGUAGES.map((item) => {
                       const isSelected = language === item.key;

@@ -83,6 +83,20 @@ export const CodeLabPage: React.FC = () => {
   const [isAiCoachOpen, setIsAiCoachOpen] = useState(false);
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
 
+  // LeetCode-style 2-axis resizer state
+  const [splitPercent, setSplitPercent] = useState<number>(() => {
+    const saved = localStorage.getItem('devarena_codelab_split_x');
+    return saved ? Math.min(75, Math.max(22, parseFloat(saved))) : 40;
+  });
+  const [bottomHeightPx, setBottomHeightPx] = useState<number>(() => {
+    const saved = localStorage.getItem('devarena_codelab_split_y');
+    return saved ? Math.min(600, Math.max(130, parseInt(saved, 10))) : 270;
+  });
+  const [isDraggingHorizontal, setIsDraggingHorizontal] = useState(false);
+  const [isDraggingVertical, setIsDraggingVertical] = useState(false);
+  const workspaceRef = useRef<HTMLDivElement>(null);
+  const rightPanelRef = useRef<HTMLDivElement>(null);
+
   const [levelUpData, setLevelUpData] = useState<{
     show: boolean;
     level: number;
@@ -188,6 +202,56 @@ export const CodeLabPage: React.FC = () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [isLangDropdownOpen]);
+
+  // Handle Side Resizing (Horizontal Splitter between problem specs & code editor)
+  const handleMouseDownHorizontal = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setIsDraggingHorizontal(true);
+  };
+
+  // Handle Down Resizing (Vertical Splitter between editor & test results)
+  const handleMouseDownVertical = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setIsDraggingVertical(true);
+  };
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (isDraggingHorizontal && workspaceRef.current) {
+        const rect = workspaceRef.current.getBoundingClientRect();
+        const rawPercent = ((e.clientX - rect.left) / rect.width) * 100;
+        const clampedPercent = Math.min(75, Math.max(22, rawPercent));
+        setSplitPercent(clampedPercent);
+        localStorage.setItem('devarena_codelab_split_x', clampedPercent.toString());
+      } else if (isDraggingVertical && rightPanelRef.current) {
+        const rect = rightPanelRef.current.getBoundingClientRect();
+        const rawHeight = rect.bottom - e.clientY;
+        const maxHeight = Math.max(140, rect.height - 150);
+        const clampedHeight = Math.min(maxHeight, Math.max(120, rawHeight));
+        setBottomHeightPx(clampedHeight);
+        localStorage.setItem('devarena_codelab_split_y', clampedHeight.toString());
+      }
+    };
+
+    const handleMouseUp = () => {
+      if (isDraggingHorizontal) setIsDraggingHorizontal(false);
+      if (isDraggingVertical) setIsDraggingVertical(false);
+    };
+
+    if (isDraggingHorizontal || isDraggingVertical) {
+      window.addEventListener('mousemove', handleMouseMove);
+      window.addEventListener('mouseup', handleMouseUp);
+      document.body.style.userSelect = 'none';
+      document.body.style.cursor = isDraggingHorizontal ? 'col-resize' : 'row-resize';
+    }
+
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseup', handleMouseUp);
+      document.body.style.userSelect = '';
+      document.body.style.cursor = '';
+    };
+  }, [isDraggingHorizontal, isDraggingVertical]);
 
   const handleCodeChange = (value: string | undefined) => {
     const updated = value || '';
@@ -393,8 +457,8 @@ export const CodeLabPage: React.FC = () => {
           : 'h-[calc(100vh-5rem)] -m-4 sm:-m-6 lg:-m-8'
       }`}
     >
-      {/* Top Bar */}
-      <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3 bg-white/95 backdrop-blur-xl border-b border-slate-200/80 text-sm shadow-2xs">
+      {/* Top Bar with high z-index stacking to float cleanly over Monaco */}
+      <div className="relative z-40 flex flex-wrap items-center justify-between gap-3 px-4 py-3 bg-white/95 backdrop-blur-xl border-b border-slate-200/80 text-sm shadow-2xs">
         <div className="flex items-center gap-3">
           <Link
             to={`/challenges/${challenge.id}`}
@@ -444,7 +508,11 @@ export const CodeLabPage: React.FC = () => {
             <button
               type="button"
               onClick={() => setIsLangDropdownOpen((prev) => !prev)}
-              className="flex items-center gap-2 px-3 py-1.5 rounded-xl border border-slate-200/90 bg-white hover:bg-slate-50 text-slate-800 font-semibold text-xs transition-all shadow-2xs cursor-pointer group"
+              className={`flex items-center gap-2 px-3 py-1.5 rounded-xl border text-xs font-semibold transition-all shadow-2xs cursor-pointer group ${
+                isLangDropdownOpen
+                  ? 'border-indigo-400 ring-2 ring-indigo-200/60 bg-indigo-50/70 text-indigo-900'
+                  : 'border-slate-200/90 bg-white hover:bg-slate-50 text-slate-800'
+              }`}
               title="Select Programming Language"
             >
               <span className="text-sm leading-none">{currentLangConfig.icon}</span>
@@ -466,10 +534,11 @@ export const CodeLabPage: React.FC = () => {
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: -6, scale: 0.96 }}
                   transition={{ duration: 0.15 }}
-                  className="absolute left-0 mt-1.5 w-56 rounded-2xl bg-white/95 backdrop-blur-2xl border border-slate-200/90 shadow-xl ring-1 ring-slate-900/5 z-50 p-1.5 space-y-1"
+                  className="absolute left-0 mt-2 w-64 rounded-2xl bg-white border border-slate-200/90 shadow-2xl ring-1 ring-slate-900/10 z-[100] p-1.5 space-y-1"
                 >
-                  <div className="px-2.5 py-1 text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400 border-b border-slate-100">
-                    Select Language
+                  <div className="px-2.5 py-1.5 text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400 border-b border-slate-100 flex items-center justify-between">
+                    <span>Target Language</span>
+                    <span className="text-[9px] text-indigo-600 bg-indigo-50 px-1.5 py-0.2 rounded font-semibold">Active: {currentLangConfig.name}</span>
                   </div>
                   {LANGUAGES.map((item) => {
                     const isSelected = language === item.key;
@@ -481,7 +550,7 @@ export const CodeLabPage: React.FC = () => {
                           setIsLangDropdownOpen(false);
                           handleLanguageSelect(item.key);
                         }}
-                        className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-mono transition-all text-left cursor-pointer ${
+                        className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-mono transition-all text-left cursor-pointer ${
                           isSelected
                             ? 'bg-gradient-to-r from-indigo-50 to-cyan-50 text-indigo-900 font-bold border border-indigo-200/70 shadow-2xs'
                             : 'text-slate-700 hover:bg-slate-100/80 hover:text-slate-900'
@@ -623,10 +692,16 @@ export const CodeLabPage: React.FC = () => {
         )}
       </AnimatePresence>
 
-      {/* Workspace */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 flex-1 overflow-hidden">
+      {/* Workspace with 2-axis LeetCode-style side and down resizers */}
+      <div
+        ref={workspaceRef}
+        className="flex flex-col lg:flex-row flex-1 overflow-hidden relative select-none"
+      >
         {/* Left: Challenge Specs */}
-        <div className="lg:col-span-5 h-full overflow-y-auto border-r border-slate-200/80 p-6 space-y-6 bg-white/75 backdrop-blur-md">
+        <div
+          style={{ width: `${splitPercent}%` }}
+          className="h-full overflow-y-auto p-6 space-y-6 bg-white/80 backdrop-blur-md shrink-0 select-text border-b lg:border-b-0 border-slate-200/80"
+        >
           <div>
             <div className="text-xs font-mono text-indigo-600 font-bold uppercase tracking-wider mb-1">
               {challenge.category} • {challenge.xpReward} XP
@@ -700,9 +775,22 @@ export const CodeLabPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Right: Monaco Editor + Bottom Results */}
-        <div className="lg:col-span-7 flex flex-col h-full overflow-hidden bg-white">
-          <div className="flex-1 min-h-[350px] relative bg-white">
+        {/* LeetCode Side Resizer (Horizontal Divider) */}
+        <div
+          onMouseDown={handleMouseDownHorizontal}
+          className="hidden lg:flex w-2 shrink-0 bg-slate-100 hover:bg-cyan-500 active:bg-cyan-600 transition-colors cursor-col-resize items-center justify-center group z-20 border-x border-slate-200/80 select-none"
+          title="Drag to resize problem description and code editor panels"
+        >
+          <div className="h-8 w-1 rounded-full bg-slate-300 group-hover:bg-white transition-colors" />
+        </div>
+
+        {/* Right: Monaco Editor + Down Resizer + Bottom Results */}
+        <div
+          ref={rightPanelRef}
+          style={{ width: `calc(${100 - splitPercent}% - 8px)` }}
+          className="flex flex-col h-full overflow-hidden bg-white flex-1 min-w-0 min-h-0"
+        >
+          <div className="flex-1 min-h-[140px] relative bg-white select-text overflow-hidden">
             <Editor
               height="100%"
               language={language.toLowerCase() === 'javascript' ? 'javascript' : language.toLowerCase()}
@@ -724,8 +812,20 @@ export const CodeLabPage: React.FC = () => {
             />
           </div>
 
+          {/* LeetCode Down Resizer (Vertical Divider) */}
+          <div
+            onMouseDown={handleMouseDownVertical}
+            className="h-2 shrink-0 bg-slate-100 hover:bg-cyan-500 active:bg-cyan-600 transition-colors cursor-row-resize flex items-center justify-center group z-20 border-y border-slate-200/80 select-none"
+            title="Drag to resize code editor and test results console"
+          >
+            <div className="w-8 h-1 rounded-full bg-slate-300 group-hover:bg-white transition-colors" />
+          </div>
+
           {/* Results Panel */}
-          <div className="h-64 flex flex-col border-t border-slate-200/90 bg-white">
+          <div
+            style={{ height: `${bottomHeightPx}px` }}
+            className="flex flex-col border-t border-slate-200/90 bg-white shrink-0 overflow-hidden select-text"
+          >
             <div className="flex items-center justify-between px-4 py-2 bg-slate-50/80 border-b border-slate-200/80 text-xs">
               <div className="flex items-center gap-1">
                 <button
@@ -1064,6 +1164,15 @@ export const CodeLabPage: React.FC = () => {
         targetId={challenge.id}
         targetName={challenge.title}
       />
+
+      {/* Transparent Global Resizing Drag Overlay (Prevents Monaco mouse trapping) */}
+      {(isDraggingHorizontal || isDraggingVertical) && (
+        <div
+          className={`fixed inset-0 z-[150] select-none ${
+            isDraggingHorizontal ? 'cursor-col-resize' : 'cursor-row-resize'
+          }`}
+        />
+      )}
     </div>
   );
 };
