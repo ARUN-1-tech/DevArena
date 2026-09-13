@@ -188,7 +188,11 @@ apiClient.interceptors.response.use(
 
     const data = error.response?.data;
     if (data && typeof data === 'object' && 'message' in data) {
-      return Promise.reject(data as ApiErrorResponse);
+      const errResp = data as ApiErrorResponse;
+      if (typeof errResp.message === 'string' && errResp.message.toLowerCase().includes('no static resource')) {
+        errResp.message = 'The requested endpoint is temporarily unavailable or cannot be found.';
+      }
+      return Promise.reject(errResp);
     }
 
     return Promise.reject(buildErrorResponse(error, status));
@@ -215,6 +219,8 @@ function buildErrorResponse(error: AxiosError<unknown>, status?: number, customM
       message = 'The DevArena server took longer than expected to respond (possibly waking up from a cold start). Please wait a moment and try again.';
     } else if (isColdStartOrDown) {
       message = 'Cannot connect to the DevArena backend. The server may be waking up (Render cold start) or temporarily unreachable. Please retry in a few seconds.';
+    } else if (error.message && error.message.toLowerCase().includes('no static resource')) {
+      message = 'The requested endpoint is temporarily unavailable or cannot be found.';
     } else {
       message = error.message || 'An unexpected network error occurred.';
     }

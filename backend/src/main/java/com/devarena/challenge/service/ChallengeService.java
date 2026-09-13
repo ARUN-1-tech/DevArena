@@ -68,20 +68,38 @@ public class ChallengeService {
             Pageable pageable,
             UUID userId
     ) {
-        Page<ChallengeEntity> entityPage = challengeRepository.searchChallenges(
-                ChallengeStatus.PUBLISHED,
-                difficulty,
-                category,
-                problemType,
-                (search != null && !search.isBlank()) ? search.trim() : null,
-                pageable
-        );
+        org.springframework.data.jpa.domain.Specification<ChallengeEntity> spec = (root, query, cb) -> {
+            List<jakarta.persistence.criteria.Predicate> predicates = new ArrayList<>();
+            predicates.add(cb.equal(root.get("status"), ChallengeStatus.PUBLISHED));
+            if (difficulty != null) {
+                predicates.add(cb.equal(root.get("difficulty"), difficulty));
+            }
+            if (category != null) {
+                predicates.add(cb.equal(root.get("category"), category));
+            }
+            if (problemType != null) {
+                predicates.add(cb.equal(root.get("problemType"), problemType));
+            }
+            if (search != null && !search.isBlank()) {
+                String pattern = "%" + search.trim().toLowerCase() + "%";
+                predicates.add(cb.or(
+                        cb.like(cb.lower(root.get("title")), pattern),
+                        cb.like(cb.lower(cb.coalesce(root.get("tags"), "")), pattern),
+                        cb.like(cb.lower(root.get("description")), pattern)
+                ));
+            }
+            return cb.and(predicates.toArray(new jakarta.persistence.criteria.Predicate[0]));
+        };
+
+        Page<ChallengeEntity> entityPage = challengeRepository.findAll(spec, pageable);
 
         Map<UUID, ChallengeProgressStatus> progressMap = new HashMap<>();
         if (userId != null) {
             List<PlayerChallengeEntity> progresses = playerChallengeRepository.findByUserId(userId);
             for (PlayerChallengeEntity p : progresses) {
-                progressMap.put(p.getChallenge().getId(), p.getStatus());
+                if (p.getChallenge() != null) {
+                    progressMap.put(p.getChallenge().getId(), p.getStatus());
+                }
             }
         }
 

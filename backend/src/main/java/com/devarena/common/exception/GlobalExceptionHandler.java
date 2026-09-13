@@ -103,7 +103,7 @@ public class GlobalExceptionHandler {
         ApiErrorResponse response = new ApiErrorResponse(
                 HttpStatus.NOT_FOUND.value(),
                 "RESOURCE_NOT_FOUND",
-                ex.getMessage(),
+                "Endpoint not found: " + request.getRequestURI(),
                 request.getRequestURI()
         );
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);

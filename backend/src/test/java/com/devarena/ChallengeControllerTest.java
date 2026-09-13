@@ -64,6 +64,23 @@ class ChallengeControllerTest {
     }
 
     @Test
+    @DisplayName("GET /api/v1/challenges without parameters returns non-empty list of seeded challenges")
+    void testGetDefaultChallengesReturnsNonEmptyList() throws Exception {
+        String token = getAuthToken();
+
+        mockMvc.perform(get("/api/v1/challenges")
+                        .header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.success").value(true))
+                .andExpect(jsonPath("$.data.content").isArray())
+                .andExpect(jsonPath("$.data.totalElements").value(org.hamcrest.Matchers.greaterThan(0)))
+                .andExpect(jsonPath("$.data.content[0].id").isNotEmpty())
+                .andExpect(jsonPath("$.data.content[0].title").isNotEmpty())
+                .andExpect(jsonPath("$.data.content[0].difficulty").isNotEmpty());
+    }
+
+    @Test
     @DisplayName("GET /api/v1/challenges retrieves seeded challenges and supports filtering")
     void testGetChallengesAndFiltering() throws Exception {
         String token = getAuthToken();
