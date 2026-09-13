@@ -30,7 +30,8 @@ export const apiClient = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
-  timeout: 15000,
+  // Default timeout 30s to comfortably tolerate cloud cold starts
+  timeout: 30000,
 });
 
 // Single-flight token refresh state
@@ -51,29 +52,44 @@ const processQueue = (error: unknown, token: string | null = null) => {
   failedQueue = [];
 };
 
-// Request Interceptor: Attach JWT token if available
+export interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
+  _retry?: boolean;
+  _retryCount?: number;
+  skipRetry?: boolean;
+}
+
+// Request Interceptor: Attach JWT token & dynamically configure timeouts
 apiClient.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
     const token = localStorage.getItem('devarena_token');
     if (token && config.headers) {
       config.headers.Authorization = `Bearer ${token}`;
     }
+
+    // Health, status, and diagnostic checks receive up to 60s for Render backend cold start
+    const url = config.url || '';
+    if (url.includes('/status') || url.includes('/health') || url.includes('/test-validation')) {
+      if (!config.timeout || config.timeout === 30000) {
+        config.timeout = 60000;
+      }
+    }
+
     return config;
   },
   (error) => Promise.reject(error)
 );
 
-interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
-  _retry?: boolean;
-}
-
-// Response Interceptor: Transparent single-flight token refresh & standardized error handling
+// Response Interceptor: Transparent token refresh, transient error retries & clear error messaging
 apiClient.interceptors.response.use(
   (response) => response,
   async (error: AxiosError<unknown>) => {
     const originalRequest = error.config as CustomAxiosRequestConfig;
+    if (!originalRequest) {
+      return Promise.reject(buildErrorResponse(error));
+    }
+
     const status = error.response?.status;
-    const requestUrl = originalRequest?.url || '';
+    const requestUrl = originalRequest.url || '';
 
     // Handle 401 Unauthorized with token refresh if possible
     const isAuthEndpoint =
@@ -81,7 +97,7 @@ apiClient.interceptors.response.use(
       requestUrl.includes('/auth/refresh') ||
       requestUrl.includes('/auth/register');
 
-    if (status === 401 && !originalRequest?._retry && !isAuthEndpoint) {
+    if (status === 401 && !originalRequest._retry && !isAuthEndpoint) {
       const refreshToken = localStorage.getItem('devarena_refresh_token');
 
       if (refreshToken) {
@@ -138,6 +154,38 @@ apiClient.interceptors.response.use(
       }
     }
 
+    // Determine if request is eligible for safe retry on Render cold starts
+    const isTimeout =
+      error.code === 'ECONNABORTED' ||
+      (typeof error.message === 'string' && error.message.toLowerCase().includes('timeout'));
+
+    const isTransientError =
+      isTimeout ||
+      status === 502 ||
+      status === 503 ||
+      status === 504 ||
+      (!error.response && !status);
+
+    // Never retry client errors (4xx) or registration/login POST requests (to prevent duplicate state)
+    const isExcludedAuthPost =
+      (originalRequest.method?.toUpperCase() === 'POST') &&
+      (requestUrl.includes('/auth/register') || requestUrl.includes('/auth/login'));
+
+    const currentRetries = originalRequest._retryCount || 0;
+    const canRetry =
+      isTransientError &&
+      !isExcludedAuthPost &&
+      !originalRequest.skipRetry &&
+      currentRetries < 2;
+
+    if (canRetry) {
+      originalRequest._retryCount = currentRetries + 1;
+      // Exponential backoff delay: 1000ms on first retry, 2000ms on second retry
+      const backoffDelay = Math.min(1000 * Math.pow(2, currentRetries), 4000);
+      await new Promise((resolve) => setTimeout(resolve, backoffDelay));
+      return apiClient(originalRequest);
+    }
+
     const data = error.response?.data;
     if (data && typeof data === 'object' && 'message' in data) {
       return Promise.reject(data as ApiErrorResponse);
@@ -148,21 +196,42 @@ apiClient.interceptors.response.use(
 );
 
 function buildErrorResponse(error: AxiosError<unknown>, status?: number, customMessage?: string): ApiErrorResponse {
-  const isConnRefused =
+  const isTimeout =
+    error.code === 'ECONNABORTED' ||
+    (typeof error.message === 'string' && error.message.toLowerCase().includes('timeout'));
+
+  const isColdStartOrDown =
     status === 502 ||
     status === 503 ||
     status === 504 ||
+    (!error.response && !status) ||
     (status === 500 && (!error.response?.data || typeof error.response?.data === 'string'));
+
+  let message = customMessage;
+  if (!message) {
+    if (status === 401) {
+      message = 'Your session has expired or is invalid. Please log in again.';
+    } else if (isTimeout) {
+      message = 'The DevArena server took longer than expected to respond (possibly waking up from a cold start). Please wait a moment and try again.';
+    } else if (isColdStartOrDown) {
+      message = 'Cannot connect to the DevArena backend. The server may be waking up (Render cold start) or temporarily unreachable. Please retry in a few seconds.';
+    } else {
+      message = error.message || 'An unexpected network error occurred.';
+    }
+  }
 
   return {
     timestamp: new Date().toISOString(),
-    status: status || 500,
-    error: status === 401 ? 'UNAUTHORIZED' : isConnRefused ? 'SERVICE_UNAVAILABLE' : 'NETWORK_ERROR',
-    message: customMessage || (status === 401
-      ? 'Your session has expired or is invalid. Please log in again.'
-      : isConnRefused
-      ? 'Cannot connect to the DevArena backend. Please ensure the backend server is running on port 8080.'
-      : error.message || 'An unexpected network error occurred.'),
+    status: status || (isTimeout ? 504 : 500),
+    error: status === 401
+      ? 'UNAUTHORIZED'
+      : isTimeout
+      ? 'GATEWAY_TIMEOUT'
+      : isColdStartOrDown
+      ? 'SERVICE_UNAVAILABLE'
+      : 'NETWORK_ERROR',
+    message,
     path: error.config?.url || '',
   };
 }
+
