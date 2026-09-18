@@ -93,9 +93,52 @@ public class ProcessSandboxCodeExecutor implements CodeExecutor {
         Path srcFile = tempDir.resolve("Solution.java");
         Files.writeString(srcFile, sourceCode, StandardCharsets.UTF_8);
 
+        String javacCmd = resolveJavaBinary("javac");
         String javaCmd = resolveJavaBinary("java");
 
-        // Java 11+ single-file source launcher runs and compiles Solution.java directly without external javac
+        // 1. If javac compiler is available, compile with full compiler diagnostics
+        if (isCommandAvailable(javacCmd)) {
+            ProcessBuilder compilePb = new ProcessBuilder(javacCmd, "-encoding", "UTF-8", "Solution.java");
+            compilePb.directory(tempDir.toFile());
+            long compileStart = System.currentTimeMillis();
+            Process compileProcess = compilePb.start();
+            boolean compiledInTime = compileProcess.waitFor(10000, TimeUnit.MILLISECONDS);
+            long compileDuration = System.currentTimeMillis() - compileStart;
+
+            if (!compiledInTime) {
+                compileProcess.destroyForcibly();
+                return ExecutionOutput.failed(
+                        SubmissionStatus.COMPILATION_ERROR,
+                        "",
+                        "Compilation timed out after 10000ms",
+                        compileDuration,
+                        1,
+                        "Compilation timed out"
+                );
+            }
+
+            int compileExit = compileProcess.exitValue();
+            if (compileExit != 0) {
+                String compileErr = readStreamWithLimit(compileProcess.getErrorStream(), MAX_OUTPUT_BYTES);
+                String compileOut = readStreamWithLimit(compileProcess.getInputStream(), MAX_OUTPUT_BYTES);
+                String fullCompileMsg = compileErr.isBlank() ? compileOut : compileErr;
+                return ExecutionOutput.failed(
+                        SubmissionStatus.COMPILATION_ERROR,
+                        compileOut,
+                        fullCompileMsg,
+                        compileDuration,
+                        compileExit,
+                        fullCompileMsg
+                );
+            }
+
+            // Execute compiled class
+            ProcessBuilder runPb = new ProcessBuilder(javaCmd, "-Xmx128m", "-Dfile.encoding=UTF-8", "-cp", ".", "Solution");
+            runPb.directory(tempDir.toFile());
+            return runProcessWithTimeout(runPb, stdin, timeoutMs);
+        }
+
+        // 2. Fallback: Java 11+ single-file source launcher
         ProcessBuilder runPb = new ProcessBuilder(javaCmd, "-Xmx128m", "-Dfile.encoding=UTF-8", "Solution.java");
         runPb.directory(tempDir.toFile());
         return runProcessWithTimeout(runPb, stdin, timeoutMs);

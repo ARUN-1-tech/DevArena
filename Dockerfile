@@ -1,4 +1,4 @@
-﻿# ==============================================================================
+# ==============================================================================
 # DevArena Full-Stack Multi-Stage Production Dockerfile
 # Provides a unified deployment container with Backend (Java 21), Nginx proxy,
 # and Frontend React static SPA.
@@ -20,8 +20,8 @@ RUN mvn dependency:go-offline -B
 COPY backend/src ./src
 RUN mvn clean package -DskipTests -B
 
-# --- Stage 3: Unified Production Runtime ---
-FROM eclipse-temurin:21-jre-alpine AS runner
+# --- Stage 3: Unified Production Runtime with Full JDK & Compilers ---
+FROM eclipse-temurin:21-jdk-alpine AS runner
 WORKDIR /app
 
 # Install Python3, Node.js runtime for code execution sandboxing, and Supervisor/Nginx

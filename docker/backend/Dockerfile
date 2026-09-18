@@ -1,4 +1,4 @@
-﻿# Multi-stage Dockerfile for DevArena Backend (Spring Boot 3.3.4 + Java 21)
+# Multi-stage Dockerfile for DevArena Backend (Spring Boot 3.3.4 + Java 21)
 FROM maven:3.9-eclipse-temurin-21-alpine AS builder
 WORKDIR /workspace
 
@@ -10,8 +10,8 @@ RUN mvn dependency:go-offline -B
 COPY src ./src
 RUN mvn clean package -DskipTests -B
 
-# Stage 2: Production JRE Runtime with sandbox compilers & runtimes
-FROM eclipse-temurin:21-jre-alpine AS runner
+# Stage 2: Production JDK Runtime with sandbox compilers & runtimes
+FROM eclipse-temurin:21-jdk-alpine AS runner
 WORKDIR /app
 
 # Install Python 3 and Node.js for multi-language execution sandbox
