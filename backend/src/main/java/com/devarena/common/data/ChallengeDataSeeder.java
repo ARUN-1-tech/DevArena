@@ -48,7 +48,8 @@ public class ChallengeDataSeeder {
             try {
                 Boolean updated = transactionTemplate.execute(status -> {
                     List<ChallengeTestCaseEntity> existingCases = testCaseRepository.findByChallengeIdOrderByOrderIndexAsc(challenge.getId());
-                    boolean needsSeedingOrUpdate = existingCases.isEmpty() || hasPlaceholderTestCases(existingCases);
+                    int starterCount = starterCodeRepository.findByChallengeId(challenge.getId()).size();
+                    boolean needsSeedingOrUpdate = existingCases.isEmpty() || starterCount < 3 || hasPlaceholderTestCases(existingCases);
 
                     if (needsSeedingOrUpdate) {
                         seedOrUpdateChallenge(challenge, existingCases);
