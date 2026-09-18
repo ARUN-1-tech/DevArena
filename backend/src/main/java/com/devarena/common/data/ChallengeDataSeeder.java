@@ -122,8 +122,10 @@ public class ChallengeDataSeeder {
         Optional<ChallengeStarterCodeEntity> existing = starterCodeRepository.findByChallengeIdAndLanguage(c.getId(), lang);
         if (existing.isPresent()) {
             ChallengeStarterCodeEntity entity = existing.get();
-            entity.setStarterCode(code);
-            starterCodeRepository.save(entity);
+            if (!code.equals(entity.getStarterCode())) {
+                entity.setStarterCode(code);
+                starterCodeRepository.save(entity);
+            }
         } else {
             starterCodeRepository.save(new ChallengeStarterCodeEntity(c, lang, code));
         }
