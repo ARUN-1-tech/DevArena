@@ -13,7 +13,8 @@ import com.devarena.execution.model.ExecutionLanguage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.List;
 import java.util.Optional;
@@ -26,28 +27,37 @@ public class ChallengeDataSeeder {
     private final ChallengeRepository challengeRepository;
     private final ChallengeStarterCodeRepository starterCodeRepository;
     private final ChallengeTestCaseRepository testCaseRepository;
+    private final TransactionTemplate transactionTemplate;
 
     public ChallengeDataSeeder(
             ChallengeRepository challengeRepository,
             ChallengeStarterCodeRepository starterCodeRepository,
-            ChallengeTestCaseRepository testCaseRepository) {
+            ChallengeTestCaseRepository testCaseRepository,
+            PlatformTransactionManager transactionManager) {
         this.challengeRepository = challengeRepository;
         this.starterCodeRepository = starterCodeRepository;
         this.testCaseRepository = testCaseRepository;
+        this.transactionTemplate = new TransactionTemplate(transactionManager);
     }
 
-    @Transactional
     public void seedStarterCodesAndTestCasesIfEmpty() {
         List<ChallengeEntity> allChallenges = challengeRepository.findAll();
         int updatedCount = 0;
 
         for (ChallengeEntity challenge : allChallenges) {
             try {
-                List<ChallengeTestCaseEntity> existingCases = testCaseRepository.findByChallengeIdOrderByOrderIndexAsc(challenge.getId());
-                boolean needsSeedingOrUpdate = existingCases.isEmpty() || hasPlaceholderTestCases(existingCases);
+                Boolean updated = transactionTemplate.execute(status -> {
+                    List<ChallengeTestCaseEntity> existingCases = testCaseRepository.findByChallengeIdOrderByOrderIndexAsc(challenge.getId());
+                    boolean needsSeedingOrUpdate = existingCases.isEmpty() || hasPlaceholderTestCases(existingCases);
 
-                if (needsSeedingOrUpdate) {
-                    seedOrUpdateChallenge(challenge, existingCases);
+                    if (needsSeedingOrUpdate) {
+                        seedOrUpdateChallenge(challenge, existingCases);
+                        return true;
+                    }
+                    return false;
+                });
+
+                if (Boolean.TRUE.equals(updated)) {
                     updatedCount++;
                 }
             } catch (Exception ex) {
@@ -82,10 +92,10 @@ public class ChallengeDataSeeder {
         return false;
     }
 
-    @Transactional
     public void seedOrUpdateChallenge(ChallengeEntity c, List<ChallengeTestCaseEntity> existingCases) {
         if (!existingCases.isEmpty()) {
-            testCaseRepository.deleteAllInBatch(existingCases);
+            testCaseRepository.deleteAll(existingCases);
+            testCaseRepository.flush();
         }
 
         ChallengeProblemDef def = ChallengeCatalogRegistry.getProblem(c);
@@ -119,3 +129,4 @@ public class ChallengeDataSeeder {
         }
     }
 }
+
