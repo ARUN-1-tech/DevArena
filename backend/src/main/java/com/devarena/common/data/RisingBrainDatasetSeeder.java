@@ -56,52 +56,17 @@ public class RisingBrainDatasetSeeder {
     }
 
     private void seedChallengeAssets(ChallengeEntity c) {
+        com.devarena.common.data.catalog.ChallengeProblemDef def = com.devarena.common.data.catalog.ChallengeCatalogRegistry.getProblem(c);
+
         // Provide starter templates for all 3 supported languages
-        starterCodeRepository.save(new ChallengeStarterCodeEntity(c, ExecutionLanguage.JAVA, getJavaStarter(c)));
-        starterCodeRepository.save(new ChallengeStarterCodeEntity(c, ExecutionLanguage.PYTHON, getPythonStarter(c)));
-        starterCodeRepository.save(new ChallengeStarterCodeEntity(c, ExecutionLanguage.JAVASCRIPT, getJsStarter(c)));
+        starterCodeRepository.save(new ChallengeStarterCodeEntity(c, ExecutionLanguage.JAVA, def.javaStarter().trim()));
+        starterCodeRepository.save(new ChallengeStarterCodeEntity(c, ExecutionLanguage.PYTHON, def.pythonStarter().trim()));
+        starterCodeRepository.save(new ChallengeStarterCodeEntity(c, ExecutionLanguage.JAVASCRIPT, def.jsStarter().trim()));
 
-        // Provide sample test cases
-        testCaseRepository.save(new ChallengeTestCaseEntity(c, "Sample Input 1", "Sample Output 1", false, 1, "Public baseline test"));
-        testCaseRepository.save(new ChallengeTestCaseEntity(c, "Sample Input 2", "Sample Output 2", true, 2, "Hidden edge case test"));
-    }
-
-    private String getJavaStarter(ChallengeEntity c) {
-        return """
-import java.util.*;
-
-public class Solution {
-    public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-        if (!sc.hasNext()) return;
-        // Solve %s
-    }
-}
-""".formatted(c.getTitle());
-    }
-
-    private String getPythonStarter(ChallengeEntity c) {
-        return """
-import sys
-
-def solve():
-    # Solve %s
-    pass
-
-if __name__ == "__main__":
-    solve()
-""".formatted(c.getTitle());
-    }
-
-    private String getJsStarter(ChallengeEntity c) {
-        return """
-// Solve %s
-function solve(input) {
-    return "";
-}
-
-console.log(solve(""));
-""".formatted(c.getTitle());
+        // Provide sample & hidden test cases
+        for (com.devarena.common.data.catalog.TestCaseDef tc : def.testCases()) {
+            testCaseRepository.save(new ChallengeTestCaseEntity(c, tc.input(), tc.expectedOutput(), tc.hidden(), tc.orderIndex(), tc.explanation()));
+        }
     }
 
     private List<ChallengeEntity> createCompleteProblemDataset() {

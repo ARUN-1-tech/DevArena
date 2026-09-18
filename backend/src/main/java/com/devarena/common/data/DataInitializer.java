@@ -52,8 +52,8 @@ public class DataInitializer implements CommandLineRunner {
     @Override
     public void run(String... args) {
         seedChallengesIfEmpty();
-        challengeDataSeeder.seedStarterCodesAndTestCasesIfEmpty();
         risingBrainDatasetSeeder.seedRisingBrainDatasetIfMissing();
+        challengeDataSeeder.seedStarterCodesAndTestCasesIfEmpty();
         seedDailyQuestsIfEmpty();
         seedDefaultUserIfEmpty();
         seedAdminUserIfEmpty();
