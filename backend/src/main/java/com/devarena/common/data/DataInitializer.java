@@ -51,14 +51,14 @@ public class DataInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        seedChallengesIfEmpty();
-        risingBrainDatasetSeeder.seedRisingBrainDatasetIfMissing();
-        challengeDataSeeder.seedStarterCodesAndTestCasesIfEmpty();
-        seedDailyQuestsIfEmpty();
-        seedDefaultUserIfEmpty();
-        seedAdminUserIfEmpty();
-        seedAchievementsIfEmpty();
-        seedSkillsIfEmpty();
+        try { seedChallengesIfEmpty(); } catch (Exception e) { log.warn("seedChallenges error: {}", e.getMessage()); }
+        try { risingBrainDatasetSeeder.seedRisingBrainDatasetIfMissing(); } catch (Exception e) { log.warn("risingBrainSeeder error: {}", e.getMessage()); }
+        try { challengeDataSeeder.seedStarterCodesAndTestCasesIfEmpty(); } catch (Exception e) { log.warn("challengeDataSeeder error: {}", e.getMessage()); }
+        try { seedDailyQuestsIfEmpty(); } catch (Exception e) { log.warn("seedDailyQuests error: {}", e.getMessage()); }
+        try { seedDefaultUserIfEmpty(); } catch (Exception e) { log.warn("seedDefaultUser error: {}", e.getMessage()); }
+        try { seedAdminUserIfEmpty(); } catch (Exception e) { log.warn("seedAdminUser error: {}", e.getMessage()); }
+        try { seedAchievementsIfEmpty(); } catch (Exception e) { log.warn("seedAchievements error: {}", e.getMessage()); }
+        try { seedSkillsIfEmpty(); } catch (Exception e) { log.warn("seedSkills error: {}", e.getMessage()); }
     }
 
     private void seedAdminUserIfEmpty() {

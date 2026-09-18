@@ -58,14 +58,25 @@ public class RisingBrainDatasetSeeder {
     private void seedChallengeAssets(ChallengeEntity c) {
         com.devarena.common.data.catalog.ChallengeProblemDef def = com.devarena.common.data.catalog.ChallengeCatalogRegistry.getProblem(c);
 
-        // Provide starter templates for all 3 supported languages
-        starterCodeRepository.save(new ChallengeStarterCodeEntity(c, ExecutionLanguage.JAVA, def.javaStarter().trim()));
-        starterCodeRepository.save(new ChallengeStarterCodeEntity(c, ExecutionLanguage.PYTHON, def.pythonStarter().trim()));
-        starterCodeRepository.save(new ChallengeStarterCodeEntity(c, ExecutionLanguage.JAVASCRIPT, def.jsStarter().trim()));
+        // Safe in-place starter code save/update
+        saveOrUpdateStarter(c, ExecutionLanguage.JAVA, def.javaStarter().trim());
+        saveOrUpdateStarter(c, ExecutionLanguage.PYTHON, def.pythonStarter().trim());
+        saveOrUpdateStarter(c, ExecutionLanguage.JAVASCRIPT, def.jsStarter().trim());
 
         // Provide sample & hidden test cases
         for (com.devarena.common.data.catalog.TestCaseDef tc : def.testCases()) {
             testCaseRepository.save(new ChallengeTestCaseEntity(c, tc.input(), tc.expectedOutput(), tc.hidden(), tc.orderIndex(), tc.explanation()));
+        }
+    }
+
+    private void saveOrUpdateStarter(ChallengeEntity c, ExecutionLanguage lang, String code) {
+        java.util.Optional<ChallengeStarterCodeEntity> existing = starterCodeRepository.findByChallengeIdAndLanguage(c.getId(), lang);
+        if (existing.isPresent()) {
+            ChallengeStarterCodeEntity entity = existing.get();
+            entity.setStarterCode(code);
+            starterCodeRepository.save(entity);
+        } else {
+            starterCodeRepository.save(new ChallengeStarterCodeEntity(c, lang, code));
         }
     }
 

@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class ChallengeDataSeeder {
@@ -41,12 +42,16 @@ public class ChallengeDataSeeder {
         int updatedCount = 0;
 
         for (ChallengeEntity challenge : allChallenges) {
-            List<ChallengeTestCaseEntity> existingCases = testCaseRepository.findByChallengeIdOrderByOrderIndexAsc(challenge.getId());
-            boolean needsSeedingOrUpdate = existingCases.isEmpty() || hasPlaceholderTestCases(existingCases);
+            try {
+                List<ChallengeTestCaseEntity> existingCases = testCaseRepository.findByChallengeIdOrderByOrderIndexAsc(challenge.getId());
+                boolean needsSeedingOrUpdate = existingCases.isEmpty() || hasPlaceholderTestCases(existingCases);
 
-            if (needsSeedingOrUpdate) {
-                seedOrUpdateChallenge(challenge, existingCases);
-                updatedCount++;
+                if (needsSeedingOrUpdate) {
+                    seedOrUpdateChallenge(challenge, existingCases);
+                    updatedCount++;
+                }
+            } catch (Exception ex) {
+                log.warn("Could not update challenge data for {}: {}", challenge.getSlug(), ex.getMessage());
             }
         }
 
@@ -80,20 +85,15 @@ public class ChallengeDataSeeder {
     @Transactional
     public void seedOrUpdateChallenge(ChallengeEntity c, List<ChallengeTestCaseEntity> existingCases) {
         if (!existingCases.isEmpty()) {
-            testCaseRepository.deleteAll(existingCases);
-        }
-
-        List<ChallengeStarterCodeEntity> existingStarters = starterCodeRepository.findByChallengeId(c.getId());
-        if (!existingStarters.isEmpty()) {
-            starterCodeRepository.deleteAll(existingStarters);
+            testCaseRepository.deleteAllInBatch(existingCases);
         }
 
         ChallengeProblemDef def = ChallengeCatalogRegistry.getProblem(c);
 
-        // Save starter codes
-        starterCodeRepository.save(new ChallengeStarterCodeEntity(c, ExecutionLanguage.JAVA, def.javaStarter().trim()));
-        starterCodeRepository.save(new ChallengeStarterCodeEntity(c, ExecutionLanguage.PYTHON, def.pythonStarter().trim()));
-        starterCodeRepository.save(new ChallengeStarterCodeEntity(c, ExecutionLanguage.JAVASCRIPT, def.jsStarter().trim()));
+        // Safe in-place update or insert for starter codes (avoids unique constraint violation)
+        saveOrUpdateStarter(c, ExecutionLanguage.JAVA, def.javaStarter().trim());
+        saveOrUpdateStarter(c, ExecutionLanguage.PYTHON, def.pythonStarter().trim());
+        saveOrUpdateStarter(c, ExecutionLanguage.JAVASCRIPT, def.jsStarter().trim());
 
         // Save test cases
         for (TestCaseDef tc : def.testCases()) {
@@ -105,6 +105,17 @@ public class ChallengeDataSeeder {
                     tc.orderIndex(),
                     tc.explanation()
             ));
+        }
+    }
+
+    private void saveOrUpdateStarter(ChallengeEntity c, ExecutionLanguage lang, String code) {
+        Optional<ChallengeStarterCodeEntity> existing = starterCodeRepository.findByChallengeIdAndLanguage(c.getId(), lang);
+        if (existing.isPresent()) {
+            ChallengeStarterCodeEntity entity = existing.get();
+            entity.setStarterCode(code);
+            starterCodeRepository.save(entity);
+        } else {
+            starterCodeRepository.save(new ChallengeStarterCodeEntity(c, lang, code));
         }
     }
 }
