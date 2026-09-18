@@ -93,27 +93,10 @@ public class ProcessSandboxCodeExecutor implements CodeExecutor {
         Path srcFile = tempDir.resolve("Solution.java");
         Files.writeString(srcFile, sourceCode, StandardCharsets.UTF_8);
 
-        String javacCmd = resolveJavaBinary("javac");
         String javaCmd = resolveJavaBinary("java");
 
-        // 1. Compile
-        ProcessBuilder compilePb = new ProcessBuilder(javacCmd, "-encoding", "UTF-8", "Solution.java");
-        compilePb.directory(tempDir.toFile());
-        Process compileProcess = compilePb.start();
-        boolean compiledOk = compileProcess.waitFor(timeoutMs, TimeUnit.MILLISECONDS);
-
-        if (!compiledOk) {
-            compileProcess.destroyForcibly();
-            return ExecutionOutput.timeout(timeoutMs);
-        }
-
-        if (compileProcess.exitValue() != 0) {
-            String compileErr = readStreamWithLimit(compileProcess.getErrorStream(), MAX_OUTPUT_BYTES);
-            return ExecutionOutput.failed(SubmissionStatus.COMPILATION_ERROR, "", compileErr, 0L, compileProcess.exitValue(), compileErr);
-        }
-
-        // 2. Run
-        ProcessBuilder runPb = new ProcessBuilder(javaCmd, "-Xmx128m", "-Dfile.encoding=UTF-8", "Solution");
+        // Java 11+ single-file source launcher runs and compiles Solution.java directly without external javac
+        ProcessBuilder runPb = new ProcessBuilder(javaCmd, "-Xmx128m", "-Dfile.encoding=UTF-8", "Solution.java");
         runPb.directory(tempDir.toFile());
         return runProcessWithTimeout(runPb, stdin, timeoutMs);
     }

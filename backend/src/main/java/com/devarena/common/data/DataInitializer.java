@@ -12,8 +12,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+import com.devarena.user.model.UserEntity;
+
 import java.time.LocalDate;
 import java.time.ZoneOffset;
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -53,6 +56,7 @@ public class DataInitializer implements CommandLineRunner {
     public void run(String... args) {
         try { seedDefaultUserIfEmpty(); } catch (Exception e) { log.warn("seedDefaultUser error: {}", e.getMessage()); }
         try { seedAdminUserIfEmpty(); } catch (Exception e) { log.warn("seedAdminUser error: {}", e.getMessage()); }
+        try { cleanupDummyUsers(); } catch (Exception e) { log.warn("cleanupDummyUsers error: {}", e.getMessage()); }
         try { seedDailyQuestsIfEmpty(); } catch (Exception e) { log.warn("seedDailyQuests error: {}", e.getMessage()); }
         try { seedAchievementsIfEmpty(); } catch (Exception e) { log.warn("seedAchievements error: {}", e.getMessage()); }
         try { seedSkillsIfEmpty(); } catch (Exception e) { log.warn("seedSkills error: {}", e.getMessage()); }
@@ -63,6 +67,20 @@ public class DataInitializer implements CommandLineRunner {
             try { risingBrainDatasetSeeder.seedRisingBrainDatasetIfMissing(); } catch (Exception e) { log.warn("risingBrainSeeder error: {}", e.getMessage()); }
             try { challengeDataSeeder.seedStarterCodesAndTestCasesIfEmpty(); } catch (Exception e) { log.warn("challengeDataSeeder error: {}", e.getMessage()); }
         });
+    }
+
+    private void cleanupDummyUsers() {
+        List<UserEntity> testers = userRepository.findByUsernameStartingWithIgnoreCase("tester_");
+        List<UserEntity> testusers = userRepository.findByUsernameStartingWithIgnoreCase("testuser_");
+        List<UserEntity> allDummy = new ArrayList<>();
+        allDummy.addAll(testers);
+        allDummy.addAll(testusers);
+
+        if (!allDummy.isEmpty()) {
+            log.info("Purging {} dummy/test accounts from production database...", allDummy.size());
+            userRepository.deleteAllInBatch(allDummy);
+            log.info("Purged dummy test users successfully.");
+        }
     }
 
     private void seedAdminUserIfEmpty() {

@@ -43,16 +43,19 @@ public class LeaderboardService {
                 "LEFT JOIN FETCH u.stats st " +
                 "LEFT JOIN FETCH u.progression pg ";
 
-        String whereClause = "";
+        // Filter out dummy/test accounts
+        String baseFilter = "WHERE LOWER(u.username) NOT LIKE 'tester_%' AND LOWER(u.username) NOT LIKE 'testuser_%' ";
+
+        String whereClause = baseFilter;
         Map<String, Object> params = new HashMap<>();
 
         if ("WEEKLY".equals(type)) {
             Instant weekAgo = Instant.now().minus(7, ChronoUnit.DAYS);
-            whereClause = "WHERE EXISTS (SELECT 1 FROM PlayerActivityEntity a WHERE a.user = u AND a.createdAt >= :cutoff) ";
+            whereClause = baseFilter + "AND EXISTS (SELECT 1 FROM PlayerActivityEntity a WHERE a.user = u AND a.createdAt >= :cutoff) ";
             params.put("cutoff", weekAgo);
         } else if ("MONTHLY".equals(type)) {
             Instant monthAgo = Instant.now().minus(30, ChronoUnit.DAYS);
-            whereClause = "WHERE EXISTS (SELECT 1 FROM PlayerActivityEntity a WHERE a.user = u AND a.createdAt >= :cutoff) ";
+            whereClause = baseFilter + "AND EXISTS (SELECT 1 FROM PlayerActivityEntity a WHERE a.user = u AND a.createdAt >= :cutoff) ";
             params.put("cutoff", monthAgo);
         }
 
@@ -69,9 +72,9 @@ public class LeaderboardService {
 
         // If weekly/monthly has no active users, fall back to global users so the leaderboard is never blank
         if (totalElements == 0 && !"GLOBAL".equals(type)) {
-            whereClause = "";
+            whereClause = baseFilter;
             params.clear();
-            countQuery = entityManager.createQuery("SELECT COUNT(u) FROM UserEntity u", Long.class);
+            countQuery = entityManager.createQuery("SELECT COUNT(u) FROM UserEntity u " + baseFilter, Long.class);
             totalElements = countQuery.getSingleResult();
         }
 

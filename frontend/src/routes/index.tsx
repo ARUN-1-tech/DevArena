@@ -14,7 +14,6 @@ import { ChallengesPage } from '../pages/app/ChallengesPage';
 import { ChallengeDetailPage } from '../pages/app/ChallengeDetailPage';
 import { CodeLabPage } from '../pages/app/CodeLabPage';
 import { LeaderboardPage } from '../pages/app/LeaderboardPage';
-import { SkillsPage } from '../pages/app/SkillsPage';
 import { AchievementsPage } from '../pages/app/AchievementsPage';
 import { FriendsPage } from '../pages/app/FriendsPage';
 import { ProfilePage } from '../pages/app/ProfilePage';
@@ -139,10 +138,6 @@ export const router = createBrowserRouter([
       {
         path: 'leaderboard',
         element: <LeaderboardPage />,
-      },
-      {
-        path: 'skills',
-        element: <SkillsPage />,
       },
       {
         path: 'achievements',
