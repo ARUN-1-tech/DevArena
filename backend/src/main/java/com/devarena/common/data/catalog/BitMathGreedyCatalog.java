@@ -17,9 +17,8 @@ import java.util.*;
 
 public class Solution {
     public static int singleNumber(int[] nums) {
-        int res = 0;
-        for (int n : nums) res ^= n;
-        return res;
+        // Write your solution here
+        return 0;
     }
 
     public static void main(String[] args) {
@@ -37,10 +36,8 @@ public class Solution {
 import sys
 
 def single_number(nums: list[int]) -> int:
-    res = 0
-    for n in nums:
-        res ^= n
-    return res
+    # Write your solution here
+    pass
 
 if __name__ == "__main__":
     line = sys.stdin.read().strip()
@@ -52,7 +49,8 @@ if __name__ == "__main__":
 const fs = require('fs');
 
 function singleNumber(nums) {
-    return nums.reduce((acc, n) => acc ^ n, 0);
+    // Write your solution here
+    return null;
 }
 
 const line = fs.readFileSync(0, 'utf-8').trim();
@@ -76,12 +74,8 @@ import java.util.*;
 
 public class Solution {
     public static int hammingWeight(long n) {
-        int count = 0;
-        while (n != 0) {
-            n &= (n - 1);
-            count++;
-        }
-        return count;
+        // Write your solution here
+        return 0;
     }
 
     public static void main(String[] args) {
@@ -96,7 +90,8 @@ public class Solution {
 import sys
 
 def hamming_weight(n: int) -> int:
-    return bin(n).count("1")
+    # Write your solution here
+    pass
 
 if __name__ == "__main__":
     line = sys.stdin.read().strip()
@@ -107,7 +102,8 @@ if __name__ == "__main__":
 const fs = require('fs');
 
 function hammingWeight(n) {
-    return n.toString(2).split('').filter(c => c === '1').length;
+    // Write your solution here
+    return null;
 }
 
 const line = fs.readFileSync(0, 'utf-8').trim();
@@ -130,11 +126,8 @@ import java.util.*;
 
 public class Solution {
     public static int[] countBits(int n) {
-        int[] dp = new int[n + 1];
-        for (int i = 1; i <= n; i++) {
-            dp[i] = dp[i >> 1] + (i & 1);
-        }
-        return dp;
+        // Write your solution here
+        return new int[]{};
     }
 
     public static void main(String[] args) {
@@ -149,10 +142,8 @@ public class Solution {
 import sys
 
 def count_bits(n: int) -> list[int]:
-    dp = [0] * (n + 1)
-    for i in range(1, n + 1):
-        dp[i] = dp[i >> 1] + (i & 1)
-    return dp
+    # Write your solution here
+    pass
 
 if __name__ == "__main__":
     line = sys.stdin.read().strip()
@@ -163,11 +154,8 @@ if __name__ == "__main__":
 const fs = require('fs');
 
 function countBits(n) {
-    const dp = new Array(n + 1).fill(0);
-    for (let i = 1; i <= n; i++) {
-        dp[i] = dp[i >> 1] + (i & 1);
-    }
-    return dp;
+    // Write your solution here
+    return null;
 }
 
 const line = fs.readFileSync(0, 'utf-8').trim();
@@ -190,11 +178,8 @@ import java.util.*;
 
 public class Solution {
     public static int missingNumber(int[] nums) {
-        int n = nums.length;
-        int expected = n * (n + 1) / 2;
-        int actual = 0;
-        for (int x : nums) actual += x;
-        return expected - actual;
+        // Write your solution here
+        return 0;
     }
 
     public static void main(String[] args) {
@@ -212,8 +197,8 @@ public class Solution {
 import sys
 
 def missing_number(nums: list[int]) -> int:
-    n = len(nums)
-    return n * (n + 1) // 2 - sum(nums)
+    # Write your solution here
+    pass
 
 if __name__ == "__main__":
     line = sys.stdin.read().strip()
@@ -225,10 +210,8 @@ if __name__ == "__main__":
 const fs = require('fs');
 
 function missingNumber(nums) {
-    const n = nums.length;
-    const expected = (n * (n + 1)) / 2;
-    const actual = nums.reduce((a, b) => a + b, 0);
-    return expected - actual;
+    // Write your solution here
+    return null;
 }
 
 const line = fs.readFileSync(0, 'utf-8').trim();
@@ -252,18 +235,8 @@ import java.util.*;
 
 public class Solution {
     public static int eraseOverlapIntervals(int[][] intervals) {
-        if (intervals.length == 0) return 0;
-        Arrays.sort(intervals, (a, b) -> Integer.compare(a[1], b[1]));
-        int count = 0;
-        int end = intervals[0][1];
-        for (int i = 1; i < intervals.length; i++) {
-            if (intervals[i][0] < end) {
-                count++;
-            } else {
-                end = intervals[i][1];
-            }
-        }
-        return count;
+        // Write your solution here
+        return 0;
     }
 
     public static void main(String[] args) {
@@ -288,17 +261,8 @@ import sys
 import json
 
 def erase_overlap_intervals(intervals: list[list[int]]) -> int:
-    if not intervals:
-        return 0
-    intervals.sort(key=lambda x: x[1])
-    count = 0
-    end = intervals[0][1]
-    for i in range(1, len(intervals)):
-        if intervals[i][0] < end:
-            count += 1
-        else:
-            end = intervals[i][1]
-    return count
+    # Write your solution here
+    pass
 
 if __name__ == "__main__":
     line = sys.stdin.read().strip()
@@ -310,18 +274,8 @@ if __name__ == "__main__":
 const fs = require('fs');
 
 function eraseOverlapIntervals(intervals) {
-    if (!intervals.length) return 0;
-    intervals.sort((a, b) => a[1] - b[1]);
-    let count = 0;
-    let end = intervals[0][1];
-    for (let i = 1; i < intervals.length; i++) {
-        if (intervals[i][0] < end) {
-            count++;
-        } else {
-            end = intervals[i][1];
-        }
-    }
-    return count;
+    // Write your solution here
+    return null;
 }
 
 const line = fs.readFileSync(0, 'utf-8').trim();
@@ -345,18 +299,8 @@ import java.util.*;
 
 public class Solution {
     public static int canCompleteCircuit(int[] gas, int[] cost) {
-        int totalGas = 0, totalCost = 0;
-        int tank = 0, start = 0;
-        for (int i = 0; i < gas.length; i++) {
-            totalGas += gas[i];
-            totalCost += cost[i];
-            tank += gas[i] - cost[i];
-            if (tank < 0) {
-                start = i + 1;
-                tank = 0;
-            }
-        }
-        return totalGas >= totalCost ? start : -1;
+        // Write your solution here
+        return 0;
     }
 
     public static void main(String[] args) {
@@ -375,15 +319,8 @@ public class Solution {
 import sys
 
 def can_complete_circuit(gas: list[int], cost: list[int]) -> int:
-    if sum(gas) < sum(cost):
-        return -1
-    total, start = 0, 0
-    for i in range(len(gas)):
-        total += gas[i] - cost[i]
-        if total < 0:
-            total = 0
-            start = i + 1
-    return start
+    # Write your solution here
+    pass
 
 if __name__ == "__main__":
     lines = sys.stdin.read().strip().splitlines()
@@ -396,16 +333,8 @@ if __name__ == "__main__":
 const fs = require('fs');
 
 function canCompleteCircuit(gas, cost) {
-    if (gas.reduce((a, b) => a + b, 0) < cost.reduce((a, b) => a + b, 0)) return -1;
-    let total = 0, start = 0;
-    for (let i = 0; i < gas.length; i++) {
-        total += gas[i] - cost[i];
-        if (total < 0) {
-            total = 0;
-            start = i + 1;
-        }
-    }
-    return start;
+    // Write your solution here
+    return null;
 }
 
 const lines = fs.readFileSync(0, 'utf-8').trim().split('\\n');

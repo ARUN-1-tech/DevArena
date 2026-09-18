@@ -45,6 +45,21 @@ public class BattleWebSocketController {
         }
     }
 
+    @MessageMapping("/battle/{battleId}/leave")
+    public void handlePlayerLeave(
+            @DestinationVariable UUID battleId,
+            Principal principal
+    ) {
+        UUID userId = extractUserId(principal);
+        if (userId != null) {
+            try {
+                battleService.forfeitBattle(battleId, userId);
+            } catch (Exception ex) {
+                log.warn("Could not process forfeit on leave for battle {} by user {}: {}", battleId, userId, ex.getMessage());
+            }
+        }
+    }
+
     private UUID extractUserId(Principal principal) {
         if (principal instanceof Authentication auth) {
             if (auth.getPrincipal() instanceof DevArenaUserDetails details) {

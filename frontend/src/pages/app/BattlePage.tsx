@@ -85,8 +85,10 @@ export const BattlePage: React.FC = () => {
       const data = await battleService.getBattle(id);
       setBattle(data);
 
-      // User writes their own code, start blank
-      if (code === undefined) {
+      // Clean starter skeleton: populate if code is empty so user can code manually
+      if (!code && data.challenge?.starterTemplates && data.challenge.starterTemplates[language]) {
+        setCode(data.challenge.starterTemplates[language]);
+      } else if (code === undefined) {
         setCode('');
       }
 
@@ -127,6 +129,19 @@ export const BattlePage: React.FC = () => {
     };
   }, [id, fetchBattleState]);
 
+  // If page unloads / user closes tab during active battle, inform server
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      if (battle?.status === 'IN_PROGRESS' || battle?.status === 'WAITING') {
+        webSocketService.send(`/app/battle/${id}/leave`, {});
+      }
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, [id, battle?.status]);
+
   // Handle STOMP battle events
   const handleBattleRoomEvent = (event: any) => {
     if (!event || !event.type) return;
@@ -161,15 +176,19 @@ export const BattlePage: React.FC = () => {
         break;
 
       case 'BATTLE_FINISHED':
-        setOpponentStatusText('Battle finished!');
+        setOpponentStatusText('Battle finished! Result declared.');
+        setOpponentStatusType('active');
         setTimeout(() => {
           navigate(`/battle/${id}/result`);
-        }, 1200);
+        }, 500);
         break;
 
       case 'OPPONENT_DISCONNECTED':
-        setOpponentStatusText('Opponent disconnected (grace period active)');
+        setOpponentStatusText('Opponent exited duel. Declaring result...');
         setOpponentStatusType('warning');
+        setTimeout(() => {
+          navigate(`/battle/${id}/result`);
+        }, 800);
         break;
     }
   };
@@ -343,10 +362,12 @@ export const BattlePage: React.FC = () => {
   const handleForfeit = async () => {
     if (!id) return;
     try {
+      webSocketService.send(`/app/battle/${id}/leave`, {});
       await battleService.forfeitBattle(id);
       navigate(`/battle/${id}/result`);
     } catch (err: any) {
-      alert(err.message || 'Failed to forfeit battle.');
+      console.warn('Forfeit failed, navigating to result:', err?.message);
+      navigate(`/battle/${id}/result`);
     }
   };
 
@@ -417,7 +438,7 @@ export const BattlePage: React.FC = () => {
         )}
       </AnimatePresence>
 
-      {/* TOP HEADER: Player vs Opponent & Server Timer */}
+      {/* TOP HEADER: Player vs Opponent, Server Timer & Leave Button */}
       <header className="h-16 bg-white/95 backdrop-blur-xl border-b border-slate-200/80 px-6 flex items-center justify-between shrink-0 z-20 shadow-2xs">
         {/* Your Player Card */}
         <div className="flex items-center gap-3">
@@ -437,22 +458,35 @@ export const BattlePage: React.FC = () => {
           </div>
         </div>
 
-        {/* Center: Server Timer & VS Badge */}
+        {/* Center: Server Timer, Opponent Status & Leave Match */}
         <div className="flex flex-col items-center">
-          <div className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-50 border border-slate-200/90 shadow-2xs">
-            <Clock
-              className={`w-4 h-4 ${
-                timeRemaining < 120 ? 'text-rose-600 animate-pulse' : 'text-indigo-600'
-              }`}
-            />
-            <span
-              className={`font-mono font-black text-base tracking-wider ${
-                timeRemaining < 120 ? 'text-rose-600' : 'text-slate-900'
-              }`}
+          <div className="flex items-center gap-2.5">
+            <div className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-50 border border-slate-200/90 shadow-2xs">
+              <Clock
+                className={`w-4 h-4 ${
+                  timeRemaining < 120 ? 'text-rose-600 animate-pulse' : 'text-indigo-600'
+                }`}
+              />
+              <span
+                className={`font-mono font-black text-base tracking-wider ${
+                  timeRemaining < 120 ? 'text-rose-600' : 'text-slate-900'
+                }`}
+              >
+                {formatClock(timeRemaining)}
+              </span>
+            </div>
+
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => setShowForfeitModal(true)}
+              className="text-xs h-8 text-rose-600 hover:text-rose-700 hover:bg-rose-50 border-rose-200/90 gap-1.5 font-bold shadow-2xs cursor-pointer"
             >
-              {formatClock(timeRemaining)}
-            </span>
+              <Flag className="w-3.5 h-3.5 text-rose-500" />
+              <span>Leave Match</span>
+            </Button>
           </div>
+
           {/* Opponent Status Beacon */}
           <div className="flex items-center gap-1.5 mt-1 text-[11px]">
             <span

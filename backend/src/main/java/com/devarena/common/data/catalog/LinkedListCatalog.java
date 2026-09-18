@@ -23,14 +23,8 @@ public class Solution {
     }
 
     public static ListNode reverseList(ListNode head) {
-        ListNode prev = null, curr = head;
-        while (curr != null) {
-            ListNode next = curr.next;
-            curr.next = prev;
-            prev = curr;
-            curr = next;
-        }
-        return prev;
+        // Write your solution here
+        return new ArrayList<>();
     }
 
     public static void main(String[] args) {
@@ -64,7 +58,8 @@ public class Solution {
 import sys
 
 def reverse_list(head: list[int]) -> list[int]:
-    return head[::-1]
+    # Write your solution here
+    pass
 
 if __name__ == "__main__":
     line = sys.stdin.read().strip()
@@ -78,7 +73,8 @@ if __name__ == "__main__":
 const fs = require('fs');
 
 function reverseList(head) {
-    return head.reverse();
+    // Write your solution here
+    return null;
 }
 
 const line = fs.readFileSync(0, 'utf-8').trim();
@@ -104,15 +100,8 @@ import java.util.*;
 
 public class Solution {
     public static List<Integer> mergeTwoLists(int[] l1, int[] l2) {
-        List<Integer> res = new ArrayList<>();
-        int i = 0, j = 0;
-        while (i < l1.length && j < l2.length) {
-            if (l1[i] <= l2[j]) res.add(l1[i++]);
-            else res.add(l2[j++]);
-        }
-        while (i < l1.length) res.add(l1[i++]);
-        while (j < l2.length) res.add(l2[j++]);
-        return res;
+        // Write your solution here
+        return new ArrayList<>();
     }
 
     public static void main(String[] args) {
@@ -131,7 +120,8 @@ public class Solution {
 import sys
 
 def merge_two_lists(l1: list[int], l2: list[int]) -> list[int]:
-    return sorted(l1 + l2)
+    # Write your solution here
+    pass
 
 if __name__ == "__main__":
     lines = sys.stdin.read().splitlines()
@@ -143,7 +133,8 @@ if __name__ == "__main__":
 const fs = require('fs');
 
 function mergeTwoLists(l1, l2) {
-    return [...l1, ...l2].sort((a, b) => a - b);
+    // Write your solution here
+    return null;
 }
 
 const lines = fs.readFileSync(0, 'utf-8').split('\\n');
@@ -166,7 +157,8 @@ import java.util.*;
 
 public class Solution {
     public static boolean hasCycle(int pos) {
-        return pos >= 0;
+        // Write your solution here
+        return false;
     }
 
     public static void main(String[] args) {
@@ -183,7 +175,8 @@ public class Solution {
 import sys
 
 def has_cycle(pos: int) -> bool:
-    return pos >= 0
+    # Write your solution here
+    pass
 
 if __name__ == "__main__":
     lines = sys.stdin.read().strip().splitlines()
@@ -195,7 +188,8 @@ if __name__ == "__main__":
 const fs = require('fs');
 
 function hasCycle(pos) {
-    return pos >= 0;
+    // Write your solution here
+    return null;
 }
 
 const lines = fs.readFileSync(0, 'utf-8').trim().split('\\n');
@@ -219,7 +213,8 @@ import java.util.*;
 
 public class Solution {
     public static int detectCycle(int pos) {
-        return pos;
+        // Write your solution here
+        return 0;
     }
 
     public static void main(String[] args) {
@@ -236,7 +231,8 @@ public class Solution {
 import sys
 
 def detect_cycle(pos: int) -> int:
-    return pos
+    # Write your solution here
+    pass
 
 if __name__ == "__main__":
     lines = sys.stdin.read().strip().splitlines()
@@ -248,7 +244,8 @@ if __name__ == "__main__":
 const fs = require('fs');
 
 function detectCycle(pos) {
-    return pos;
+    // Write your solution here
+    return null;
 }
 
 const lines = fs.readFileSync(0, 'utf-8').trim().split('\\n');
@@ -272,12 +269,8 @@ import java.util.*;
 
 public class Solution {
     public static List<Integer> removeNthFromEnd(int[] nums, int n) {
-        List<Integer> res = new ArrayList<>();
-        int targetIdx = nums.length - n;
-        for (int i = 0; i < nums.length; i++) {
-            if (i != targetIdx) res.add(nums[i]);
-        }
-        return res;
+        // Write your solution here
+        return new ArrayList<>();
     }
 
     public static void main(String[] args) {
@@ -297,8 +290,8 @@ public class Solution {
 import sys
 
 def remove_nth_from_end(nums: list[int], n: int) -> list[int]:
-    target_idx = len(nums) - n
-    return [nums[i] for i in range(len(nums)) if i != target_idx]
+    # Write your solution here
+    pass
 
 if __name__ == "__main__":
     lines = sys.stdin.read().strip().splitlines()
@@ -311,8 +304,8 @@ if __name__ == "__main__":
 const fs = require('fs');
 
 function removeNthFromEnd(nums, n) {
-    const targetIdx = nums.length - n;
-    return nums.filter((_, i) => i !== targetIdx);
+    // Write your solution here
+    return null;
 }
 
 const lines = fs.readFileSync(0, 'utf-8').trim().split('\\n');
@@ -337,13 +330,8 @@ import java.util.*;
 
 public class Solution {
     public static List<Integer> reorderList(int[] nums) {
-        List<Integer> res = new ArrayList<>();
-        int l = 0, r = nums.length - 1;
-        while (l <= r) {
-            res.add(nums[l++]);
-            if (l <= r) res.add(nums[r--]);
-        }
-        return res;
+        // Write your solution here
+        return new ArrayList<>();
     }
 
     public static void main(String[] args) {
@@ -361,15 +349,8 @@ public class Solution {
 import sys
 
 def reorder_list(nums: list[int]) -> list[int]:
-    res = []
-    l, r = 0, len(nums) - 1
-    while l <= r:
-        res.append(nums[l])
-        l += 1
-        if l <= r:
-            res.append(nums[r])
-            r -= 1
-    return res
+    # Write your solution here
+    pass
 
 if __name__ == "__main__":
     line = sys.stdin.read().strip()
@@ -381,13 +362,8 @@ if __name__ == "__main__":
 const fs = require('fs');
 
 function reorderList(nums) {
-    const res = [];
-    let l = 0, r = nums.length - 1;
-    while (l <= r) {
-        res.push(nums[l++]);
-        if (l <= r) res.push(nums[r--]);
-    }
-    return res;
+    // Write your solution here
+    return null;
 }
 
 const line = fs.readFileSync(0, 'utf-8').trim();
@@ -411,13 +387,8 @@ import java.util.*;
 
 public class Solution {
     public static List<Integer> mergeKLists(List<List<Integer>> lists) {
-        PriorityQueue<Integer> pq = new PriorityQueue<>();
-        for (List<Integer> list : lists) {
-            for (int val : list) pq.offer(val);
-        }
-        List<Integer> res = new ArrayList<>();
-        while (!pq.isEmpty()) res.add(pq.poll());
-        return res;
+        // Write your solution here
+        return new ArrayList<>();
     }
 
     public static void main(String[] args) {
@@ -450,10 +421,8 @@ import sys
 import json
 
 def merge_k_lists(lists: list[list[int]]) -> list[int]:
-    all_elements = []
-    for l in lists:
-        all_elements.extend(l)
-    return sorted(all_elements)
+    # Write your solution here
+    pass
 
 if __name__ == "__main__":
     line = sys.stdin.read().strip()
@@ -467,8 +436,8 @@ if __name__ == "__main__":
 const fs = require('fs');
 
 function mergeKLists(lists) {
-    const flat = lists.flat();
-    return flat.sort((a, b) => a - b);
+    // Write your solution here
+    return null;
 }
 
 const line = fs.readFileSync(0, 'utf-8').trim();
@@ -494,16 +463,8 @@ import java.util.*;
 
 public class Solution {
     public static List<Integer> addTwoNumbers(int[] l1, int[] l2) {
-        List<Integer> res = new ArrayList<>();
-        int carry = 0, i = 0, j = 0;
-        while (i < l1.length || j < l2.length || carry != 0) {
-            int sum = carry;
-            if (i < l1.length) sum += l1[i++];
-            if (j < l2.length) sum += l2[j++];
-            res.add(sum % 10);
-            carry = sum / 10;
-        }
-        return res;
+        // Write your solution here
+        return new ArrayList<>();
     }
 
     public static void main(String[] args) {
@@ -522,20 +483,8 @@ public class Solution {
 import sys
 
 def add_two_numbers(l1: list[int], l2: list[int]) -> list[int]:
-    res = []
-    carry = 0
-    i, j = 0, 0
-    while i < len(l1) or j < len(l2) or carry:
-        s = carry
-        if i < len(l1):
-            s += l1[i]
-            i += 1
-        if j < len(l2):
-            s += l2[j]
-            j += 1
-        res.append(s % 10)
-        carry = s // 10
-    return res
+    # Write your solution here
+    pass
 
 if __name__ == "__main__":
     lines = sys.stdin.read().strip().splitlines()
@@ -548,16 +497,8 @@ if __name__ == "__main__":
 const fs = require('fs');
 
 function addTwoNumbers(l1, l2) {
-    const res = [];
-    let carry = 0, i = 0, j = 0;
-    while (i < l1.length || j < l2.length || carry) {
-        let sum = carry;
-        if (i < l1.length) sum += l1[i++];
-        if (j < l2.length) sum += l2[j++];
-        res.push(sum % 10);
-        carry = Math.floor(sum / 10);
-    }
-    return res;
+    // Write your solution here
+    return null;
 }
 
 const lines = fs.readFileSync(0, 'utf-8').trim().split('\\n');
@@ -582,11 +523,8 @@ import java.util.*;
 
 public class Solution {
     public static boolean isPalindrome(int[] nums) {
-        int l = 0, r = nums.length - 1;
-        while (l < r) {
-            if (nums[l++] != nums[r--]) return false;
-        }
-        return true;
+        // Write your solution here
+        return false;
     }
 
     public static void main(String[] args) {
@@ -604,7 +542,8 @@ public class Solution {
 import sys
 
 def is_palindrome(nums: list[int]) -> bool:
-    return nums == nums[::-1]
+    # Write your solution here
+    pass
 
 if __name__ == "__main__":
     line = sys.stdin.read().strip()
@@ -616,11 +555,8 @@ if __name__ == "__main__":
 const fs = require('fs');
 
 function isPalindrome(nums) {
-    let l = 0, r = nums.length - 1;
-    while (l < r) {
-        if (nums[l++] !== nums[r--]) return false;
-    }
-    return true;
+    // Write your solution here
+    return null;
 }
 
 const line = fs.readFileSync(0, 'utf-8').trim();
@@ -645,7 +581,8 @@ import java.util.*;
 
 public class Solution {
     public static String getIntersectionNode(String val) {
-        return val.equals("0") ? "null" : val;
+        // Write your solution here
+        return "";
     }
 
     public static void main(String[] args) {
@@ -664,7 +601,8 @@ public class Solution {
 import sys
 
 def get_intersection(intersect_val: str) -> str:
-    return "null" if intersect_val == "0" else intersect_val
+    # Write your solution here
+    pass
 
 if __name__ == "__main__":
     lines = sys.stdin.read().strip().splitlines()
@@ -675,7 +613,8 @@ if __name__ == "__main__":
 const fs = require('fs');
 
 function getIntersection(intersectVal) {
-    return intersectVal === "0" ? "null" : intersectVal;
+    // Write your solution here
+    return null;
 }
 
 const lines = fs.readFileSync(0, 'utf-8').trim().split('\\n');

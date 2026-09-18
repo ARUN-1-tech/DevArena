@@ -17,12 +17,8 @@ import java.util.*;
 
 public class Solution {
     public static int findKthLargest(int[] nums, int k) {
-        PriorityQueue<Integer> pq = new PriorityQueue<>();
-        for (int val : nums) {
-            pq.offer(val);
-            if (pq.size() > k) pq.poll();
-        }
-        return pq.peek();
+        // Write your solution here
+        return 0;
     }
 
     public static void main(String[] args) {
@@ -43,7 +39,8 @@ import sys
 import heapq
 
 def find_kth_largest(nums: list[int], k: int) -> int:
-    return heapq.nlargest(k, nums)[-1]
+    # Write your solution here
+    pass
 
 if __name__ == "__main__":
     lines = sys.stdin.read().strip().splitlines()
@@ -56,8 +53,8 @@ if __name__ == "__main__":
 const fs = require('fs');
 
 function findKthLargest(nums, k) {
-    nums.sort((a, b) => b - a);
-    return nums[k - 1];
+    // Write your solution here
+    return null;
 }
 
 const lines = fs.readFileSync(0, 'utf-8').trim().split('\\n');
@@ -81,17 +78,8 @@ import java.util.*;
 
 public class Solution {
     public static List<Integer> topKFrequent(int[] nums, int k) {
-        Map<Integer, Integer> count = new HashMap<>();
-        for (int n : nums) count.put(n, count.getOrDefault(n, 0) + 1);
-        PriorityQueue<Integer> pq = new PriorityQueue<>(Comparator.comparingInt(count::get));
-        for (int n : count.keySet()) {
-            pq.offer(n);
-            if (pq.size() > k) pq.poll();
-        }
-        List<Integer> res = new ArrayList<>();
-        while (!pq.isEmpty()) res.add(pq.poll());
-        Collections.sort(res);
-        return res;
+        // Write your solution here
+        return new ArrayList<>();
     }
 
     public static void main(String[] args) {
@@ -112,8 +100,8 @@ import sys
 from collections import Counter
 
 def top_k_frequent(nums: list[int], k: int) -> list[int]:
-    c = Counter(nums)
-    return sorted([x[0] for x in c.most_common(k)])
+    # Write your solution here
+    pass
 
 if __name__ == "__main__":
     lines = sys.stdin.read().strip().splitlines()
@@ -126,10 +114,8 @@ if __name__ == "__main__":
 const fs = require('fs');
 
 function topKFrequent(nums, k) {
-    const map = new Map();
-    for (const n of nums) map.set(n, (map.get(n) || 0) + 1);
-    const sorted = Array.from(map.entries()).sort((a, b) => b[1] - a[1]);
-    return sorted.slice(0, k).map(e => e[0]).sort((a, b) => a - b);
+    // Write your solution here
+    return null;
 }
 
 const lines = fs.readFileSync(0, 'utf-8').trim().split('\\n');
@@ -153,23 +139,8 @@ import java.util.*;
 
 public class Solution {
     public static int leastInterval(char[] tasks, int n) {
-        int[] freq = new int[26];
-        int max = 0, maxCount = 0;
-        for (char task : tasks) {
-            freq[task - 'A']++;
-            if (freq[task - 'A'] > max) {
-                max = freq[task - 'A'];
-                maxCount = 1;
-            } else if (freq[task - 'A'] == max) {
-                maxCount++;
-            }
-        }
-        int partCount = max - 1;
-        int partLength = n - (maxCount - 1);
-        int emptySlots = partCount * partLength;
-        int availableTasks = tasks.length - max * maxCount;
-        int idles = Math.max(0, emptySlots - availableTasks);
-        return tasks.length + idles;
+        // Write your solution here
+        return 0;
     }
 
     public static void main(String[] args) {
@@ -190,10 +161,8 @@ import sys
 from collections import Counter
 
 def least_interval(tasks: list[str], n: int) -> int:
-    counts = list(Counter(tasks).values())
-    max_f = max(counts)
-    max_f_count = counts.count(max_f)
-    return max(len(tasks), (max_f - 1) * (n + 1) + max_f_count)
+    # Write your solution here
+    pass
 
 if __name__ == "__main__":
     lines = sys.stdin.read().strip().splitlines()
@@ -206,12 +175,8 @@ if __name__ == "__main__":
 const fs = require('fs');
 
 function leastInterval(tasks, n) {
-    const map = {};
-    for (const t of tasks) map[t] = (map[t] || 0) + 1;
-    const values = Object.values(map);
-    const maxF = Math.max(...values);
-    const maxCount = values.filter(v => v === maxF).length;
-    return Math.max(tasks.length, (maxF - 1) * (n + 1) + maxCount);
+    // Write your solution here
+    return null;
 }
 
 const lines = fs.readFileSync(0, 'utf-8').trim().split('\\n');
@@ -236,14 +201,8 @@ import java.util.*;
 
 public class Solution {
     public static int[][] kClosest(int[][] points, int k) {
-        PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> Integer.compare((b[0]*b[0] + b[1]*b[1]), (a[0]*a[0] + a[1]*a[1])));
-        for (int[] p : points) {
-            pq.offer(p);
-            if (pq.size() > k) pq.poll();
-        }
-        int[][] res = new int[k][2];
-        while (k > 0) res[--k] = pq.poll();
-        return res;
+        // Write your solution here
+        return new int[][]{};
     }
 
     public static void main(String[] args) {
@@ -271,7 +230,8 @@ import json
 import heapq
 
 def k_closest(points: list[list[int]], k: int) -> list[list[int]]:
-    return heapq.nsmallest(k, points, key=lambda p: p[0]**2 + p[1]**2)
+    # Write your solution here
+    pass
 
 if __name__ == "__main__":
     lines = sys.stdin.read().strip().splitlines()
@@ -284,8 +244,8 @@ if __name__ == "__main__":
 const fs = require('fs');
 
 function kClosest(points, k) {
-    points.sort((a, b) => (a[0]**2 + a[1]**2) - (b[0]**2 + b[1]**2));
-    return points.slice(0, k);
+    // Write your solution here
+    return null;
 }
 
 const lines = fs.readFileSync(0, 'utf-8').trim().split('\\n');

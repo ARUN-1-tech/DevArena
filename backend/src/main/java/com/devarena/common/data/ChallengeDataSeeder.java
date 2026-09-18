@@ -48,14 +48,10 @@ public class ChallengeDataSeeder {
             try {
                 Boolean updated = transactionTemplate.execute(status -> {
                     List<ChallengeTestCaseEntity> existingCases = testCaseRepository.findByChallengeIdOrderByOrderIndexAsc(challenge.getId());
-                    int starterCount = starterCodeRepository.findByChallengeId(challenge.getId()).size();
-                    boolean needsSeedingOrUpdate = existingCases.isEmpty() || starterCount < 3 || hasPlaceholderTestCases(existingCases);
+                    boolean needsTestCases = existingCases.isEmpty() || hasPlaceholderTestCases(existingCases);
 
-                    if (needsSeedingOrUpdate) {
-                        seedOrUpdateChallenge(challenge, existingCases);
-                        return true;
-                    }
-                    return false;
+                    seedOrUpdateChallenge(challenge, existingCases, needsTestCases);
+                    return true;
                 });
 
                 if (Boolean.TRUE.equals(updated)) {
@@ -67,7 +63,7 @@ public class ChallengeDataSeeder {
         }
 
         if (updatedCount > 0) {
-            log.info("Successfully populated/updated comprehensive test cases and starter codes for {} challenges.", updatedCount);
+            log.info("Successfully populated/updated clean starter codes and test cases for {} challenges.", updatedCount);
         }
     }
 
@@ -93,29 +89,32 @@ public class ChallengeDataSeeder {
         return false;
     }
 
-    public void seedOrUpdateChallenge(ChallengeEntity c, List<ChallengeTestCaseEntity> existingCases) {
-        if (!existingCases.isEmpty()) {
-            testCaseRepository.deleteAll(existingCases);
-            testCaseRepository.flush();
-        }
-
+    public void seedOrUpdateChallenge(ChallengeEntity c, List<ChallengeTestCaseEntity> existingCases, boolean needsTestCases) {
         ChallengeProblemDef def = ChallengeCatalogRegistry.getProblem(c);
 
-        // Safe in-place update or insert for starter codes (avoids unique constraint violation)
+        // Safe in-place update or insert for starter codes (clean skeletons without solution body)
         saveOrUpdateStarter(c, ExecutionLanguage.JAVA, def.javaStarter().trim());
         saveOrUpdateStarter(c, ExecutionLanguage.PYTHON, def.pythonStarter().trim());
         saveOrUpdateStarter(c, ExecutionLanguage.JAVASCRIPT, def.jsStarter().trim());
 
-        // Save test cases
-        for (TestCaseDef tc : def.testCases()) {
-            testCaseRepository.save(new ChallengeTestCaseEntity(
-                    c,
-                    tc.input(),
-                    tc.expectedOutput(),
-                    tc.hidden(),
-                    tc.orderIndex(),
-                    tc.explanation()
-            ));
+        if (needsTestCases) {
+            if (!existingCases.isEmpty()) {
+                testCaseRepository.deleteAll(existingCases);
+                testCaseRepository.flush();
+            }
+
+            // Save test cases
+            for (TestCaseDef tc : def.testCases()) {
+                testCaseRepository.save(new ChallengeTestCaseEntity(
+                        c,
+                        tc.input(),
+                        tc.expectedOutput(),
+                        tc.hidden(),
+                        tc.orderIndex(),
+                        tc.explanation()
+                ));
+            }
+            testCaseRepository.flush();
         }
     }
 

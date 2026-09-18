@@ -17,26 +17,8 @@ import java.util.*;
 
 public class Solution {
     public static int numIslands(char[][] grid) {
-        if (grid == null || grid.length == 0) return 0;
-        int count = 0;
-        for (int i = 0; i < grid.length; i++) {
-            for (int j = 0; j < grid[0].length; j++) {
-                if (grid[i][j] == '1') {
-                    dfs(grid, i, j);
-                    count++;
-                }
-            }
-        }
-        return count;
-    }
-
-    private static void dfs(char[][] grid, int r, int c) {
-        if (r < 0 || r >= grid.length || c < 0 || c >= grid[0].length || grid[r][c] != '1') return;
-        grid[r][c] = '0';
-        dfs(grid, r + 1, c);
-        dfs(grid, r - 1, c);
-        dfs(grid, r, c + 1);
-        dfs(grid, r, c - 1);
+        // Write your solution here
+        return 0;
     }
 
     public static void main(String[] args) {
@@ -60,25 +42,8 @@ public class Solution {
 import sys
 
 def num_islands(grid: list[list[str]]) -> int:
-    if not grid:
-        return 0
-    m, n = len(grid), len(grid[0])
-    count = 0
-    def dfs(r, c):
-        if r < 0 or r >= m or c < 0 or c >= n or grid[r][c] != '1':
-            return
-        grid[r][c] = '0'
-        dfs(r + 1, c)
-        dfs(r - 1, c)
-        dfs(r, c + 1)
-        dfs(r, c - 1)
-
-    for i in range(m):
-        for j in range(n):
-            if grid[i][j] == '1':
-                dfs(i, j)
-                count += 1
-    return count
+    # Write your solution here
+    pass
 
 if __name__ == "__main__":
     lines = [list(line.strip()) for line in sys.stdin.read().strip().splitlines() if line.strip()]
@@ -88,26 +53,8 @@ if __name__ == "__main__":
 const fs = require('fs');
 
 function numIslands(grid) {
-    if (!grid.length) return 0;
-    const m = grid.length, n = grid[0].length;
-    let count = 0;
-    function dfs(r, c) {
-        if (r < 0 || r >= m || c < 0 || c >= n || grid[r][c] !== '1') return;
-        grid[r][c] = '0';
-        dfs(r + 1, c);
-        dfs(r - 1, c);
-        dfs(r, c + 1);
-        dfs(r, c - 1);
-    }
-    for (let i = 0; i < m; i++) {
-        for (let j = 0; j < n; j++) {
-            if (grid[i][j] === '1') {
-                dfs(i, j);
-                count++;
-            }
-        }
-    }
-    return count;
+    // Write your solution here
+    return null;
 }
 
 const lines = fs.readFileSync(0, 'utf-8').trim().split('\\n').filter(s => s.trim()).map(s => s.trim().split(''));
@@ -128,26 +75,8 @@ import java.util.*;
 
 public class Solution {
     public static boolean canFinish(int numCourses, int[][] prerequisites) {
-        int[] inDegree = new int[numCourses];
-        List<List<Integer>> adj = new ArrayList<>();
-        for (int i = 0; i < numCourses; i++) adj.add(new ArrayList<>());
-        for (int[] p : prerequisites) {
-            adj.get(p[1]).add(p[0]);
-            inDegree[p[0]]++;
-        }
-        Queue<Integer> q = new LinkedList<>();
-        for (int i = 0; i < numCourses; i++) {
-            if (inDegree[i] == 0) q.offer(i);
-        }
-        int count = 0;
-        while (!q.isEmpty()) {
-            int curr = q.poll();
-            count++;
-            for (int neighbor : adj.get(curr)) {
-                if (--inDegree[neighbor] == 0) q.offer(neighbor);
-            }
-        }
-        return count == numCourses;
+        // Write your solution here
+        return false;
     }
 
     public static void main(String[] args) {
@@ -179,21 +108,8 @@ import json
 from collections import deque, defaultdict
 
 def can_finish(num_courses: int, prerequisites: list[list[int]]) -> bool:
-    in_degree = [0] * num_courses
-    adj = defaultdict(list)
-    for dest, src in prerequisites:
-        adj[src].append(dest)
-        in_degree[dest] += 1
-    q = deque([i for i in range(num_courses) if in_degree[i] == 0])
-    count = 0
-    while q:
-        curr = q.popleft()
-        count += 1
-        for nxt in adj[curr]:
-            in_degree[nxt] -= 1
-            if in_degree[nxt] == 0:
-                q.append(nxt)
-    return count == num_courses
+    # Write your solution here
+    pass
 
 if __name__ == "__main__":
     lines = sys.stdin.read().strip().splitlines()
@@ -206,23 +122,8 @@ if __name__ == "__main__":
 const fs = require('fs');
 
 function canFinish(numCourses, prerequisites) {
-    const inDegree = new Array(numCourses).fill(0);
-    const adj = Array.from({ length: numCourses }, () => []);
-    for (const [dest, src] of prerequisites) {
-        adj[src].push(dest);
-        inDegree[dest]++;
-    }
-    const q = [];
-    for (let i = 0; i < numCourses; i++) if (inDegree[i] === 0) q.push(i);
-    let count = 0;
-    while (q.length) {
-        const curr = q.shift();
-        count++;
-        for (const next of adj[curr]) {
-            if (--inDegree[next] === 0) q.push(next);
-        }
-    }
-    return count === numCourses;
+    // Write your solution here
+    return null;
 }
 
 const lines = fs.readFileSync(0, 'utf-8').trim().split('\\n');
@@ -247,27 +148,8 @@ import java.util.*;
 
 public class Solution {
     public static int[] findOrder(int numCourses, int[][] prerequisites) {
-        int[] inDegree = new int[numCourses];
-        List<List<Integer>> adj = new ArrayList<>();
-        for (int i = 0; i < numCourses; i++) adj.add(new ArrayList<>());
-        for (int[] p : prerequisites) {
-            adj.get(p[1]).add(p[0]);
-            inDegree[p[0]]++;
-        }
-        Queue<Integer> q = new LinkedList<>();
-        for (int i = 0; i < numCourses; i++) {
-            if (inDegree[i] == 0) q.offer(i);
-        }
-        int[] order = new int[numCourses];
-        int idx = 0;
-        while (!q.isEmpty()) {
-            int curr = q.poll();
-            order[idx++] = curr;
-            for (int neighbor : adj.get(curr)) {
-                if (--inDegree[neighbor] == 0) q.offer(neighbor);
-            }
-        }
-        return idx == numCourses ? order : new int[0];
+        // Write your solution here
+        return new int[]{};
     }
 
     public static void main(String[] args) {
@@ -300,21 +182,8 @@ import json
 from collections import deque, defaultdict
 
 def find_order(num_courses: int, prerequisites: list[list[int]]) -> list[int]:
-    in_degree = [0] * num_courses
-    adj = defaultdict(list)
-    for dest, src in prerequisites:
-        adj[src].append(dest)
-        in_degree[dest] += 1
-    q = deque([i for i in range(num_courses) if in_degree[i] == 0])
-    order = []
-    while q:
-        curr = q.popleft()
-        order.append(curr)
-        for nxt in adj[curr]:
-            in_degree[nxt] -= 1
-            if in_degree[nxt] == 0:
-                q.append(nxt)
-    return order if len(order) == num_courses else []
+    # Write your solution here
+    pass
 
 if __name__ == "__main__":
     lines = sys.stdin.read().strip().splitlines()
@@ -327,23 +196,8 @@ if __name__ == "__main__":
 const fs = require('fs');
 
 function findOrder(numCourses, prerequisites) {
-    const inDegree = new Array(numCourses).fill(0);
-    const adj = Array.from({ length: numCourses }, () => []);
-    for (const [dest, src] of prerequisites) {
-        adj[src].push(dest);
-        inDegree[dest]++;
-    }
-    const q = [];
-    for (let i = 0; i < numCourses; i++) if (inDegree[i] === 0) q.push(i);
-    const order = [];
-    while (q.length) {
-        const curr = q.shift();
-        order.push(curr);
-        for (const next of adj[curr]) {
-            if (--inDegree[next] === 0) q.push(next);
-        }
-    }
-    return order.length === numCourses ? order : [];
+    // Write your solution here
+    return null;
 }
 
 const lines = fs.readFileSync(0, 'utf-8').trim().split('\\n');
@@ -368,34 +222,8 @@ import java.util.*;
 
 public class Solution {
     public static int orangesRotting(int[][] grid) {
-        int rows = grid.length, cols = grid[0].length;
-        Queue<int[]> queue = new LinkedList<>();
-        int freshCount = 0;
-        for (int r = 0; r < rows; r++) {
-            for (int c = 0; c < cols; c++) {
-                if (grid[r][c] == 2) queue.offer(new int[]{r, c});
-                else if (grid[r][c] == 1) freshCount++;
-            }
-        }
-        if (freshCount == 0) return 0;
-        int minutes = 0;
-        int[][] dirs = {{1,0},{-1,0},{0,1},{0,-1}};
-        while (!queue.isEmpty() && freshCount > 0) {
-            int size = queue.size();
-            minutes++;
-            for (int i = 0; i < size; i++) {
-                int[] curr = queue.poll();
-                for (int[] d : dirs) {
-                    int nr = curr[0] + d[0], nc = curr[1] + d[1];
-                    if (nr >= 0 && nr < rows && nc >= 0 && nc < cols && grid[nr][nc] == 1) {
-                        grid[nr][nc] = 2;
-                        freshCount--;
-                        queue.offer(new int[]{nr, nc});
-                    }
-                }
-            }
-        }
-        return freshCount == 0 ? minutes : -1;
+        // Write your solution here
+        return 0;
     }
 
     public static void main(String[] args) {
@@ -423,29 +251,8 @@ import json
 from collections import deque
 
 def oranges_rotting(grid: list[list[int]]) -> int:
-    m, n = len(grid), len(grid[0])
-    q = deque()
-    fresh = 0
-    for r in range(m):
-        for c in range(n):
-            if grid[r][c] == 2:
-                q.append((r, c))
-            elif grid[r][c] == 1:
-                fresh += 1
-    if fresh == 0:
-        return 0
-    minutes = 0
-    while q and fresh > 0:
-        minutes += 1
-        for _ in range(len(q)):
-            r, c = q.popleft()
-            for dr, dc in ((1,0),(-1,0),(0,1),(0,-1)):
-                nr, nc = r + dr, c + dc
-                if 0 <= nr < m and 0 <= nc < n and grid[nr][nc] == 1:
-                    grid[nr][nc] = 2
-                    fresh -= 1
-                    q.append((nr, nc))
-    return minutes if fresh == 0 else -1
+    # Write your solution here
+    pass
 
 if __name__ == "__main__":
     line = sys.stdin.read().strip()
@@ -457,34 +264,8 @@ if __name__ == "__main__":
 const fs = require('fs');
 
 function orangesRotting(grid) {
-    const m = grid.length, n = grid[0].length;
-    const q = [];
-    let fresh = 0;
-    for (let r = 0; r < m; r++) {
-        for (let c = 0; c < n; c++) {
-            if (grid[r][c] === 2) q.push([r, c]);
-            else if (grid[r][c] === 1) fresh++;
-        }
-    }
-    if (fresh === 0) return 0;
-    let minutes = 0;
-    const dirs = [[1,0],[-1,0],[0,1],[0,-1]];
-    while (q.length && fresh > 0) {
-        minutes++;
-        const size = q.length;
-        for (let i = 0; i < size; i++) {
-            const [r, c] = q.shift();
-            for (const [dr, dc] of dirs) {
-                const nr = r + dr, nc = c + dc;
-                if (nr >= 0 && nr < m && nc >= 0 && nc < n && grid[nr][nc] === 1) {
-                    grid[nr][nc] = 2;
-                    fresh--;
-                    q.push([nr, nc]);
-                }
-            }
-        }
-    }
-    return fresh === 0 ? minutes : -1;
+    // Write your solution here
+    return null;
 }
 
 const line = fs.readFileSync(0, 'utf-8').trim();
@@ -508,32 +289,7 @@ import java.util.*;
 
 public class Solution {
     public static int ladderLength(String beginWord, String endWord, List<String> wordList) {
-        Set<String> wordSet = new HashSet<>(wordList);
-        if (!wordSet.contains(endWord)) return 0;
-        Queue<String> queue = new LinkedList<>();
-        queue.offer(beginWord);
-        int level = 1;
-
-        while (!queue.isEmpty()) {
-            int size = queue.size();
-            for (int i = 0; i < size; i++) {
-                String curr = queue.poll();
-                char[] chars = curr.toCharArray();
-                for (int j = 0; j < chars.length; j++) {
-                    char orig = chars[j];
-                    for (char c = 'a'; c <= 'z'; c++) {
-                        chars[j] = c;
-                        String next = new String(chars);
-                        if (next.equals(endWord)) return level + 1;
-                        if (wordSet.remove(next)) {
-                            queue.offer(next);
-                        }
-                    }
-                    chars[j] = orig;
-                }
-            }
-            level++;
-        }
+        // Write your solution here
         return 0;
     }
 
@@ -555,21 +311,8 @@ import sys
 from collections import deque
 
 def ladder_length(begin_word: str, end_word: str, word_list: list[str]) -> int:
-    word_set = set(word_list)
-    if end_word not in word_set:
-        return 0
-    q = deque([(begin_word, 1)])
-    while q:
-        word, level = q.popleft()
-        if word == end_word:
-            return level
-        for i in range(len(word)):
-            for c in 'abcdefghijklmnopqrstuvwxyz':
-                nxt = word[:i] + c + word[i+1:]
-                if nxt in word_set:
-                    word_set.remove(nxt)
-                    q.append((nxt, level + 1))
-    return 0
+    # Write your solution here
+    pass
 
 if __name__ == "__main__":
     lines = sys.stdin.read().strip().splitlines()
@@ -583,23 +326,8 @@ if __name__ == "__main__":
 const fs = require('fs');
 
 function ladderLength(beginWord, endWord, wordList) {
-    const wordSet = new Set(wordList);
-    if (!wordSet.has(endWord)) return 0;
-    const q = [[beginWord, 1]];
-    while (q.length) {
-        const [word, level] = q.shift();
-        if (word === endWord) return level;
-        for (let i = 0; i < word.length; i++) {
-            for (let c = 97; c <= 122; c++) {
-                const nxt = word.slice(0, i) + String.fromCharCode(c) + word.slice(i + 1);
-                if (wordSet.has(nxt)) {
-                    wordSet.delete(nxt);
-                    q.push([nxt, level + 1]);
-                }
-            }
-        }
-    }
-    return 0;
+    // Write your solution here
+    return null;
 }
 
 const lines = fs.readFileSync(0, 'utf-8').trim().split('\\n');

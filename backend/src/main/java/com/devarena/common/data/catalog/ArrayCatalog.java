@@ -17,14 +17,7 @@ import java.util.*;
 
 public class Solution {
     public static int[] twoSum(int[] nums, int target) {
-        Map<Integer, Integer> map = new HashMap<>();
-        for (int i = 0; i < nums.length; i++) {
-            int comp = target - nums[i];
-            if (map.containsKey(comp)) {
-                return new int[]{ map.get(comp), i };
-            }
-            map.put(nums[i], i);
-        }
+        // Write your solution here
         return new int[]{};
     }
 
@@ -49,13 +42,8 @@ public class Solution {
 import sys
 
 def two_sum(nums: list[int], target: int) -> list[int]:
-    lookup = {}
-    for i, n in enumerate(nums):
-        diff = target - n
-        if diff in lookup:
-            return [lookup[diff], i]
-        lookup[n] = i
-    return []
+    # Write your solution here
+    pass
 
 if __name__ == "__main__":
     lines = sys.stdin.read().strip().splitlines()
@@ -69,15 +57,8 @@ if __name__ == "__main__":
 const fs = require('fs');
 
 function twoSum(nums, target) {
-    const map = new Map();
-    for (let i = 0; i < nums.length; i++) {
-        const diff = target - nums[i];
-        if (map.has(diff)) {
-            return [map.get(diff), i];
-        }
-        map.set(nums[i], i);
-    }
-    return [];
+    // Write your solution here
+    return null;
 }
 
 const input = fs.readFileSync(0, 'utf-8').trim().split('\\n');
@@ -104,10 +85,7 @@ import java.util.*;
 
 public class Solution {
     public static boolean containsDuplicate(int[] nums) {
-        Set<Integer> set = new HashSet<>();
-        for (int n : nums) {
-            if (!set.add(n)) return true;
-        }
+        // Write your solution here
         return false;
     }
 
@@ -130,7 +108,8 @@ public class Solution {
 import sys
 
 def contains_duplicate(nums: list[int]) -> bool:
-    return len(nums) != len(set(nums))
+    # Write your solution here
+    pass
 
 if __name__ == "__main__":
     line = sys.stdin.read().strip()
@@ -144,7 +123,8 @@ if __name__ == "__main__":
 const fs = require('fs');
 
 function containsDuplicate(nums) {
-    return new Set(nums).size !== nums.length;
+    // Write your solution here
+    return null;
 }
 
 const line = fs.readFileSync(0, 'utf-8').trim();
@@ -171,13 +151,8 @@ import java.util.*;
 
 public class Solution {
     public static int maxProfit(int[] prices) {
-        int minPrice = Integer.MAX_VALUE;
-        int maxProfit = 0;
-        for (int price : prices) {
-            if (price < minPrice) minPrice = price;
-            else if (price - minPrice > maxProfit) maxProfit = price - minPrice;
-        }
-        return maxProfit;
+        // Write your solution here
+        return 0;
     }
 
     public static void main(String[] args) {
@@ -195,14 +170,8 @@ public class Solution {
 import sys
 
 def max_profit(prices: list[int]) -> int:
-    min_price = float('inf')
-    max_p = 0
-    for p in prices:
-        if p < min_price:
-            min_price = p
-        elif p - min_price > max_p:
-            max_p = p - min_price
-    return max_p
+    # Write your solution here
+    pass
 
 if __name__ == "__main__":
     line = sys.stdin.read().strip()
@@ -214,13 +183,8 @@ if __name__ == "__main__":
 const fs = require('fs');
 
 function maxProfit(prices) {
-    let minPrice = Infinity;
-    let maxP = 0;
-    for (const p of prices) {
-        if (p < minPrice) minPrice = p;
-        else if (p - minPrice > maxP) maxP = p - minPrice;
-    }
-    return maxP;
+    // Write your solution here
+    return null;
 }
 
 const line = fs.readFileSync(0, 'utf-8').trim();
@@ -245,16 +209,8 @@ import java.util.*;
 
 public class Solution {
     public static int[] productExceptSelf(int[] nums) {
-        int n = nums.length;
-        int[] res = new int[n];
-        res[0] = 1;
-        for (int i = 1; i < n; i++) res[i] = res[i - 1] * nums[i - 1];
-        int right = 1;
-        for (int i = n - 1; i >= 0; i--) {
-            res[i] *= right;
-            right *= nums[i];
-        }
-        return res;
+        // Write your solution here
+        return new int[]{};
     }
 
     public static void main(String[] args) {
@@ -272,17 +228,8 @@ public class Solution {
 import sys
 
 def product_except_self(nums: list[int]) -> list[int]:
-    n = len(nums)
-    res = [1] * n
-    prefix = 1
-    for i in range(n):
-        res[i] = prefix
-        prefix *= nums[i]
-    postfix = 1
-    for i in range(n - 1, -1, -1):
-        res[i] *= postfix
-        postfix *= nums[i]
-    return res
+    # Write your solution here
+    pass
 
 if __name__ == "__main__":
     line = sys.stdin.read().strip()
@@ -294,19 +241,8 @@ if __name__ == "__main__":
 const fs = require('fs');
 
 function productExceptSelf(nums) {
-    const n = nums.length;
-    const res = new Array(n).fill(1);
-    let prefix = 1;
-    for (let i = 0; i < n; i++) {
-        res[i] = prefix;
-        prefix *= nums[i];
-    }
-    let postfix = 1;
-    for (let i = n - 1; i >= 0; i--) {
-        res[i] *= postfix;
-        postfix *= nums[i];
-    }
-    return res;
+    // Write your solution here
+    return null;
 }
 
 const line = fs.readFileSync(0, 'utf-8').trim();
@@ -331,12 +267,8 @@ import java.util.*;
 
 public class Solution {
     public static int maxSubArray(int[] nums) {
-        int max = nums[0], curr = nums[0];
-        for (int i = 1; i < nums.length; i++) {
-            curr = Math.max(nums[i], curr + nums[i]);
-            max = Math.max(max, curr);
-        }
-        return max;
+        // Write your solution here
+        return 0;
     }
 
     public static void main(String[] args) {
@@ -354,11 +286,8 @@ public class Solution {
 import sys
 
 def max_sub_array(nums: list[int]) -> int:
-    cur = max_s = nums[0]
-    for n in nums[1:]:
-        cur = max(n, cur + n)
-        max_s = max(max_s, cur)
-    return max_s
+    # Write your solution here
+    pass
 
 if __name__ == "__main__":
     line = sys.stdin.read().strip()
@@ -370,12 +299,8 @@ if __name__ == "__main__":
 const fs = require('fs');
 
 function maxSubArray(nums) {
-    let max = nums[0], curr = nums[0];
-    for (let i = 1; i < nums.length; i++) {
-        curr = Math.max(nums[i], curr + nums[i]);
-        max = Math.max(max, curr);
-    }
-    return max;
+    // Write your solution here
+    return null;
 }
 
 const line = fs.readFileSync(0, 'utf-8').trim();
@@ -400,23 +325,8 @@ import java.util.*;
 
 public class Solution {
     public static List<List<Integer>> threeSum(int[] nums) {
-        Arrays.sort(nums);
-        List<List<Integer>> res = new ArrayList<>();
-        for (int i = 0; i < nums.length - 2; i++) {
-            if (i > 0 && nums[i] == nums[i - 1]) continue;
-            int l = i + 1, r = nums.length - 1;
-            while (l < r) {
-                int sum = nums[i] + nums[l] + nums[r];
-                if (sum == 0) {
-                    res.add(List.of(nums[i], nums[l], nums[r]));
-                    while (l < r && nums[l] == nums[l + 1]) l++;
-                    while (l < r && nums[r] == nums[r - 1]) r--;
-                    l++; r--;
-                } else if (sum < 0) l++;
-                else r--;
-            }
-        }
-        return res;
+        // Write your solution here
+        return new ArrayList<>();
     }
 
     public static void main(String[] args) {
@@ -438,27 +348,8 @@ public class Solution {
 import sys
 
 def three_sum(nums: list[int]) -> list[list[int]]:
-    nums.sort()
-    res = []
-    for i in range(len(nums) - 2):
-        if i > 0 and nums[i] == nums[i - 1]:
-            continue
-        l, r = i + 1, len(nums) - 1
-        while l < r:
-            s = nums[i] + nums[l] + nums[r]
-            if s == 0:
-                res.append([nums[i], nums[l], nums[r]])
-                while l < r and nums[l] == nums[l + 1]:
-                    l += 1
-                while l < r and nums[r] == nums[r - 1]:
-                    r -= 1
-                l += 1
-                r -= 1
-            elif s < 0:
-                l += 1
-            else:
-                r -= 1
-    return res
+    # Write your solution here
+    pass
 
 if __name__ == "__main__":
     line = sys.stdin.read().strip()
@@ -473,23 +364,8 @@ if __name__ == "__main__":
 const fs = require('fs');
 
 function threeSum(nums) {
-    nums.sort((a, b) => a - b);
-    const res = [];
-    for (let i = 0; i < nums.length - 2; i++) {
-        if (i > 0 && nums[i] == nums[i - 1]) continue;
-        let l = i + 1, r = nums.length - 1;
-        while (l < r) {
-            const sum = nums[i] + nums[l] + nums[r];
-            if (sum === 0) {
-                res.push([nums[i], nums[l], nums[r]]);
-                while (l < r && nums[l] === nums[l + 1]) l++;
-                while (l < r && nums[r] === nums[r - 1]) r--;
-                l++; r--;
-            } else if (sum < 0) l++;
-            else r--;
-        }
-    }
-    return res;
+    // Write your solution here
+    return null;
 }
 
 const line = fs.readFileSync(0, 'utf-8').trim();
@@ -516,15 +392,8 @@ import java.util.*;
 
 public class Solution {
     public static int maxArea(int[] height) {
-        int l = 0, r = height.length - 1;
-        int max = 0;
-        while (l < r) {
-            int h = Math.min(height[l], height[r]);
-            max = Math.max(max, h * (r - l));
-            if (height[l] < height[r]) l++;
-            else r--;
-        }
-        return max;
+        // Write your solution here
+        return 0;
     }
 
     public static void main(String[] args) {
@@ -542,16 +411,8 @@ public class Solution {
 import sys
 
 def max_area(height: list[int]) -> int:
-    l, r = 0, len(height) - 1
-    max_a = 0
-    while l < r:
-        h = min(height[l], height[r])
-        max_a = max(max_a, h * (r - l))
-        if height[l] < height[r]:
-            l += 1
-        else:
-            r -= 1
-    return max_a
+    # Write your solution here
+    pass
 
 if __name__ == "__main__":
     line = sys.stdin.read().strip()
@@ -563,15 +424,8 @@ if __name__ == "__main__":
 const fs = require('fs');
 
 function maxArea(height) {
-    let l = 0, r = height.length - 1;
-    let max = 0;
-    while (l < r) {
-        const h = Math.min(height[l], height[r]);
-        max = Math.max(max, h * (r - l));
-        if (height[l] < height[r]) l++;
-        else r--;
-    }
-    return max;
+    // Write your solution here
+    return null;
 }
 
 const line = fs.readFileSync(0, 'utf-8').trim();
@@ -596,21 +450,8 @@ import java.util.*;
 
 public class Solution {
     public static int trap(int[] height) {
-        int l = 0, r = height.length - 1;
-        int leftMax = 0, rightMax = 0;
-        int res = 0;
-        while (l < r) {
-            if (height[l] < height[r]) {
-                if (height[l] >= leftMax) leftMax = height[l];
-                else res += leftMax - height[l];
-                l++;
-            } else {
-                if (height[r] >= rightMax) rightMax = height[r];
-                else res += rightMax - height[r];
-                r--;
-            }
-        }
-        return res;
+        // Write your solution here
+        return 0;
     }
 
     public static void main(String[] args) {
@@ -628,23 +469,8 @@ public class Solution {
 import sys
 
 def trap(height: list[int]) -> int:
-    l, r = 0, len(height) - 1
-    left_max, right_max = 0, 0
-    res = 0
-    while l < r:
-        if height[l] < height[r]:
-            if height[l] >= left_max:
-                left_max = height[l]
-            else:
-                res += left_max - height[l]
-            l += 1
-        else:
-            if height[r] >= right_max:
-                right_max = height[r]
-            else:
-                res += right_max - height[r]
-            r -= 1
-    return res
+    # Write your solution here
+    pass
 
 if __name__ == "__main__":
     line = sys.stdin.read().strip()
@@ -656,21 +482,8 @@ if __name__ == "__main__":
 const fs = require('fs');
 
 function trap(height) {
-    let l = 0, r = height.length - 1;
-    let leftMax = 0, rightMax = 0;
-    let res = 0;
-    while (l < r) {
-        if (height[l] < height[r]) {
-            if (height[l] >= leftMax) leftMax = height[l];
-            else res += leftMax - height[l];
-            l++;
-        } else {
-            if (height[r] >= rightMax) rightMax = height[r];
-            else res += rightMax - height[r];
-            r--;
-        }
-    }
-    return res;
+    // Write your solution here
+    return null;
 }
 
 const line = fs.readFileSync(0, 'utf-8').trim();
@@ -695,23 +508,8 @@ import java.util.*;
 
 public class Solution {
     public static void rotate(int[][] matrix) {
-        int n = matrix.length;
-        // Transpose
-        for (int i = 0; i < n; i++) {
-            for (int j = i + 1; j < n; j++) {
-                int temp = matrix[i][j];
-                matrix[i][j] = matrix[j][i];
-                matrix[j][i] = temp;
-            }
-        }
-        // Reverse rows
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n / 2; j++) {
-                int temp = matrix[i][j];
-                matrix[i][j] = matrix[i][n - 1 - j];
-                matrix[i][n - 1 - j] = temp;
-            }
-        }
+        // Write your solution here
+        
     }
 
     public static void main(String[] args) {
@@ -738,12 +536,8 @@ import sys
 import json
 
 def rotate(matrix: list[list[int]]) -> None:
-    n = len(matrix)
-    for i in range(n):
-        for j in range(i + 1, n):
-            matrix[i][j], matrix[j][i] = matrix[j][i], matrix[i][j]
-    for i in range(n):
-        matrix[i].reverse()
+    # Write your solution here
+    pass
 
 if __name__ == "__main__":
     line = sys.stdin.read().strip()
@@ -756,13 +550,8 @@ if __name__ == "__main__":
 const fs = require('fs');
 
 function rotate(matrix) {
-    const n = matrix.length;
-    for (let i = 0; i < n; i++) {
-        for (let j = i + 1; j < n; j++) {
-            [matrix[i][j], matrix[j][i]] = [matrix[j][i], matrix[i][j]];
-        }
-    }
-    for (let i = 0; i < n; i++) matrix[i].reverse();
+    // Write your solution here
+    return null;
 }
 
 const line = fs.readFileSync(0, 'utf-8').trim();
@@ -787,15 +576,8 @@ import java.util.*;
 
 public class Solution {
     public static int subarraySum(int[] nums, int k) {
-        int count = 0, sum = 0;
-        Map<Integer, Integer> map = new HashMap<>();
-        map.put(0, 1);
-        for (int n : nums) {
-            sum += n;
-            if (map.containsKey(sum - k)) count += map.get(sum - k);
-            map.put(sum, map.getOrDefault(sum, 0) + 1);
-        }
-        return count;
+        // Write your solution here
+        return 0;
     }
 
     public static void main(String[] args) {
@@ -815,14 +597,8 @@ public class Solution {
 import sys
 
 def subarray_sum(nums: list[int], k: int) -> int:
-    count = 0
-    s = 0
-    lookup = {0: 1}
-    for n in nums:
-        s += n
-        count += lookup.get(s - k, 0)
-        lookup[s] = lookup.get(s, 0) + 1
-    return count
+    # Write your solution here
+    pass
 
 if __name__ == "__main__":
     lines = sys.stdin.read().strip().splitlines()
@@ -835,15 +611,8 @@ if __name__ == "__main__":
 const fs = require('fs');
 
 function subarraySum(nums, k) {
-    let count = 0, sum = 0;
-    const map = new Map();
-    map.set(0, 1);
-    for (const n of nums) {
-        sum += n;
-        if (map.has(sum - k)) count += map.get(sum - k);
-        map.set(sum, (map.get(sum) || 0) + 1);
-    }
-    return count;
+    // Write your solution here
+    return null;
 }
 
 const lines = fs.readFileSync(0, 'utf-8').trim().split('\\n');
@@ -869,21 +638,8 @@ import java.util.*;
 
 public class Solution {
     public static int longestConsecutive(int[] nums) {
-        Set<Integer> set = new HashSet<>();
-        for (int n : nums) set.add(n);
-        int longest = 0;
-        for (int n : set) {
-            if (!set.contains(n - 1)) {
-                int curr = n;
-                int streak = 1;
-                while (set.contains(curr + 1)) {
-                    curr++;
-                    streak++;
-                }
-                longest = Math.max(longest, streak);
-            }
-        }
-        return longest;
+        // Write your solution here
+        return 0;
     }
 
     public static void main(String[] args) {
@@ -905,17 +661,8 @@ public class Solution {
 import sys
 
 def longest_consecutive(nums: list[int]) -> int:
-    num_set = set(nums)
-    longest = 0
-    for n in num_set:
-        if n - 1 not in num_set:
-            curr = n
-            streak = 1
-            while curr + 1 in num_set:
-                curr += 1
-                streak += 1
-            longest = max(longest, streak)
-    return longest
+    # Write your solution here
+    pass
 
 if __name__ == "__main__":
     line = sys.stdin.read().strip()
@@ -929,20 +676,8 @@ if __name__ == "__main__":
 const fs = require('fs');
 
 function longestConsecutive(nums) {
-    const set = new Set(nums);
-    let longest = 0;
-    for (const n of set) {
-        if (!set.has(n - 1)) {
-            let curr = n;
-            let streak = 1;
-            while (set.has(curr + 1)) {
-                curr++;
-                streak++;
-            }
-            longest = Math.max(longest, streak);
-        }
-    }
-    return longest;
+    // Write your solution here
+    return null;
 }
 
 const line = fs.readFileSync(0, 'utf-8').trim();
@@ -969,15 +704,8 @@ import java.util.*;
 
 public class Solution {
     public static List<Integer> findDisappearedNumbers(int[] nums) {
-        for (int i = 0; i < nums.length; i++) {
-            int idx = Math.abs(nums[i]) - 1;
-            if (nums[idx] > 0) nums[idx] = -nums[idx];
-        }
-        List<Integer> res = new ArrayList<>();
-        for (int i = 0; i < nums.length; i++) {
-            if (nums[i] > 0) res.add(i + 1);
-        }
-        return res;
+        // Write your solution here
+        return new ArrayList<>();
     }
 
     public static void main(String[] args) {
@@ -995,11 +723,8 @@ public class Solution {
 import sys
 
 def find_disappeared_numbers(nums: list[int]) -> list[int]:
-    for i in range(len(nums)):
-        idx = abs(nums[i]) - 1
-        if nums[idx] > 0:
-            nums[idx] = -nums[idx]
-    return [i + 1 for i in range(len(nums)) if nums[i] > 0]
+    # Write your solution here
+    pass
 
 if __name__ == "__main__":
     line = sys.stdin.read().strip()
@@ -1011,15 +736,8 @@ if __name__ == "__main__":
 const fs = require('fs');
 
 function findDisappearedNumbers(nums) {
-    for (let i = 0; i < nums.length; i++) {
-        const idx = Math.abs(nums[i]) - 1;
-        if (nums[idx] > 0) nums[idx] = -nums[idx];
-    }
-    const res = [];
-    for (let i = 0; i < nums.length; i++) {
-        if (nums[i] > 0) res.push(i + 1);
-    }
-    return res;
+    // Write your solution here
+    return null;
 }
 
 const line = fs.readFileSync(0, 'utf-8').trim();
@@ -1044,20 +762,8 @@ import java.util.*;
 
 public class Solution {
     public static int[][] merge(int[][] intervals) {
-        if (intervals.length <= 1) return intervals;
-        Arrays.sort(intervals, (a, b) -> Integer.compare(a[0], b[0]));
-        List<int[]> result = new ArrayList<>();
-        int[] current = intervals[0];
-        result.add(current);
-        for (int[] interval : intervals) {
-            if (interval[0] <= current[1]) {
-                current[1] = Math.max(current[1], interval[1]);
-            } else {
-                current = interval;
-                result.add(current);
-            }
-        }
-        return result.toArray(new int[result.size()][]);
+        // Write your solution here
+        return new int[][]{};
     }
 
     public static void main(String[] args) {
@@ -1082,17 +788,8 @@ import sys
 import json
 
 def merge(intervals: list[list[int]]) -> list[list[int]]:
-    if not intervals:
-        return []
-    intervals.sort(key=lambda x: x[0])
-    merged = [intervals[0]]
-    for current in intervals[1:]:
-        prev = merged[-1]
-        if current[0] <= prev[1]:
-            prev[1] = max(prev[1], current[1])
-        else:
-            merged.append(current)
-    return merged
+    # Write your solution here
+    pass
 
 if __name__ == "__main__":
     line = sys.stdin.read().strip()
@@ -1104,19 +801,8 @@ if __name__ == "__main__":
 const fs = require('fs');
 
 function merge(intervals) {
-    if (intervals.length <= 1) return intervals;
-    intervals.sort((a, b) => a[0] - b[0]);
-    const merged = [intervals[0]];
-    for (let i = 1; i < intervals.length; i++) {
-        const prev = merged[merged.length - 1];
-        const curr = intervals[i];
-        if (curr[0] <= prev[1]) {
-            prev[1] = Math.max(prev[1], curr[1]);
-        } else {
-            merged.push(curr);
-        }
-    }
-    return merged;
+    // Write your solution here
+    return null;
 }
 
 const line = fs.readFileSync(0, 'utf-8').trim();
@@ -1141,25 +827,8 @@ import java.util.*;
 
 public class Solution {
     public static List<Integer> spiralOrder(int[][] matrix) {
-        List<Integer> res = new ArrayList<>();
-        if (matrix.length == 0) return res;
-        int top = 0, bottom = matrix.length - 1;
-        int left = 0, right = matrix[0].length - 1;
-        while (top <= bottom && left <= right) {
-            for (int i = left; i <= right; i++) res.add(matrix[top][i]);
-            top++;
-            for (int i = top; i <= bottom; i++) res.add(matrix[i][right]);
-            right--;
-            if (top <= bottom) {
-                for (int i = right; i >= left; i--) res.add(matrix[bottom][i]);
-                bottom--;
-            }
-            if (left <= right) {
-                for (int i = bottom; i >= top; i--) res.add(matrix[i][left]);
-                left++;
-            }
-        }
-        return res;
+        // Write your solution here
+        return new ArrayList<>();
     }
 
     public static void main(String[] args) {
@@ -1186,27 +855,8 @@ import sys
 import json
 
 def spiral_order(matrix: list[list[int]]) -> list[int]:
-    res = []
-    if not matrix:
-        return res
-    top, bottom = 0, len(matrix) - 1
-    left, right = 0, len(matrix[0]) - 1
-    while top <= bottom and left <= right:
-        for i in range(left, right + 1):
-            res.append(matrix[top][i])
-        top += 1
-        for i in range(top, bottom + 1):
-            res.append(matrix[i][right])
-        right -= 1
-        if top <= bottom:
-            for i in range(right, left - 1, -1):
-                res.append(matrix[bottom][i])
-            bottom -= 1
-        if left <= right:
-            for i in range(bottom, top - 1, -1):
-                res.append(matrix[i][left])
-            left += 1
-    return res
+    # Write your solution here
+    pass
 
 if __name__ == "__main__":
     line = sys.stdin.read().strip()
@@ -1218,25 +868,8 @@ if __name__ == "__main__":
 const fs = require('fs');
 
 function spiralOrder(matrix) {
-    const res = [];
-    if (!matrix || matrix.length === 0) return res;
-    let top = 0, bottom = matrix.length - 1;
-    let left = 0, right = matrix[0].length - 1;
-    while (top <= bottom && left <= right) {
-        for (let i = left; i <= right; i++) res.push(matrix[top][i]);
-        top++;
-        for (let i = top; i <= bottom; i++) res.push(matrix[i][right]);
-        right--;
-        if (top <= bottom) {
-            for (let i = right; i >= left; i--) res.push(matrix[bottom][i]);
-            bottom--;
-        }
-        if (left <= right) {
-            for (let i = bottom; i >= top; i--) res.push(matrix[i][left]);
-            left++;
-        }
-    }
-    return res;
+    // Write your solution here
+    return null;
 }
 
 const line = fs.readFileSync(0, 'utf-8').trim();
@@ -1260,33 +893,8 @@ import java.util.*;
 
 public class Solution {
     public static void setZeroes(int[][] matrix) {
-        int m = matrix.length, n = matrix[0].length;
-        boolean firstRow = false, firstCol = false;
-        for (int i = 0; i < m; i++) {
-            if (matrix[i][0] == 0) firstCol = true;
-        }
-        for (int j = 0; j < n; j++) {
-            if (matrix[0][j] == 0) firstRow = true;
-        }
-        for (int i = 1; i < m; i++) {
-            for (int j = 1; j < n; j++) {
-                if (matrix[i][j] == 0) {
-                    matrix[i][0] = 0;
-                    matrix[0][j] = 0;
-                }
-            }
-        }
-        for (int i = 1; i < m; i++) {
-            for (int j = 1; j < n; j++) {
-                if (matrix[i][0] == 0 || matrix[0][j] == 0) matrix[i][j] = 0;
-            }
-        }
-        if (firstCol) {
-            for (int i = 0; i < m; i++) matrix[i][0] = 0;
-        }
-        if (firstRow) {
-            for (int j = 0; j < n; j++) matrix[0][j] = 0;
-        }
+        // Write your solution here
+        
     }
 
     public static void main(String[] args) {
@@ -1314,24 +922,8 @@ import sys
 import json
 
 def set_zeroes(matrix: list[list[int]]) -> None:
-    m, n = len(matrix), len(matrix[0])
-    first_row = any(matrix[0][j] == 0 for j in range(n))
-    first_col = any(matrix[i][0] == 0 for i in range(m))
-    for i in range(1, m):
-        for j in range(1, n):
-            if matrix[i][j] == 0:
-                matrix[i][0] = 0
-                matrix[0][j] = 0
-    for i in range(1, m):
-        for j in range(1, n):
-            if matrix[i][0] == 0 or matrix[0][j] == 0:
-                matrix[i][j] = 0
-    if first_col:
-        for i in range(m):
-            matrix[i][0] = 0
-    if first_row:
-        for j in range(n):
-            matrix[0][j] = 0
+    # Write your solution here
+    pass
 
 if __name__ == "__main__":
     line = sys.stdin.read().strip()
@@ -1344,25 +936,8 @@ if __name__ == "__main__":
 const fs = require('fs');
 
 function setZeroes(matrix) {
-    const m = matrix.length, n = matrix[0].length;
-    let firstRow = false, firstCol = false;
-    for (let i = 0; i < m; i++) if (matrix[i][0] === 0) firstCol = true;
-    for (let j = 0; j < n; j++) if (matrix[0][j] === 0) firstRow = true;
-    for (let i = 1; i < m; i++) {
-        for (let j = 1; j < n; j++) {
-            if (matrix[i][j] === 0) {
-                matrix[i][0] = 0;
-                matrix[0][j] = 0;
-            }
-        }
-    }
-    for (let i = 1; i < m; i++) {
-        for (let j = 1; j < n; j++) {
-            if (matrix[i][0] === 0 || matrix[0][j] === 0) matrix[i][j] = 0;
-        }
-    }
-    if (firstCol) for (let i = 0; i < m; i++) matrix[i][0] = 0;
-    if (firstRow) for (let j = 0; j < n; j++) matrix[0][j] = 0;
+    // Write your solution here
+    return null;
 }
 
 const line = fs.readFileSync(0, 'utf-8').trim();
@@ -1387,21 +962,8 @@ import java.util.*;
 
 public class Solution {
     public static int[][] insert(int[][] intervals, int[] newInterval) {
-        List<int[]> result = new ArrayList<>();
-        int i = 0, n = intervals.length;
-        while (i < n && intervals[i][1] < newInterval[0]) {
-            result.add(intervals[i++]);
-        }
-        while (i < n && intervals[i][0] <= newInterval[1]) {
-            newInterval[0] = Math.min(newInterval[0], intervals[i][0]);
-            newInterval[1] = Math.max(newInterval[1], intervals[i][1]);
-            i++;
-        }
-        result.add(newInterval);
-        while (i < n) {
-            result.add(intervals[i++]);
-        }
-        return result.toArray(new int[result.size()][]);
+        // Write your solution here
+        return new int[][]{};
     }
 
     public static void main(String[] args) {
@@ -1438,20 +1000,8 @@ import sys
 import json
 
 def insert(intervals: list[list[int]], new_interval: list[int]) -> list[list[int]]:
-    res = []
-    i, n = 0, len(intervals)
-    while i < n and intervals[i][1] < new_interval[0]:
-        res.append(intervals[i])
-        i += 1
-    while i < n and intervals[i][0] <= new_interval[1]:
-        new_interval[0] = min(new_interval[0], intervals[i][0])
-        new_interval[1] = max(new_interval[1], intervals[i][1])
-        i += 1
-    res.append(new_interval)
-    while i < n:
-        res.append(intervals[i])
-        i += 1
-    return res
+    # Write your solution here
+    pass
 
 if __name__ == "__main__":
     lines = sys.stdin.read().strip().splitlines()
@@ -1464,21 +1014,8 @@ if __name__ == "__main__":
 const fs = require('fs');
 
 function insert(intervals, newInterval) {
-    const res = [];
-    let i = 0, n = intervals.length;
-    while (i < n && intervals[i][1] < newInterval[0]) {
-        res.push(intervals[i++]);
-    }
-    while (i < n && intervals[i][0] <= newInterval[1]) {
-        newInterval[0] = Math.min(newInterval[0], intervals[i][0]);
-        newInterval[1] = Math.max(newInterval[1], intervals[i][1]);
-        i++;
-    }
-    res.push(newInterval);
-    while (i < n) {
-        res.push(intervals[i++]);
-    }
-    return res;
+    // Write your solution here
+    return null;
 }
 
 const lines = fs.readFileSync(0, 'utf-8').trim().split('\\n');

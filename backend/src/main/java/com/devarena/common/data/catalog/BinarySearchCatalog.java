@@ -17,14 +17,8 @@ import java.util.*;
 
 public class Solution {
     public static int search(int[] nums, int target) {
-        int left = 0, right = nums.length - 1;
-        while (left <= right) {
-            int mid = left + (right - left) / 2;
-            if (nums[mid] == target) return mid;
-            if (nums[mid] < target) left = mid + 1;
-            else right = mid - 1;
-        }
-        return -1;
+        // Write your solution here
+        return 0;
     }
 
     public static void main(String[] args) {
@@ -44,16 +38,8 @@ public class Solution {
 import sys
 
 def search(nums: list[int], target: int) -> int:
-    left, right = 0, len(nums) - 1
-    while left <= right:
-        mid = (left + right) // 2
-        if nums[mid] == target:
-            return mid
-        elif nums[mid] < target:
-            left = mid + 1
-        else:
-            right = mid - 1
-    return -1
+    # Write your solution here
+    pass
 
 if __name__ == "__main__":
     lines = sys.stdin.read().strip().splitlines()
@@ -66,14 +52,8 @@ if __name__ == "__main__":
 const fs = require('fs');
 
 function search(nums, target) {
-    let left = 0, right = nums.length - 1;
-    while (left <= right) {
-        const mid = Math.floor((left + right) / 2);
-        if (nums[mid] === target) return mid;
-        if (nums[mid] < target) left = mid + 1;
-        else right = mid - 1;
-    }
-    return -1;
+    // Write your solution here
+    return null;
 }
 
 const lines = fs.readFileSync(0, 'utf-8').trim().split('\\n');
@@ -99,19 +79,8 @@ import java.util.*;
 
 public class Solution {
     public static int search(int[] nums, int target) {
-        int l = 0, r = nums.length - 1;
-        while (l <= r) {
-            int mid = l + (r - l) / 2;
-            if (nums[mid] == target) return mid;
-            if (nums[l] <= nums[mid]) {
-                if (target >= nums[l] && target < nums[mid]) r = mid - 1;
-                else l = mid + 1;
-            } else {
-                if (target > nums[mid] && target <= nums[r]) l = mid + 1;
-                else r = mid - 1;
-            }
-        }
-        return -1;
+        // Write your solution here
+        return 0;
     }
 
     public static void main(String[] args) {
@@ -131,22 +100,8 @@ public class Solution {
 import sys
 
 def search(nums: list[int], target: int) -> int:
-    l, r = 0, len(nums) - 1
-    while l <= r:
-        mid = (l + r) // 2
-        if nums[mid] == target:
-            return mid
-        if nums[l] <= nums[mid]:
-            if nums[l] <= target < nums[mid]:
-                r = mid - 1
-            else:
-                l = mid + 1
-        else:
-            if nums[mid] < target <= nums[r]:
-                l = mid + 1
-            else:
-                r = mid - 1
-    return -1
+    # Write your solution here
+    pass
 
 if __name__ == "__main__":
     lines = sys.stdin.read().strip().splitlines()
@@ -159,19 +114,8 @@ if __name__ == "__main__":
 const fs = require('fs');
 
 function search(nums, target) {
-    let l = 0, r = nums.length - 1;
-    while (l <= r) {
-        const mid = Math.floor((l + r) / 2);
-        if (nums[mid] === target) return mid;
-        if (nums[l] <= nums[mid]) {
-            if (target >= nums[l] && target < nums[mid]) r = mid - 1;
-            else l = mid + 1;
-        } else {
-            if (target > nums[mid] && target <= nums[r]) l = mid + 1;
-            else r = mid - 1;
-        }
-    }
-    return -1;
+    // Write your solution here
+    return null;
 }
 
 const lines = fs.readFileSync(0, 'utf-8').trim().split('\\n');
@@ -196,13 +140,8 @@ import java.util.*;
 
 public class Solution {
     public static int findMin(int[] nums) {
-        int l = 0, r = nums.length - 1;
-        while (l < r) {
-            int mid = l + (r - l) / 2;
-            if (nums[mid] > nums[r]) l = mid + 1;
-            else r = mid;
-        }
-        return nums[l];
+        // Write your solution here
+        return 0;
     }
 
     public static void main(String[] args) {
@@ -220,14 +159,8 @@ public class Solution {
 import sys
 
 def find_min(nums: list[int]) -> int:
-    l, r = 0, len(nums) - 1
-    while l < r:
-        mid = (l + r) // 2
-        if nums[mid] > nums[r]:
-            l = mid + 1
-        else:
-            r = mid
-    return nums[l]
+    # Write your solution here
+    pass
 
 if __name__ == "__main__":
     line = sys.stdin.read().strip()
@@ -239,13 +172,8 @@ if __name__ == "__main__":
 const fs = require('fs');
 
 function findMin(nums) {
-    let l = 0, r = nums.length - 1;
-    while (l < r) {
-        const mid = Math.floor((l + r) / 2);
-        if (nums[mid] > nums[r]) l = mid + 1;
-        else r = mid;
-    }
-    return nums[l];
+    // Write your solution here
+    return null;
 }
 
 const line = fs.readFileSync(0, 'utf-8').trim();
@@ -269,17 +197,8 @@ import java.util.*;
 
 public class Solution {
     public static double findMedianSortedArrays(int[] nums1, int[] nums2) {
-        int[] merged = new int[nums1.length + nums2.length];
-        int i = 0, j = 0, k = 0;
-        while (i < nums1.length && j < nums2.length) {
-            if (nums1[i] <= nums2[j]) merged[k++] = nums1[i++];
-            else merged[k++] = nums2[j++];
-        }
-        while (i < nums1.length) merged[k++] = nums1[i++];
-        while (j < nums2.length) merged[k++] = nums2[j++];
-        int n = merged.length;
-        if (n % 2 == 1) return (double) merged[n / 2];
-        else return (merged[n / 2 - 1] + merged[n / 2]) / 2.0;
+        // Write your solution here
+        return 0.0;
     }
 
     public static void main(String[] args) {
@@ -296,11 +215,8 @@ public class Solution {
 import sys
 
 def find_median_sorted_arrays(nums1: list[int], nums2: list[int]) -> float:
-    merged = sorted(nums1 + nums2)
-    n = len(merged)
-    if n % 2 == 1:
-        return float(merged[n // 2])
-    return (merged[n // 2 - 1] + merged[n // 2]) / 2.0
+    # Write your solution here
+    pass
 
 if __name__ == "__main__":
     lines = sys.stdin.read().splitlines()
@@ -312,10 +228,8 @@ if __name__ == "__main__":
 const fs = require('fs');
 
 function findMedianSortedArrays(nums1, nums2) {
-    const merged = [...nums1, ...nums2].sort((a, b) => a - b);
-    const n = merged.length;
-    if (n % 2 === 1) return merged[Math.floor(n / 2)].toFixed(1);
-    return ((merged[n / 2 - 1] + merged[n / 2]) / 2).toFixed(1);
+    // Write your solution here
+    return null;
 }
 
 const lines = fs.readFileSync(0, 'utf-8').split('\\n');
@@ -338,24 +252,8 @@ import java.util.*;
 
 public class Solution {
     public static int[] searchRange(int[] nums, int target) {
-        int first = findBound(nums, target, true);
-        if (first == -1) return new int[]{-1, -1};
-        int last = findBound(nums, target, false);
-        return new int[]{first, last};
-    }
-
-    private static int findBound(int[] nums, int target, boolean isFirst) {
-        int l = 0, r = nums.length - 1, ans = -1;
-        while (l <= r) {
-            int mid = l + (r - l) / 2;
-            if (nums[mid] == target) {
-                ans = mid;
-                if (isFirst) r = mid - 1;
-                else l = mid + 1;
-            } else if (nums[mid] < target) l = mid + 1;
-            else r = mid - 1;
-        }
-        return ans;
+        // Write your solution here
+        return new int[]{};
     }
 
     public static void main(String[] args) {
@@ -372,9 +270,8 @@ public class Solution {
 import sys
 
 def search_range(nums: list[int], target: int) -> list[int]:
-    if target not in nums:
-        return [-1, -1]
-    return [nums.index(target), len(nums) - 1 - nums[::-1].index(target)]
+    # Write your solution here
+    pass
 
 if __name__ == "__main__":
     lines = sys.stdin.read().splitlines()
@@ -387,9 +284,8 @@ if __name__ == "__main__":
 const fs = require('fs');
 
 function searchRange(nums, target) {
-    const first = nums.indexOf(target);
-    const last = nums.lastIndexOf(target);
-    return [first, last];
+    // Write your solution here
+    return null;
 }
 
 const lines = fs.readFileSync(0, 'utf-8').split('\\n');

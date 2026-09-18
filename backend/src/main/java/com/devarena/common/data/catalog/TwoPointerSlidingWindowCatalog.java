@@ -17,13 +17,7 @@ import java.util.*;
 
 public class Solution {
     public static int[] twoSum(int[] numbers, int target) {
-        int l = 0, r = numbers.length - 1;
-        while (l < r) {
-            int sum = numbers[l] + numbers[r];
-            if (sum == target) return new int[]{l + 1, r + 1};
-            else if (sum < target) l++;
-            else r--;
-        }
+        // Write your solution here
         return new int[]{};
     }
 
@@ -44,16 +38,8 @@ public class Solution {
 import sys
 
 def two_sum(numbers: list[int], target: int) -> list[int]:
-    l, r = 0, len(numbers) - 1
-    while l < r:
-        s = numbers[l] + numbers[r]
-        if s == target:
-            return [l + 1, r + 1]
-        elif s < target:
-            l += 1
-        else:
-            r -= 1
-    return []
+    # Write your solution here
+    pass
 
 if __name__ == "__main__":
     lines = sys.stdin.read().strip().splitlines()
@@ -66,14 +52,8 @@ if __name__ == "__main__":
 const fs = require('fs');
 
 function twoSum(numbers, target) {
-    let l = 0, r = numbers.length - 1;
-    while (l < r) {
-        const sum = numbers[l] + numbers[r];
-        if (sum === target) return [l + 1, r + 1];
-        else if (sum < target) l++;
-        else r--;
-    }
-    return [];
+    // Write your solution here
+    return null;
 }
 
 const lines = fs.readFileSync(0, 'utf-8').trim().split('\\n');
@@ -99,20 +79,8 @@ import java.util.*;
 
 public class Solution {
     public static int threeSumClosest(int[] nums, int target) {
-        Arrays.sort(nums);
-        int closest = nums[0] + nums[1] + nums[2];
-        for (int i = 0; i < nums.length - 2; i++) {
-            int l = i + 1, r = nums.length - 1;
-            while (l < r) {
-                int sum = nums[i] + nums[l] + nums[r];
-                if (Math.abs(sum - target) < Math.abs(closest - target)) {
-                    closest = sum;
-                }
-                if (sum < target) l++;
-                else r--;
-            }
-        }
-        return closest;
+        // Write your solution here
+        return 0;
     }
 
     public static void main(String[] args) {
@@ -132,19 +100,8 @@ public class Solution {
 import sys
 
 def three_sum_closest(nums: list[int], target: int) -> int:
-    nums.sort()
-    closest = nums[0] + nums[1] + nums[2]
-    for i in range(len(nums) - 2):
-        l, r = i + 1, len(nums) - 1
-        while l < r:
-            s = nums[i] + nums[l] + nums[r]
-            if abs(s - target) < abs(closest - target):
-                closest = s
-            if s < target:
-                l += 1
-            else:
-                r -= 1
-    return closest
+    # Write your solution here
+    pass
 
 if __name__ == "__main__":
     lines = sys.stdin.read().strip().splitlines()
@@ -157,20 +114,8 @@ if __name__ == "__main__":
 const fs = require('fs');
 
 function threeSumClosest(nums, target) {
-    nums.sort((a, b) => a - b);
-    let closest = nums[0] + nums[1] + nums[2];
-    for (let i = 0; i < nums.length - 2; i++) {
-        let l = i + 1, r = nums.length - 1;
-        while (l < r) {
-            const sum = nums[i] + nums[l] + nums[r];
-            if (Math.abs(sum - target) < Math.abs(closest - target)) {
-                closest = sum;
-            }
-            if (sum < target) l++;
-            else r--;
-        }
-    }
-    return closest;
+    // Write your solution here
+    return null;
 }
 
 const lines = fs.readFileSync(0, 'utf-8').trim().split('\\n');
@@ -195,27 +140,8 @@ import java.util.*;
 
 public class Solution {
     public static List<List<Integer>> fourSum(int[] nums, int target) {
-        Arrays.sort(nums);
-        List<List<Integer>> res = new ArrayList<>();
-        int n = nums.length;
-        for (int i = 0; i < n - 3; i++) {
-            if (i > 0 && nums[i] == nums[i - 1]) continue;
-            for (int j = i + 1; j < n - 2; j++) {
-                if (j > i + 1 && nums[j] == nums[j - 1]) continue;
-                int l = j + 1, r = n - 1;
-                while (l < r) {
-                    long sum = (long) nums[i] + nums[j] + nums[l] + nums[r];
-                    if (sum == target) {
-                        res.add(List.of(nums[i], nums[j], nums[l], nums[r]));
-                        while (l < r && nums[l] == nums[l + 1]) l++;
-                        while (l < r && nums[r] == nums[r - 1]) r--;
-                        l++; r--;
-                    } else if (sum < target) l++;
-                    else r--;
-                }
-            }
-        }
-        return res;
+        // Write your solution here
+        return new ArrayList<>();
     }
 
     public static void main(String[] args) {
@@ -235,31 +161,8 @@ public class Solution {
 import sys
 
 def four_sum(nums: list[int], target: int) -> list[list[int]]:
-    nums.sort()
-    res = []
-    n = len(nums)
-    for i in range(n - 3):
-        if i > 0 and nums[i] == nums[i - 1]:
-            continue
-        for j in range(i + 1, n - 2):
-            if j > i + 1 and nums[j] == nums[j - 1]:
-                continue
-            l, r = j + 1, n - 1
-            while l < r:
-                s = nums[i] + nums[j] + nums[l] + nums[r]
-                if s == target:
-                    res.append([nums[i], nums[j], nums[l], nums[r]])
-                    while l < r and nums[l] == nums[l + 1]:
-                        l += 1
-                    while l < r and nums[r] == nums[r - 1]:
-                        r -= 1
-                    l += 1
-                    r -= 1
-                elif s < target:
-                    l += 1
-                else:
-                    r -= 1
-    return res
+    # Write your solution here
+    pass
 
 if __name__ == "__main__":
     lines = sys.stdin.read().strip().splitlines()
@@ -272,27 +175,8 @@ if __name__ == "__main__":
 const fs = require('fs');
 
 function fourSum(nums, target) {
-    nums.sort((a, b) => a - b);
-    const res = [];
-    const n = nums.length;
-    for (let i = 0; i < n - 3; i++) {
-        if (i > 0 && nums[i] === nums[i - 1]) continue;
-        for (let j = i + 1; j < n - 2; j++) {
-            if (j > i + 1 && nums[j] === nums[j - 1]) continue;
-            let l = j + 1, r = n - 1;
-            while (l < r) {
-                const sum = nums[i] + nums[j] + nums[l] + nums[r];
-                if (sum === target) {
-                    res.push([nums[i], nums[j], nums[l], nums[r]]);
-                    while (l < r && nums[l] === nums[l + 1]) l++;
-                    while (l < r && nums[r] === nums[r - 1]) r--;
-                    l++; r--;
-                } else if (sum < target) l++;
-                else r--;
-            }
-        }
-    }
-    return res;
+    // Write your solution here
+    return null;
 }
 
 const lines = fs.readFileSync(0, 'utf-8').trim().split('\\n');
@@ -316,18 +200,8 @@ import java.util.*;
 
 public class Solution {
     public static int[] maxSlidingWindow(int[] nums, int k) {
-        if (nums == null || k <= 0) return new int[0];
-        int n = nums.length;
-        int[] res = new int[n - k + 1];
-        int ri = 0;
-        Deque<Integer> q = new ArrayDeque<>();
-        for (int i = 0; i < nums.length; i++) {
-            while (!q.isEmpty() && q.peek() < i - k + 1) q.poll();
-            while (!q.isEmpty() && nums[q.peekLast()] < nums[i]) q.pollLast();
-            q.offer(i);
-            if (i >= k - 1) res[ri++] = nums[q.peek()];
-        }
-        return res;
+        // Write your solution here
+        return new int[]{};
     }
 
     public static void main(String[] args) {
@@ -348,17 +222,8 @@ import sys
 from collections import deque
 
 def max_sliding_window(nums: list[int], k: int) -> list[int]:
-    d = deque()
-    out = []
-    for i, n in enumerate(nums):
-        while d and nums[d[-1]] < n:
-            d.pop()
-        d.append(i)
-        if d[0] == i - k:
-            d.popleft()
-        if i >= k - 1:
-            out.append(nums[d[0]])
-    return out
+    # Write your solution here
+    pass
 
 if __name__ == "__main__":
     lines = sys.stdin.read().strip().splitlines()
@@ -371,15 +236,8 @@ if __name__ == "__main__":
 const fs = require('fs');
 
 function maxSlidingWindow(nums, k) {
-    const q = [];
-    const res = [];
-    for (let i = 0; i < nums.length; i++) {
-        while (q.length && q[0] < i - k + 1) q.shift();
-        while (q.length && nums[q[q.length - 1]] < nums[i]) q.pop();
-        q.push(i);
-        if (i >= k - 1) res.push(nums[q[0]]);
-    }
-    return res;
+    // Write your solution here
+    return null;
 }
 
 const lines = fs.readFileSync(0, 'utf-8').trim().split('\\n');
@@ -405,15 +263,8 @@ import java.util.*;
 
 public class Solution {
     public static int minSubArrayLen(int target, int[] nums) {
-        int left = 0, sum = 0, minLen = Integer.MAX_VALUE;
-        for (int right = 0; right < nums.length; right++) {
-            sum += nums[right];
-            while (sum >= target) {
-                minLen = Math.min(minLen, right - left + 1);
-                sum -= nums[left++];
-            }
-        }
-        return minLen == Integer.MAX_VALUE ? 0 : minLen;
+        // Write your solution here
+        return 0;
     }
 
     public static void main(String[] args) {
@@ -433,15 +284,8 @@ public class Solution {
 import sys
 
 def min_sub_array_len(target: int, nums: list[int]) -> int:
-    l, s = 0, 0
-    res = float('inf')
-    for r in range(len(nums)):
-        s += nums[r]
-        while s >= target:
-            res = min(res, r - l + 1)
-            s -= nums[l]
-            l += 1
-    return 0 if res == float('inf') else res
+    # Write your solution here
+    pass
 
 if __name__ == "__main__":
     lines = sys.stdin.read().strip().splitlines()
@@ -454,15 +298,8 @@ if __name__ == "__main__":
 const fs = require('fs');
 
 function minSubArrayLen(target, nums) {
-    let left = 0, sum = 0, minLen = Infinity;
-    for (let right = 0; right < nums.length; right++) {
-        sum += nums[right];
-        while (sum >= target) {
-            minLen = Math.min(minLen, right - left + 1);
-            sum -= nums[left++];
-        }
-    }
-    return minLen === Infinity ? 0 : minLen;
+    // Write your solution here
+    return null;
 }
 
 const lines = fs.readFileSync(0, 'utf-8').trim().split('\\n');

@@ -17,14 +17,8 @@ import java.util.*;
 
 public class Solution {
     public static boolean isValid(String s) {
-        Stack<Character> stack = new Stack<>();
-        for (char c : s.toCharArray()) {
-            if (c == '(') stack.push(')');
-            else if (c == '{') stack.push('}');
-            else if (c == '[') stack.push(']');
-            else if (stack.isEmpty() || stack.pop() != c) return false;
-        }
-        return stack.isEmpty();
+        // Write your solution here
+        return false;
     }
 
     public static void main(String[] args) {
@@ -38,16 +32,8 @@ public class Solution {
 import sys
 
 def is_valid(s: str) -> bool:
-    stack = []
-    mapping = {")": "(", "}": "{", "]": "["}
-    for char in s:
-        if char in mapping:
-            top = stack.pop() if stack else '#'
-            if mapping[char] != top:
-                return False
-        else:
-            stack.append(char)
-    return not stack
+    # Write your solution here
+    pass
 
 if __name__ == "__main__":
     s = sys.stdin.read().strip()
@@ -57,16 +43,8 @@ if __name__ == "__main__":
 const fs = require('fs');
 
 function isValid(s) {
-    const stack = [];
-    const map = { ')': '(', '}': '{', ']': '[' };
-    for (const ch of s) {
-        if (ch === '(' || ch === '{' || ch === '[') {
-            stack.push(ch);
-        } else if (map[ch]) {
-            if (stack.pop() !== map[ch]) return false;
-        }
-    }
-    return stack.length === 0;
+    // Write your solution here
+    return null;
 }
 
 const s = fs.readFileSync(0, 'utf-8').trim();
@@ -119,29 +97,8 @@ public class Solution {
 import sys
 
 def solve():
-    lines = sys.stdin.read().strip().splitlines()
-    stack = []
-    min_stack = []
-    out = []
-    for line in lines:
-        parts = line.strip().split()
-        if not parts:
-            continue
-        op = parts[0]
-        if op == "push":
-            val = int(parts[1])
-            stack.append(val)
-            if not min_stack or val <= min_stack[-1]:
-                min_stack.append(val)
-        elif op == "pop":
-            val = stack.pop()
-            if val == min_stack[-1]:
-                min_stack.pop()
-        elif op == "top":
-            out.append(stack[-1])
-        elif op == "getMin":
-            out.append(min_stack[-1])
-    print(str(out))
+    # Write your solution here
+    pass
 
 if __name__ == "__main__":
     solve()
@@ -150,7 +107,11 @@ if __name__ == "__main__":
 const fs = require('fs');
 
 function solve() {
-    const lines = fs.readFileSync(0, 'utf-8').trim().split('\\n');
+    // Write your solution here
+    return null;
+}
+
+const lines = fs.readFileSync(0, 'utf-8').trim().split('\\n');
     const stack = [];
     const minStack = [];
     const out = [];
@@ -190,19 +151,8 @@ import java.util.*;
 
 public class Solution {
     public static int evalRPN(String[] tokens) {
-        Stack<Integer> stack = new Stack<>();
-        for (String t : tokens) {
-            if (t.equals("+")) stack.push(stack.pop() + stack.pop());
-            else if (t.equals("-")) {
-                int b = stack.pop(), a = stack.pop();
-                stack.push(a - b);
-            } else if (t.equals("*")) stack.push(stack.pop() * stack.pop());
-            else if (t.equals("/")) {
-                int b = stack.pop(), a = stack.pop();
-                stack.push(a / b);
-            } else stack.push(Integer.parseInt(t));
-        }
-        return stack.pop();
+        // Write your solution here
+        return 0;
     }
 
     public static void main(String[] args) {
@@ -219,17 +169,8 @@ public class Solution {
 import sys
 
 def eval_rpn(tokens: list[str]) -> int:
-    stack = []
-    for t in tokens:
-        if t in "+-*/":
-            b, a = stack.pop(), stack.pop()
-            if t == "+": stack.append(a + b)
-            elif t == "-": stack.append(a - b)
-            elif t == "*": stack.append(a * b)
-            elif t == "/": stack.append(int(a / b))
-        else:
-            stack.append(int(t))
-    return stack[0]
+    # Write your solution here
+    pass
 
 if __name__ == "__main__":
     line = sys.stdin.read().strip()
@@ -241,21 +182,8 @@ if __name__ == "__main__":
 const fs = require('fs');
 
 function evalRPN(tokens) {
-    const stack = [];
-    for (const t of tokens) {
-        if (t === "+") stack.push(stack.pop() + stack.pop());
-        else if (t === "-") {
-            const b = stack.pop(), a = stack.pop();
-            stack.push(a - b);
-        } else if (t === "*") stack.push(stack.pop() * stack.pop());
-        else if (t === "/") {
-            const b = stack.pop(), a = stack.pop();
-            stack.push(Math.trunc(a / b));
-        } else {
-            stack.push(parseInt(t, 10));
-        }
-    }
-    return stack.pop();
+    // Write your solution here
+    return null;
 }
 
 const line = fs.readFileSync(0, 'utf-8').trim();
@@ -279,17 +207,8 @@ import java.util.*;
 
 public class Solution {
     public static int[] dailyTemperatures(int[] temperatures) {
-        int n = temperatures.length;
-        int[] res = new int[n];
-        Stack<Integer> stack = new Stack<>();
-        for (int i = 0; i < n; i++) {
-            while (!stack.isEmpty() && temperatures[i] > temperatures[stack.peek()]) {
-                int prev = stack.pop();
-                res[prev] = i - prev;
-            }
-            stack.push(i);
-        }
-        return res;
+        // Write your solution here
+        return new int[]{};
     }
 
     public static void main(String[] args) {
@@ -307,15 +226,8 @@ public class Solution {
 import sys
 
 def daily_temperatures(temperatures: list[int]) -> list[int]:
-    n = len(temperatures)
-    res = [0] * n
-    stack = []
-    for i, t in enumerate(temperatures):
-        while stack and t > temperatures[stack[-1]]:
-            prev = stack.pop()
-            res[prev] = i - prev
-        stack.append(i)
-    return res
+    # Write your solution here
+    pass
 
 if __name__ == "__main__":
     line = sys.stdin.read().strip()
@@ -327,17 +239,8 @@ if __name__ == "__main__":
 const fs = require('fs');
 
 function dailyTemperatures(temperatures) {
-    const n = temperatures.length;
-    const res = new Array(n).fill(0);
-    const stack = [];
-    for (let i = 0; i < n; i++) {
-        while (stack.length && temperatures[i] > temperatures[stack[stack.length - 1]]) {
-            const prev = stack.pop();
-            res[prev] = i - prev;
-        }
-        stack.push(i);
-    }
-    return res;
+    // Write your solution here
+    return null;
 }
 
 const line = fs.readFileSync(0, 'utf-8').trim();
@@ -361,19 +264,8 @@ import java.util.*;
 
 public class Solution {
     public static int largestRectangleArea(int[] heights) {
-        Stack<Integer> stack = new Stack<>();
-        int maxArea = 0;
-        int n = heights.length;
-        for (int i = 0; i <= n; i++) {
-            int h = (i == n) ? 0 : heights[i];
-            while (!stack.isEmpty() && h < heights[stack.peek()]) {
-                int height = heights[stack.pop()];
-                int width = stack.isEmpty() ? i : i - stack.peek() - 1;
-                maxArea = Math.max(maxArea, height * width);
-            }
-            stack.push(i);
-        }
-        return maxArea;
+        // Write your solution here
+        return 0;
     }
 
     public static void main(String[] args) {
@@ -391,16 +283,8 @@ public class Solution {
 import sys
 
 def largest_rectangle_area(heights: list[int]) -> int:
-    stack = []
-    max_area = 0
-    heights.append(0)
-    for i, h in enumerate(heights):
-        while stack and h < heights[stack[-1]]:
-            height = heights[stack.pop()]
-            width = i if not stack else i - stack[-1] - 1
-            max_area = max(max_area, height * width)
-        stack.append(i)
-    return max_area
+    # Write your solution here
+    pass
 
 if __name__ == "__main__":
     line = sys.stdin.read().strip()
@@ -412,19 +296,8 @@ if __name__ == "__main__":
 const fs = require('fs');
 
 function largestRectangleArea(heights) {
-    const stack = [];
-    let maxArea = 0;
-    const extended = [...heights, 0];
-    for (let i = 0; i < extended.length; i++) {
-        const h = extended[i];
-        while (stack.length && h < extended[stack[stack.length - 1]]) {
-            const height = extended[stack.pop()];
-            const width = stack.length === 0 ? i : i - stack[stack.length - 1] - 1;
-            maxArea = Math.max(maxArea, height * width);
-        }
-        stack.push(i);
-    }
-    return maxArea;
+    // Write your solution here
+    return null;
 }
 
 const line = fs.readFileSync(0, 'utf-8').trim();
@@ -476,29 +349,8 @@ import sys
 from collections import OrderedDict
 
 def solve():
-    lines = sys.stdin.read().strip().splitlines()
-    cache = OrderedDict()
-    capacity = 2
-    out = []
-    for line in lines:
-        parts = line.strip().split()
-        if not parts:
-            continue
-        if parts[0] == "put":
-            k, v = int(parts[1]), int(parts[2])
-            if k in cache:
-                cache.move_to_end(k)
-            cache[k] = v
-            if len(cache) > capacity:
-                cache.popitem(last=False)
-        elif parts[0] == "get":
-            k = int(parts[1])
-            if k in cache:
-                cache.move_to_end(k)
-                out.append(cache[k])
-            else:
-                out.append(-1)
-    print(str(out))
+    # Write your solution here
+    pass
 
 if __name__ == "__main__":
     solve()
@@ -507,7 +359,11 @@ if __name__ == "__main__":
 const fs = require('fs');
 
 function solve() {
-    const lines = fs.readFileSync(0, 'utf-8').trim().split('\\n');
+    // Write your solution here
+    return null;
+}
+
+const lines = fs.readFileSync(0, 'utf-8').trim().split('\\n');
     const map = new Map();
     const capacity = 2;
     const out = [];
@@ -552,18 +408,8 @@ import java.util.*;
 
 public class Solution {
     public static int[] asteroidCollision(int[] asteroids) {
-        Stack<Integer> stack = new Stack<>();
-        for (int ast : asteroids) {
-            boolean alive = true;
-            while (alive && ast < 0 && !stack.isEmpty() && stack.peek() > 0) {
-                alive = stack.peek() < -ast;
-                if (stack.peek() <= -ast) stack.pop();
-            }
-            if (alive) stack.push(ast);
-        }
-        int[] res = new int[stack.size()];
-        for (int i = res.length - 1; i >= 0; i--) res[i] = stack.pop();
-        return res;
+        // Write your solution here
+        return new int[]{};
     }
 
     public static void main(String[] args) {
@@ -581,16 +427,8 @@ public class Solution {
 import sys
 
 def asteroid_collision(asteroids: list[int]) -> list[int]:
-    stack = []
-    for ast in asteroids:
-        alive = True
-        while alive and ast < 0 and stack and stack[-1] > 0:
-            alive = stack[-1] < -ast
-            if stack[-1] <= -ast:
-                stack.pop()
-        if alive:
-            stack.append(ast)
-    return stack
+    # Write your solution here
+    pass
 
 if __name__ == "__main__":
     line = sys.stdin.read().strip()
@@ -602,16 +440,8 @@ if __name__ == "__main__":
 const fs = require('fs');
 
 function asteroidCollision(asteroids) {
-    const stack = [];
-    for (const ast of asteroids) {
-        let alive = true;
-        while (alive && ast < 0 && stack.length && stack[stack.length - 1] > 0) {
-            alive = stack[stack.length - 1] < -ast;
-            if (stack[stack.length - 1] <= -ast) stack.pop();
-        }
-        if (alive) stack.push(ast);
-    }
-    return stack;
+    // Write your solution here
+    return null;
 }
 
 const line = fs.readFileSync(0, 'utf-8').trim();
@@ -636,33 +466,8 @@ import java.util.*;
 
 public class Solution {
     public static int calculate(String s) {
-        Stack<Integer> stack = new Stack<>();
-        int result = 0, number = 0, sign = 1;
-        for (int i = 0; i < s.length(); i++) {
-            char c = s.charAt(i);
-            if (Character.isDigit(c)) number = 10 * number + (c - '0');
-            else if (c == '+') {
-                result += sign * number;
-                number = 0;
-                sign = 1;
-            } else if (c == '-') {
-                result += sign * number;
-                number = 0;
-                sign = -1;
-            } else if (c == '(') {
-                stack.push(result);
-                stack.push(sign);
-                sign = 1;
-                result = 0;
-            } else if (c == ')') {
-                result += sign * number;
-                number = 0;
-                result *= stack.pop();
-                result += stack.pop();
-            }
-        }
-        if (number != 0) result += sign * number;
-        return result;
+        // Write your solution here
+        return 0;
     }
 
     public static void main(String[] args) {
@@ -676,29 +481,8 @@ public class Solution {
 import sys
 
 def calculate(s: str) -> int:
-    stack = []
-    res, num, sign = 0, 0, 1
-    for c in s:
-        if c.isdigit():
-            num = 10 * num + int(c)
-        elif c == '+':
-            res += sign * num
-            num, sign = 0, 1
-        elif c == '-':
-            res += sign * num
-            num, sign = 0, -1
-        elif c == '(':
-            stack.append(res)
-            stack.append(sign)
-            res, sign = 0, 1
-        elif c == ')':
-            res += sign * num
-            num = 0
-            res *= stack.pop()
-            res += stack.pop()
-    if num:
-        res += sign * num
-    return res
+    # Write your solution here
+    pass
 
 if __name__ == "__main__":
     s = sys.stdin.read().strip()
@@ -708,34 +492,8 @@ if __name__ == "__main__":
 const fs = require('fs');
 
 function calculate(s) {
-    const stack = [];
-    let res = 0, num = 0, sign = 1;
-    for (let i = 0; i < s.length; i++) {
-        const c = s[i];
-        if (c >= '0' && c <= '9') {
-            num = 10 * num + (c.charCodeAt(0) - 48);
-        } else if (c === '+') {
-            res += sign * num;
-            num = 0;
-            sign = 1;
-        } else if (c === '-') {
-            res += sign * num;
-            num = 0;
-            sign = -1;
-        } else if (c === '(') {
-            stack.push(res);
-            stack.push(sign);
-            res = 0;
-            sign = 1;
-        } else if (c === ')') {
-            res += sign * num;
-            num = 0;
-            res *= stack.pop();
-            res += stack.pop();
-        }
-    }
-    if (num) res += sign * num;
-    return res;
+    // Write your solution here
+    return null;
 }
 
 const s = fs.readFileSync(0, 'utf-8').trim();
@@ -787,27 +545,8 @@ public class Solution {
 import sys
 
 def solve():
-    lines = sys.stdin.read().strip().splitlines()
-    in_s, out_s = [], []
-    res = []
-    for line in lines:
-        parts = line.strip().split()
-        if not parts:
-            continue
-        op = parts[0]
-        if op == "push":
-            in_s.append(int(parts[1]))
-        elif op in ("pop", "peek"):
-            if not out_s:
-                while in_s:
-                    out_s.append(in_s.pop())
-            if op == "pop":
-                res.append(out_s.pop())
-            else:
-                res.append(out_s[-1])
-        elif op == "empty":
-            res.append(str(not in_s and not out_s).lower())
-    print(f"[{', '.join(map(str, res))}]")
+    # Write your solution here
+    pass
 
 if __name__ == "__main__":
     solve()
@@ -816,7 +555,11 @@ if __name__ == "__main__":
 const fs = require('fs');
 
 function solve() {
-    const lines = fs.readFileSync(0, 'utf-8').trim().split('\\n');
+    // Write your solution here
+    return null;
+}
+
+const lines = fs.readFileSync(0, 'utf-8').trim().split('\\n');
     const inS = [], outS = [];
     const res = [];
     for (const line of lines) {
@@ -853,19 +596,8 @@ import java.util.*;
 
 public class Solution {
     public static int[] nextGreaterElement(int[] nums1, int[] nums2) {
-        Map<Integer, Integer> map = new HashMap<>();
-        Stack<Integer> stack = new Stack<>();
-        for (int num : nums2) {
-            while (!stack.isEmpty() && stack.peek() < num) {
-                map.put(stack.pop(), num);
-            }
-            stack.push(num);
-        }
-        int[] res = new int[nums1.length];
-        for (int i = 0; i < nums1.length; i++) {
-            res[i] = map.getOrDefault(nums1[i], -1);
-        }
-        return res;
+        // Write your solution here
+        return new int[]{};
     }
 
     public static void main(String[] args) {
@@ -885,13 +617,8 @@ public class Solution {
 import sys
 
 def next_greater_element(nums1: list[int], nums2: list[int]) -> list[int]:
-    mapping = {}
-    stack = []
-    for n in nums2:
-        while stack and stack[-1] < n:
-            mapping[stack.pop()] = n
-        stack.append(n)
-    return [mapping.get(n, -1) for n in nums1]
+    # Write your solution here
+    pass
 
 if __name__ == "__main__":
     lines = sys.stdin.read().strip().splitlines()
@@ -904,15 +631,8 @@ if __name__ == "__main__":
 const fs = require('fs');
 
 function nextGreaterElement(nums1, nums2) {
-    const map = new Map();
-    const stack = [];
-    for (const n of nums2) {
-        while (stack.length && stack[stack.length - 1] < n) {
-            map.set(stack.pop(), n);
-        }
-        stack.push(n);
-    }
-    return nums1.map(n => map.has(n) ? map.get(n) : -1);
+    // Write your solution here
+    return null;
 }
 
 const lines = fs.readFileSync(0, 'utf-8').trim().split('\\n');
@@ -936,17 +656,8 @@ import java.util.*;
 
 public class Solution {
     public static List<Integer> stockSpans(int[] prices) {
-        List<Integer> res = new ArrayList<>();
-        Stack<int[]> stack = new Stack<>();
-        for (int p : prices) {
-            int span = 1;
-            while (!stack.isEmpty() && stack.peek()[0] <= p) {
-                span += stack.pop()[1];
-            }
-            stack.push(new int[]{p, span});
-            res.add(span);
-        }
-        return res;
+        // Write your solution here
+        return new ArrayList<>();
     }
 
     public static void main(String[] args) {
@@ -964,15 +675,8 @@ public class Solution {
 import sys
 
 def stock_spans(prices: list[int]) -> list[int]:
-    stack = []
-    res = []
-    for p in prices:
-        span = 1
-        while stack and stack[-1][0] <= p:
-            span += stack.pop()[1]
-        stack.append((p, span))
-        res.append(span)
-    return res
+    # Write your solution here
+    pass
 
 if __name__ == "__main__":
     line = sys.stdin.read().strip()
@@ -984,17 +688,8 @@ if __name__ == "__main__":
 const fs = require('fs');
 
 function stockSpans(prices) {
-    const stack = [];
-    const res = [];
-    for (const p of prices) {
-        let span = 1;
-        while (stack.length && stack[stack.length - 1][0] <= p) {
-            span += stack.pop()[1];
-        }
-        stack.push([p, span]);
-        res.push(span);
-    }
-    return res;
+    // Write your solution here
+    return null;
 }
 
 const line = fs.readFileSync(0, 'utf-8').trim();

@@ -17,14 +17,8 @@ import java.util.*;
 
 public class Solution {
     public static int climbStairs(int n) {
-        if (n <= 2) return n;
-        int a = 1, b = 2;
-        for (int i = 3; i <= n; i++) {
-            int c = a + b;
-            a = b;
-            b = c;
-        }
-        return b;
+        // Write your solution here
+        return 0;
     }
 
     public static void main(String[] args) {
@@ -39,12 +33,8 @@ public class Solution {
 import sys
 
 def climb_stairs(n: int) -> int:
-    if n <= 2:
-        return n
-    a, b = 1, 2
-    for _ in range(3, n + 1):
-        a, b = b, a + b
-    return b
+    # Write your solution here
+    pass
 
 if __name__ == "__main__":
     raw = sys.stdin.read().strip()
@@ -55,14 +45,8 @@ if __name__ == "__main__":
 const fs = require('fs');
 
 function climbStairs(n) {
-    if (n <= 2) return n;
-    let a = 1, b = 2;
-    for (let i = 3; i <= n; i++) {
-        const c = a + b;
-        a = b;
-        b = c;
-    }
-    return b;
+    // Write your solution here
+    return null;
 }
 
 const raw = fs.readFileSync(0, 'utf-8').trim();
@@ -86,15 +70,8 @@ import java.util.*;
 
 public class Solution {
     public static int coinChange(int[] coins, int amount) {
-        int[] dp = new int[amount + 1];
-        Arrays.fill(dp, amount + 1);
-        dp[0] = 0;
-        for (int i = 1; i <= amount; i++) {
-            for (int coin : coins) {
-                if (i >= coin) dp[i] = Math.min(dp[i], dp[i - coin] + 1);
-            }
-        }
-        return dp[amount] > amount ? -1 : dp[amount];
+        // Write your solution here
+        return 0;
     }
 
     public static void main(String[] args) {
@@ -114,13 +91,8 @@ public class Solution {
 import sys
 
 def coin_change(coins: list[int], amount: int) -> int:
-    dp = [float('inf')] * (amount + 1)
-    dp[0] = 0
-    for i in range(1, amount + 1):
-        for c in coins:
-            if i >= c:
-                dp[i] = min(dp[i], dp[i - c] + 1)
-    return dp[amount] if dp[amount] != float('inf') else -1
+    # Write your solution here
+    pass
 
 if __name__ == "__main__":
     lines = sys.stdin.read().strip().splitlines()
@@ -133,14 +105,8 @@ if __name__ == "__main__":
 const fs = require('fs');
 
 function coinChange(coins, amount) {
-    const dp = new Array(amount + 1).fill(Infinity);
-    dp[0] = 0;
-    for (let i = 1; i <= amount; i++) {
-        for (const coin of coins) {
-            if (i >= coin) dp[i] = Math.min(dp[i], dp[i - coin] + 1);
-        }
-    }
-    return dp[amount] === Infinity ? -1 : dp[amount];
+    // Write your solution here
+    return null;
 }
 
 const lines = fs.readFileSync(0, 'utf-8').trim().split('\\n');
@@ -166,14 +132,8 @@ import java.util.*;
 
 public class Solution {
     public static int lengthOfLIS(int[] nums) {
-        List<Integer> piles = new ArrayList<>();
-        for (int num : nums) {
-            int idx = Collections.binarySearch(piles, num);
-            if (idx < 0) idx = -(idx + 1);
-            if (idx == piles.size()) piles.add(num);
-            else piles.set(idx, num);
-        }
-        return piles.size();
+        // Write your solution here
+        return 0;
     }
 
     public static void main(String[] args) {
@@ -192,14 +152,8 @@ import sys
 import bisect
 
 def length_of_lis(nums: list[int]) -> int:
-    piles = []
-    for n in nums:
-        idx = bisect.bisect_left(piles, n)
-        if idx == len(piles):
-            piles.append(n)
-        else:
-            piles[idx] = n
-    return len(piles)
+    # Write your solution here
+    pass
 
 if __name__ == "__main__":
     line = sys.stdin.read().strip()
@@ -211,18 +165,8 @@ if __name__ == "__main__":
 const fs = require('fs');
 
 function lengthOfLIS(nums) {
-    const piles = [];
-    for (const num of nums) {
-        let l = 0, r = piles.length;
-        while (l < r) {
-            const mid = Math.floor((l + r) / 2);
-            if (piles[mid] < num) l = mid + 1;
-            else r = mid;
-        }
-        if (l === piles.length) piles.push(num);
-        else piles[l] = num;
-    }
-    return piles.length;
+    // Write your solution here
+    return null;
 }
 
 const line = fs.readFileSync(0, 'utf-8').trim();
@@ -246,18 +190,8 @@ import java.util.*;
 
 public class Solution {
     public static int longestCommonSubsequence(String text1, String text2) {
-        int m = text1.length(), n = text2.length();
-        int[][] dp = new int[m + 1][n + 1];
-        for (int i = 1; i <= m; i++) {
-            for (int j = 1; j <= n; j++) {
-                if (text1.charAt(i - 1) == text2.charAt(j - 1)) {
-                    dp[i][j] = dp[i - 1][j - 1] + 1;
-                } else {
-                    dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
-                }
-            }
-        }
-        return dp[m][n];
+        // Write your solution here
+        return 0;
     }
 
     public static void main(String[] args) {
@@ -274,15 +208,8 @@ public class Solution {
 import sys
 
 def longest_common_subsequence(text1: str, text2: str) -> int:
-    m, n = len(text1), len(text2)
-    dp = [[0] * (n + 1) for _ in range(m + 1)]
-    for i in range(1, m + 1):
-        for j in range(1, n + 1):
-            if text1[i - 1] == text2[j - 1]:
-                dp[i][j] = dp[i - 1][j - 1] + 1
-            else:
-                dp[i][j] = max(dp[i - 1][j], dp[i][j - 1])
-    return dp[m][n]
+    # Write your solution here
+    pass
 
 if __name__ == "__main__":
     lines = sys.stdin.read().strip().splitlines()
@@ -293,18 +220,8 @@ if __name__ == "__main__":
 const fs = require('fs');
 
 function longestCommonSubsequence(text1, text2) {
-    const m = text1.length, n = text2.length;
-    const dp = Array.from({ length: m + 1 }, () => new Array(n + 1).fill(0));
-    for (let i = 1; i <= m; i++) {
-        for (let j = 1; j <= n; j++) {
-            if (text1[i - 1] === text2[j - 1]) {
-                dp[i][j] = dp[i - 1][j - 1] + 1;
-            } else {
-                dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
-            }
-        }
-    }
-    return dp[m][n];
+    // Write your solution here
+    return null;
 }
 
 const lines = fs.readFileSync(0, 'utf-8').trim().split('\\n');
@@ -327,18 +244,8 @@ import java.util.*;
 
 public class Solution {
     public static boolean wordBreak(String s, List<String> wordDict) {
-        Set<String> set = new HashSet<>(wordDict);
-        boolean[] dp = new boolean[s.length() + 1];
-        dp[0] = true;
-        for (int i = 1; i <= s.length(); i++) {
-            for (int j = 0; j < i; j++) {
-                if (dp[j] && set.contains(s.substring(j, i))) {
-                    dp[i] = true;
-                    break;
-                }
-            }
-        }
-        return dp[s.length()];
+        // Write your solution here
+        return false;
     }
 
     public static void main(String[] args) {
@@ -356,15 +263,8 @@ public class Solution {
 import sys
 
 def word_break(s: str, word_dict: list[str]) -> bool:
-    word_set = set(word_dict)
-    dp = [False] * (len(s) + 1)
-    dp[0] = True
-    for i in range(1, len(s) + 1):
-        for j in range(i):
-            if dp[j] and s[j:i] in word_set:
-                dp[i] = True
-                break
-    return dp[len(s)]
+    # Write your solution here
+    pass
 
 if __name__ == "__main__":
     lines = sys.stdin.read().strip().splitlines()
@@ -377,18 +277,8 @@ if __name__ == "__main__":
 const fs = require('fs');
 
 function wordBreak(s, wordDict) {
-    const set = new Set(wordDict);
-    const dp = new Array(s.length + 1).fill(false);
-    dp[0] = true;
-    for (let i = 1; i <= s.length; i++) {
-        for (let j = 0; j < i; j++) {
-            if (dp[j] && set.has(s.substring(j, i))) {
-                dp[i] = true;
-                break;
-            }
-        }
-    }
-    return dp[s.length];
+    // Write your solution here
+    return null;
 }
 
 const lines = fs.readFileSync(0, 'utf-8').trim().split('\\n');
@@ -411,14 +301,8 @@ import java.util.*;
 
 public class Solution {
     public static int rob(int[] nums) {
-        if (nums == null || nums.length == 0) return 0;
-        int prev1 = 0, prev2 = 0;
-        for (int num : nums) {
-            int tmp = prev1;
-            prev1 = Math.max(prev2 + num, prev1);
-            prev2 = tmp;
-        }
-        return prev1;
+        // Write your solution here
+        return 0;
     }
 
     public static void main(String[] args) {
@@ -436,12 +320,8 @@ public class Solution {
 import sys
 
 def rob(nums: list[int]) -> int:
-    rob1, rob2 = 0, 0
-    for n in nums:
-        temp = max(n + rob1, rob2)
-        rob1 = rob2
-        rob2 = temp
-    return rob2
+    # Write your solution here
+    pass
 
 if __name__ == "__main__":
     line = sys.stdin.read().strip()
@@ -453,13 +333,8 @@ if __name__ == "__main__":
 const fs = require('fs');
 
 function rob(nums) {
-    let rob1 = 0, rob2 = 0;
-    for (const n of nums) {
-        const temp = Math.max(n + rob1, rob2);
-        rob1 = rob2;
-        rob2 = temp;
-    }
-    return rob2;
+    // Write your solution here
+    return null;
 }
 
 const line = fs.readFileSync(0, 'utf-8').trim();
@@ -483,18 +358,8 @@ import java.util.*;
 
 public class Solution {
     public static int rob(int[] nums) {
-        if (nums.length == 1) return nums[0];
-        return Math.max(robRange(nums, 0, nums.length - 2), robRange(nums, 1, nums.length - 1));
-    }
-
-    private static int robRange(int[] nums, int start, int end) {
-        int rob1 = 0, rob2 = 0;
-        for (int i = start; i <= end; i++) {
-            int temp = Math.max(nums[i] + rob1, rob2);
-            rob1 = rob2;
-            rob2 = temp;
-        }
-        return rob2;
+        // Write your solution here
+        return 0;
     }
 
     public static void main(String[] args) {
@@ -512,16 +377,8 @@ public class Solution {
 import sys
 
 def rob(nums: list[int]) -> int:
-    if len(nums) == 1:
-        return nums[0]
-    def rob_range(start, end):
-        rob1, rob2 = 0, 0
-        for i in range(start, end + 1):
-            temp = max(nums[i] + rob1, rob2)
-            rob1 = rob2
-            rob2 = temp
-        return rob2
-    return max(rob_range(0, len(nums) - 2), rob_range(1, len(nums) - 1))
+    # Write your solution here
+    pass
 
 if __name__ == "__main__":
     line = sys.stdin.read().strip()
@@ -533,17 +390,8 @@ if __name__ == "__main__":
 const fs = require('fs');
 
 function rob(nums) {
-    if (nums.length === 1) return nums[0];
-    function robRange(start, end) {
-        let rob1 = 0, rob2 = 0;
-        for (let i = start; i <= end; i++) {
-            const temp = Math.max(nums[i] + rob1, rob2);
-            rob1 = rob2;
-            rob2 = temp;
-        }
-        return rob2;
-    }
-    return Math.max(robRange(0, nums.length - 2), robRange(1, nums.length - 1));
+    // Write your solution here
+    return null;
 }
 
 const line = fs.readFileSync(0, 'utf-8').trim();
@@ -567,14 +415,8 @@ import java.util.*;
 
 public class Solution {
     public static int uniquePaths(int m, int n) {
-        int[] dp = new int[n];
-        Arrays.fill(dp, 1);
-        for (int i = 1; i < m; i++) {
-            for (int j = 1; j < n; j++) {
-                dp[j] += dp[j - 1];
-            }
-        }
-        return dp[n - 1];
+        // Write your solution here
+        return 0;
     }
 
     public static void main(String[] args) {
@@ -591,11 +433,8 @@ public class Solution {
 import sys
 
 def unique_paths(m: int, n: int) -> int:
-    row = [1] * n
-    for _ in range(m - 1):
-        for j in range(1, n):
-            row[j] += row[j - 1]
-    return row[-1]
+    # Write your solution here
+    pass
 
 if __name__ == "__main__":
     lines = sys.stdin.read().strip().splitlines()
@@ -606,13 +445,8 @@ if __name__ == "__main__":
 const fs = require('fs');
 
 function uniquePaths(m, n) {
-    const dp = new Array(n).fill(1);
-    for (let i = 1; i < m; i++) {
-        for (let j = 1; j < n; j++) {
-            dp[j] += dp[j - 1];
-        }
-    }
-    return dp[n - 1];
+    // Write your solution here
+    return null;
 }
 
 const lines = fs.readFileSync(0, 'utf-8').trim().split('\\n');
@@ -635,12 +469,8 @@ import java.util.*;
 
 public class Solution {
     public static boolean canJump(int[] nums) {
-        int reachable = 0;
-        for (int i = 0; i < nums.length; i++) {
-            if (i > reachable) return false;
-            reachable = Math.max(reachable, i + nums[i]);
-        }
-        return true;
+        // Write your solution here
+        return false;
     }
 
     public static void main(String[] args) {
@@ -658,12 +488,8 @@ public class Solution {
 import sys
 
 def can_jump(nums: list[int]) -> bool:
-    reachable = 0
-    for i, n in enumerate(nums):
-        if i > reachable:
-            return False
-        reachable = max(reachable, i + n)
-    return True
+    # Write your solution here
+    pass
 
 if __name__ == "__main__":
     line = sys.stdin.read().strip()
@@ -675,12 +501,8 @@ if __name__ == "__main__":
 const fs = require('fs');
 
 function canJump(nums) {
-    let reachable = 0;
-    for (let i = 0; i < nums.length; i++) {
-        if (i > reachable) return false;
-        reachable = Math.max(reachable, i + nums[i]);
-    }
-    return true;
+    // Write your solution here
+    return null;
 }
 
 const line = fs.readFileSync(0, 'utf-8').trim();
@@ -704,21 +526,8 @@ import java.util.*;
 
 public class Solution {
     public static int minDistance(String word1, String word2) {
-        int m = word1.length(), n = word2.length();
-        int[][] dp = new int[m + 1][n + 1];
-        for (int i = 0; i <= m; i++) dp[i][0] = i;
-        for (int j = 0; j <= n; j++) dp[0][j] = j;
-
-        for (int i = 1; i <= m; i++) {
-            for (int j = 1; j <= n; j++) {
-                if (word1.charAt(i - 1) == word2.charAt(j - 1)) {
-                    dp[i][j] = dp[i - 1][j - 1];
-                } else {
-                    dp[i][j] = 1 + Math.min(dp[i - 1][j - 1], Math.min(dp[i - 1][j], dp[i][j - 1]));
-                }
-            }
-        }
-        return dp[m][n];
+        // Write your solution here
+        return 0;
     }
 
     public static void main(String[] args) {
@@ -735,17 +544,8 @@ public class Solution {
 import sys
 
 def min_distance(word1: str, word2: str) -> int:
-    m, n = len(word1), len(word2)
-    dp = [[0] * (n + 1) for _ in range(m + 1)]
-    for i in range(m + 1): dp[i][0] = i
-    for j in range(n + 1): dp[0][j] = j
-    for i in range(1, m + 1):
-        for j in range(1, n + 1):
-            if word1[i - 1] == word2[j - 1]:
-                dp[i][j] = dp[i - 1][j - 1]
-            else:
-                dp[i][j] = 1 + min(dp[i - 1][j - 1], dp[i - 1][j], dp[i][j - 1])
-    return dp[m][n]
+    # Write your solution here
+    pass
 
 if __name__ == "__main__":
     lines = sys.stdin.read().strip().splitlines()
@@ -756,20 +556,8 @@ if __name__ == "__main__":
 const fs = require('fs');
 
 function minDistance(word1, word2) {
-    const m = word1.length, n = word2.length;
-    const dp = Array.from({ length: m + 1 }, () => new Array(n + 1).fill(0));
-    for (let i = 0; i <= m; i++) dp[i][0] = i;
-    for (let j = 0; j <= n; j++) dp[0][j] = j;
-    for (let i = 1; i <= m; i++) {
-        for (let j = 1; j <= n; j++) {
-            if (word1[i - 1] === word2[j - 1]) {
-                dp[i][j] = dp[i - 1][j - 1];
-            } else {
-                dp[i][j] = 1 + Math.min(dp[i - 1][j - 1], dp[i - 1][j], dp[i][j - 1]);
-            }
-        }
-    }
-    return dp[m][n];
+    // Write your solution here
+    return null;
 }
 
 const lines = fs.readFileSync(0, 'utf-8').trim().split('\\n');
@@ -791,21 +579,8 @@ import java.util.*;
 
 public class Solution {
     public static int maxCoins(int[] nums) {
-        int n = nums.length;
-        int[] arr = new int[n + 2];
-        arr[0] = 1; arr[n + 1] = 1;
-        for (int i = 0; i < n; i++) arr[i + 1] = nums[i];
-        int[][] dp = new int[n + 2][n + 2];
-
-        for (int len = 1; len <= n; len++) {
-            for (int l = 1; l <= n - len + 1; l++) {
-                int r = l + len - 1;
-                for (int k = l; k <= r; k++) {
-                    dp[l][r] = Math.max(dp[l][r], dp[l][k - 1] + dp[k + 1][r] + arr[l - 1] * arr[k] * arr[r + 1]);
-                }
-            }
-        }
-        return dp[1][n];
+        // Write your solution here
+        return 0;
     }
 
     public static void main(String[] args) {
@@ -823,15 +598,8 @@ public class Solution {
 import sys
 
 def max_coins(nums: list[int]) -> int:
-    arr = [1] + nums + [1]
-    n = len(nums)
-    dp = [[0] * (n + 2) for _ in range(n + 2)]
-    for length in range(1, n + 1):
-        for l in range(1, n - length + 2):
-            r = l + length - 1
-            for k in range(l, r + 1):
-                dp[l][r] = max(dp[l][r], dp[l][k - 1] + dp[k + 1][r] + arr[l - 1] * arr[k] * arr[r + 1])
-    return dp[1][n]
+    # Write your solution here
+    pass
 
 if __name__ == "__main__":
     line = sys.stdin.read().strip()
@@ -843,18 +611,8 @@ if __name__ == "__main__":
 const fs = require('fs');
 
 function maxCoins(nums) {
-    const n = nums.length;
-    const arr = [1, ...nums, 1];
-    const dp = Array.from({ length: n + 2 }, () => new Array(n + 2).fill(0));
-    for (let len = 1; len <= n; len++) {
-        for (let l = 1; l <= n - len + 1; l++) {
-            const r = l + len - 1;
-            for (let k = l; k <= r; k++) {
-                dp[l][r] = Math.max(dp[l][r], dp[l][k - 1] + dp[k + 1][r] + arr[l - 1] * arr[k] * arr[r + 1]);
-            }
-        }
-    }
-    return dp[1][n];
+    // Write your solution here
+    return null;
 }
 
 const line = fs.readFileSync(0, 'utf-8').trim();

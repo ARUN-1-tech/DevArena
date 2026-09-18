@@ -17,7 +17,8 @@ import java.util.*;
 
 public class Solution {
     public static boolean isSameTree(String p, String q) {
-        return p.equals(q);
+        // Write your solution here
+        return false;
     }
 
     public static void main(String[] args) {
@@ -32,7 +33,8 @@ public class Solution {
 import sys
 
 def is_same_tree(p: str, q: str) -> bool:
-    return p == q
+    # Write your solution here
+    pass
 
 if __name__ == "__main__":
     lines = sys.stdin.read().strip().splitlines()
@@ -43,7 +45,8 @@ if __name__ == "__main__":
 const fs = require('fs');
 
 function isSameTree(p, q) {
-    return p === q;
+    // Write your solution here
+    return null;
 }
 
 const lines = fs.readFileSync(0, 'utf-8').trim().split('\\n');
@@ -91,17 +94,8 @@ public class Solution {
 import sys
 
 def solve():
-    line = sys.stdin.read().strip()
-    if not line:
-        print("[]")
-        return
-    p = [x.strip() for x in line.split(",") if x.strip()]
-    if len(p) == 7:
-        print(f"[{p[0]}, {p[2]}, {p[1]}, {p[6]}, {p[5]}, {p[4]}, {p[3]}]")
-    elif len(p) == 3:
-        print(f"[{p[0]}, {p[2]}, {p[1]}]")
-    else:
-        print(f"[{', '.join(p)}]")
+    # Write your solution here
+    pass
 
 if __name__ == "__main__":
     solve()
@@ -110,7 +104,11 @@ if __name__ == "__main__":
 const fs = require('fs');
 
 function solve() {
-    const line = fs.readFileSync(0, 'utf-8').trim();
+    // Write your solution here
+    return null;
+}
+
+const line = fs.readFileSync(0, 'utf-8').trim();
     if (!line) {
         console.log("[]");
         return;
@@ -142,14 +140,8 @@ import java.util.*;
 
 public class Solution {
     public static int maxDepth(String s) {
-        if (s.isEmpty()) return 0;
-        String[] nodes = s.split(",");
-        int len = nodes.length;
-        if (len == 0) return 0;
-        if (len <= 1) return 1;
-        if (len <= 3) return 2;
-        if (len <= 7) return 3;
-        return (int) (Math.log(len) / Math.log(2)) + 1;
+        // Write your solution here
+        return 0;
     }
 
     public static void main(String[] args) {
@@ -163,14 +155,8 @@ public class Solution {
 import sys
 
 def max_depth(s: str) -> int:
-    if not s:
-        return 0
-    nodes = s.split(",")
-    n = len(nodes)
-    if n <= 1: return 1
-    if n <= 3: return 2
-    if n <= 7: return 3
-    return 4
+    # Write your solution here
+    pass
 
 if __name__ == "__main__":
     s = sys.stdin.read().strip()
@@ -180,12 +166,8 @@ if __name__ == "__main__":
 const fs = require('fs');
 
 function maxDepth(s) {
-    if (!s) return 0;
-    const nodes = s.split(',');
-    if (nodes.length <= 1) return 1;
-    if (nodes.length <= 3) return 2;
-    if (nodes.length <= 7) return 3;
-    return 4;
+    // Write your solution here
+    return null;
 }
 
 const s = fs.readFileSync(0, 'utf-8').trim();
@@ -221,11 +203,8 @@ public class Solution {
 import sys
 
 def solve():
-    line = sys.stdin.read().strip()
-    if line == "1,2,3": print(6)
-    elif line == "-10,9,20,null,null,15,7": print(42)
-    elif line == "-3": print(-3)
-    else: print(6)
+    # Write your solution here
+    pass
 
 if __name__ == "__main__":
     solve()
@@ -278,15 +257,8 @@ public class Solution {
 import sys
 
 def solve():
-    line = sys.stdin.read().strip()
-    if not line:
-        print("[]")
-    elif line == "3,9,20,null,null,15,7":
-        print("[[3], [9, 20], [15, 7]]")
-    elif line == "1":
-        print("[[1]]")
-    else:
-        print(f"[[{line}]]")
+    # Write your solution here
+    pass
 
 if __name__ == "__main__":
     solve()
@@ -329,10 +301,8 @@ public class Solution {
 import sys
 
 def solve():
-    line = sys.stdin.read().strip()
-    if line == "2,1,3": print("true")
-    elif line in ("5,1,4,null,null,3,6", "2,2,2"): print("false")
-    else: print("true")
+    # Write your solution here
+    pass
 
 if __name__ == "__main__":
     solve()
@@ -375,13 +345,8 @@ public class Solution {
 import sys
 
 def solve():
-    lines = sys.stdin.read().strip().splitlines()
-    if len(lines) >= 2:
-        tree = lines[0].strip()
-        k = int(lines[1].strip())
-        if tree.startswith("3,1,4"): print(1)
-        elif tree.startswith("5,3,6"): print(3)
-        else: print(k)
+    # Write your solution here
+    pass
 
 if __name__ == "__main__":
     solve()
@@ -429,13 +394,8 @@ public class Solution {
 import sys
 
 def solve():
-    lines = sys.stdin.read().strip().splitlines()
-    if len(lines) >= 3:
-        p = int(lines[1].strip())
-        q = int(lines[2].strip())
-        if p == 2 and q == 8: print(6)
-        elif p == 2 and q == 4: print(2)
-        else: print(min(p, q))
+    # Write your solution here
+    pass
 
 if __name__ == "__main__":
     solve()
@@ -480,11 +440,8 @@ public class Solution {
 import sys
 
 def solve():
-    line = sys.stdin.read().strip()
-    if line == "1,2,3,4,5": print(3)
-    elif line == "1,2": print(1)
-    elif line == "1": print(0)
-    else: print(3)
+    # Write your solution here
+    pass
 
 if __name__ == "__main__":
     solve()
@@ -525,10 +482,8 @@ public class Solution {
 import sys
 
 def solve():
-    line = sys.stdin.read().strip()
-    if line == "3,9,20,null,null,15,7" or not line: print("true")
-    elif line == "1,2,2,3,3,null,null,4,4": print("false")
-    else: print("true")
+    # Write your solution here
+    pass
 
 if __name__ == "__main__":
     solve()
