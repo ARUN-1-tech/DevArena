@@ -18,7 +18,6 @@ import {
 } from 'lucide-react';
 import { APP_NAME } from '../data/constants';
 import { NotificationDropdown } from '../components/notification/NotificationDropdown';
-import { SidebarPetCompanion } from '../components/layout/SidebarPetCompanion';
 
 interface NavItem {
   name: string;
@@ -232,9 +231,6 @@ export const AppLayout: React.FC = () => {
             );
           })}
         </nav>
-
-        {/* Live Baby Animal Pet Companion in Sidebar */}
-        <SidebarPetCompanion />
 
         {/* Mini Player Profile at Bottom */}
         <div className="p-3 border-t border-slate-100/90 bg-slate-50/50 backdrop-blur-sm">

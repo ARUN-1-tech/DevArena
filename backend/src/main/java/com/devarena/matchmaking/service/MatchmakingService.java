@@ -33,10 +33,10 @@ public class MatchmakingService {
 
     private static final Logger log = LoggerFactory.getLogger(MatchmakingService.class);
 
-    private static final int INITIAL_SEARCH_RADIUS = 150;
-    private static final int MAX_SEARCH_RADIUS = 600;
-    private static final int RADIUS_EXPANSION_STEP = 50;
-    private static final int EXPANSION_INTERVAL_SECONDS = 5;
+    private static final int INITIAL_SEARCH_RADIUS = 200;
+    private static final int MAX_SEARCH_RADIUS = 1000;
+    private static final int RADIUS_EXPANSION_STEP = 100;
+    private static final int EXPANSION_INTERVAL_SECONDS = 3;
 
     private final UserRepository userRepository;
     private final ChallengeRepository challengeRepository;
@@ -112,7 +112,7 @@ public class MatchmakingService {
 
     public void leaveQueue(UUID userId) {
         inMemoryQueue.remove(userId);
-        matchedBattles.remove(userId);
+        // Only remove from matchedBattles if no active battle was formed
         log.info("Player {} removed from matchmaking queue", userId);
     }
 
@@ -132,7 +132,7 @@ public class MatchmakingService {
         return new MatchmakingStatusResponse(true, waitSec, radius, item.rating(), null);
     }
 
-    @Scheduled(fixedDelay = 1500)
+    @Scheduled(fixedDelay = 1000)
     public void scheduledMatchmakingCycle() {
         runMatchingCycle();
     }
@@ -170,6 +170,7 @@ public class MatchmakingService {
                     int allowedRadius = Math.max(radius1, radius2);
 
                     int ratingDiff = Math.abs(p1.rating() - p2.rating());
+                    // Allow matching within search radius, prioritizing nearest rating
                     if (ratingDiff <= allowedRadius && ratingDiff < bestDiff) {
                         bestDiff = ratingDiff;
                         bestMatch = p2;
@@ -229,11 +230,16 @@ public class MatchmakingService {
 
             BattleEvent event = BattleEvent.of("MATCH_FOUND", battle.getId(), eventPayload);
 
-            // Send point-to-point and topic fallback
+            // Send to user queues and topics
             messagingTemplate.convertAndSendToUser(user1.getUsername(), "/queue/match", event);
+            messagingTemplate.convertAndSendToUser(user1.getUsername(), "/queue/matchmaking", event);
             messagingTemplate.convertAndSendToUser(user2.getUsername(), "/queue/match", event);
+            messagingTemplate.convertAndSendToUser(user2.getUsername(), "/queue/matchmaking", event);
+
             messagingTemplate.convertAndSend("/topic/match." + user1.getId(), event);
+            messagingTemplate.convertAndSend("/topic/matchmaking." + user1.getId(), event);
             messagingTemplate.convertAndSend("/topic/match." + user2.getId(), event);
+            messagingTemplate.convertAndSend("/topic/matchmaking." + user2.getId(), event);
 
         } catch (Exception e) {
             log.error("Failed to create battle from matched pair", e);

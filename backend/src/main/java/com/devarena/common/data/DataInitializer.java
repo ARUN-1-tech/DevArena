@@ -54,15 +54,14 @@ public class DataInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        try { seedDefaultUserIfEmpty(); } catch (Exception e) { log.warn("seedDefaultUser error: {}", e.getMessage()); }
-        try { seedAdminUserIfEmpty(); } catch (Exception e) { log.warn("seedAdminUser error: {}", e.getMessage()); }
-        try { cleanupDummyUsers(); } catch (Exception e) { log.warn("cleanupDummyUsers error: {}", e.getMessage()); }
-        try { seedDailyQuestsIfEmpty(); } catch (Exception e) { log.warn("seedDailyQuests error: {}", e.getMessage()); }
-        try { seedAchievementsIfEmpty(); } catch (Exception e) { log.warn("seedAchievements error: {}", e.getMessage()); }
-        try { seedSkillsIfEmpty(); } catch (Exception e) { log.warn("seedSkills error: {}", e.getMessage()); }
-
-        // Run challenge catalogs and test cases in background so server listens on port immediately
+        // Run all initialization asynchronously in background so server listens on port immediately (< 2s boot time)
         java.util.concurrent.CompletableFuture.runAsync(() -> {
+            try { seedDefaultUserIfEmpty(); } catch (Exception e) { log.warn("seedDefaultUser error: {}", e.getMessage()); }
+            try { seedAdminUserIfEmpty(); } catch (Exception e) { log.warn("seedAdminUser error: {}", e.getMessage()); }
+            try { cleanupDummyUsers(); } catch (Exception e) { log.warn("cleanupDummyUsers error: {}", e.getMessage()); }
+            try { seedDailyQuestsIfEmpty(); } catch (Exception e) { log.warn("seedDailyQuests error: {}", e.getMessage()); }
+            try { seedAchievementsIfEmpty(); } catch (Exception e) { log.warn("seedAchievements error: {}", e.getMessage()); }
+            try { seedSkillsIfEmpty(); } catch (Exception e) { log.warn("seedSkills error: {}", e.getMessage()); }
             try { seedChallengesIfEmpty(); } catch (Exception e) { log.warn("seedChallenges error: {}", e.getMessage()); }
             try { risingBrainDatasetSeeder.seedRisingBrainDatasetIfMissing(); } catch (Exception e) { log.warn("risingBrainSeeder error: {}", e.getMessage()); }
             try { challengeDataSeeder.seedStarterCodesAndTestCasesIfEmpty(); } catch (Exception e) { log.warn("challengeDataSeeder error: {}", e.getMessage()); }

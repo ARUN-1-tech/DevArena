@@ -28,31 +28,40 @@ export const MatchmakingPage: React.FC = () => {
     // 1. Join matchmaking queue and subscribe to STOMP events
     const startMatchmaking = async () => {
       try {
-        await battleService.joinMatchmaking();
+        const initialStatus = await battleService.joinMatchmaking();
+        if (initialStatus?.matchedBattleId) {
+          navigate(`/battle/${initialStatus.matchedBattleId}`);
+          return;
+        }
 
         // Connect STOMP if not already connected
         await webSocketService.connect();
 
-        // Subscribe to user private matchmaking queue
-        const unsubscribe = webSocketService.subscribe('/user/queue/matchmaking', (event: any) => {
-          if (isSubscribed) {
-            handleMatchEvent(event);
-          }
+        // Subscribe to user private matchmaking queues
+        const unsub1 = webSocketService.subscribe('/user/queue/match', (event: any) => {
+          if (isSubscribed) handleMatchEvent(event);
+        });
+        const unsub2 = webSocketService.subscribe('/user/queue/matchmaking', (event: any) => {
+          if (isSubscribed) handleMatchEvent(event);
         });
 
-        // Also subscribe to broadcast topic for fallback
-        let unsubscribeTopic = () => {};
+        // Also subscribe to broadcast topic fallbacks
+        let unsubTopic1 = () => {};
+        let unsubTopic2 = () => {};
         if (user?.id) {
-          unsubscribeTopic = webSocketService.subscribe(`/topic/matchmaking.${user.id}`, (event: any) => {
-            if (isSubscribed) {
-              handleMatchEvent(event);
-            }
+          unsubTopic1 = webSocketService.subscribe(`/topic/match.${user.id}`, (event: any) => {
+            if (isSubscribed) handleMatchEvent(event);
+          });
+          unsubTopic2 = webSocketService.subscribe(`/topic/matchmaking.${user.id}`, (event: any) => {
+            if (isSubscribed) handleMatchEvent(event);
           });
         }
 
         return () => {
-          unsubscribe();
-          unsubscribeTopic();
+          unsub1();
+          unsub2();
+          unsubTopic1();
+          unsubTopic2();
         };
       } catch (err: any) {
         setError(err.message || 'Failed to enter matchmaking queue.');
@@ -61,27 +70,28 @@ export const MatchmakingPage: React.FC = () => {
 
     const cleanupSub = startMatchmaking();
 
-    // 2. Start timer
+    // 2. Start timer & search radius expander
     timerRef.current = setInterval(() => {
       setElapsedSeconds((prev) => {
         const next = prev + 1;
-        // Expand search radius every 5 seconds
-        setSearchRadius(Math.min(600, 150 + Math.floor(next / 5) * 50));
+        // Expand search radius every 3 seconds
+        setSearchRadius(Math.min(1000, 200 + Math.floor(next / 3) * 100));
         return next;
       });
     }, 1000);
 
-    // 3. Fallback status poller every 2 seconds
+    // 3. Fallback status poller every 1000ms
     pollRef.current = setInterval(async () => {
       try {
         const status = await battleService.getMatchmakingStatus();
-        if (status.matchedBattleId) {
+        if (status && status.matchedBattleId) {
+          if (pollRef.current) clearInterval(pollRef.current);
           navigate(`/battle/${status.matchedBattleId}`);
         }
       } catch {
         // Ignore background polling errors
       }
-    }, 2000);
+    }, 1000);
 
     return () => {
       isSubscribed = false;
@@ -89,14 +99,14 @@ export const MatchmakingPage: React.FC = () => {
       if (pollRef.current) clearInterval(pollRef.current);
       cleanupSub.then((cleanup) => cleanup && cleanup());
     };
-  }, [navigate, user?.id, user?.stats?.rating]);
+  }, [navigate, user?.id]);
 
   const handleMatchEvent = (event: any) => {
-    if (event.type === 'MATCH_FOUND') {
+    if (event.type === 'MATCH_FOUND' || event.type === 'MATCH_READY') {
       setMatchFound(event.payload);
       setTimeout(() => {
-        navigate(`/battle/${event.payload.battleId}`);
-      }, 1500);
+        navigate(`/battle/${event.payload.battleId || event.payload}`);
+      }, 1200);
     }
   };
 
